@@ -1,0 +1,21 @@
+---
+description: Agent must not run Node/npm/pnpm in sandbox; user runs with correct Node (v24).
+alwaysApply: true
+---
+
+# Delegate Node commands to the user
+
+The Cursor agent shell may use a **legacy Node (e.g. v20)** that **does not satisfy this repo** (Astro and tooling expect **Node ≥22.12**, and this project is configured for **Node v24**).
+
+## Required behavior
+
+1. **Do not run** in the agent shell: `node`, `npm`, `pnpm`, `npx`, `corepack`, `yarn`, or any script that invokes them (e.g. `pnpm build`, `astro`, `turbo`), unless the user **explicitly** asks the agent to run a command in the sandbox anyway.
+2. **Do** prepare exact commands and **ask the user** to run them in **their** terminal (with their Node version / `nvm` / devcontainer as they use locally).
+3. **Do** ask the user to **paste stdout/stderr** when something fails, then fix code or config from that output.
+
+## Examples
+
+- After edits: “Please run from repo root: `node -v` (expect v24) then `pnpm --filter web build` and paste the output.”
+- For typecheck: “Please run `pnpm --filter web exec astro check` and share any errors.”
+
+This avoids false failures and wasted turns from the wrong Node in the agent environment.

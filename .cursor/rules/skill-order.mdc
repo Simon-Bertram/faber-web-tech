@@ -1,0 +1,14 @@
+---
+description: Define precedence when multiple skill triggers match
+alwaysApply: true
+---
+
+# Skill Precedence
+
+If multiple skill triggers match in the same request, read and follow the
+matching skill files in this exact order:
+
+1. `@.agents/skills/turborepo/SKILL.md`
+2. `@.agents/skills/workers-best-practices/SKILL.md`
+3. `@.agents/skills/hono/SKILL.md`
+4. `@.agents/skills/better-auth-best-practices/SKILL.md`
