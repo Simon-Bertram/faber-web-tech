@@ -1,0 +1,55 @@
+{
+  "name": "faber-web-tech",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "..",
+    "target": "dev"
+  },
+  "remoteUser": "node",
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  // IMPROVEMENT: Added empty string fallbacks (:) so the container still builds
+  // even if the host machine is missing these environment variables initially.
+  "containerEnv": {
+    "CLOUDFLARE_ACCOUNT_ID": "${localEnv:CLOUDFLARE_ACCOUNT_ID:}",
+    "CLOUDFLARE_API_TOKEN": "${localEnv:CLOUDFLARE_API_TOKEN:}",
+    "ALCHEMY_PASSWORD": "${localEnv:ALCHEMY_PASSWORD:}"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "astro-build.astro-vscode",
+        "drizzle-team.drizzle-studio",
+        "unifiedjs.vscode-mdx",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss",
+        "cloudflare.wrangler-vscode",
+        "tamasfe.even-better-toml",
+        "irongeek.vscode-env"
+      ]
+    }
+  },
+  "mounts": [
+    // Persists node_modules to a volume for faster I/O (Ensure you scaffold your app into '.' and not a subfolder)
+    "source=${localWorkspaceFolderBasename}-node_modules,target=${containerWorkspaceFolder}/node_modules,type=volume",
+    // Shared pnpm store across all your projects
+    "source=pnpm-store,target=/home/node/.local/share/pnpm/store,type=volume",
+    // Persists local D1 database and Cloudflare state
+    "source=wrangler-local-state,target=${containerWorkspaceFolder}/.wrangler,type=volume",
+    // Persists Alchemy infrastructure state
+    "source=alchemy-state,target=${containerWorkspaceFolder}/.alchemy,type=volume"
+  ],
+  "forwardPorts": [4321, 3000],
+  "portsAttributes": {
+    "4321": {
+      "label": "web",
+      "onAutoForward": "silent"
+    },
+    "3000": {
+      "label": "server",
+      "onAutoForward": "silent"
+    }
+  }
+}
