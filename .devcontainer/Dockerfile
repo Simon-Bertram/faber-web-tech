@@ -19,7 +19,6 @@ RUN npm uninstall -g pnpm || true \
 # Setup paths so pnpm can find its own executables
 ENV PNPM_HOME="/home/node/.local/share/pnpm"
 ENV PATH="$PNPM_HOME:$PNPM_HOME/bin:$PATH"
-ENV CI=1
 
 # --- STAGE 2: BUILDER (Used for CI/Production) ---
 # NOTE: This stage will fail if run before scaffolding your project because 
@@ -27,6 +26,7 @@ ENV CI=1
 # bypasses this by targeting the "dev" stage below.
 FROM base AS builder
 WORKDIR /app
+ENV CI=1
 
 # Copy dependency files
 COPY pnpm-lock.yaml package.json pnpm-workspace.yaml ./

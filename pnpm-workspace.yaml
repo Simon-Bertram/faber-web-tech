@@ -4,7 +4,7 @@ packages:
 allowBuilds:
   esbuild: true
   sharp: true
-  unrs-resolver: set this to true or false
+  unrs-resolver: true
   workerd: true
 catalog:
   dotenv: ^17.2.2
