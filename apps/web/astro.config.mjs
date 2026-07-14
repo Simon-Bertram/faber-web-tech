@@ -6,11 +6,11 @@ import tailwindcss from "@tailwindcss/vite";
 import alchemy from "alchemy/cloudflare/astro";
 import { defineConfig, envField } from "astro/config";
 const alchemyConfigPath = fileURLToPath(
-  new URL("./.alchemy/local/wrangler.jsonc", import.meta.url),
+  new URL("./.alchemy/local/wrangler.jsonc", import.meta.url)
 );
 const shouldUseAlchemy = existsSync(alchemyConfigPath);
 const cloudflareWorkersShimPath = fileURLToPath(
-  new URL("../../packages/env/src/cloudflare-local.ts", import.meta.url),
+  new URL("../../packages/env/src/cloudflare-local.ts", import.meta.url)
 );
 const cloudflareWorkersAlias = shouldUseAlchemy
   ? {}

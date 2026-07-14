@@ -43,8 +43,7 @@ Then, run the development server:
 pnpm run dev
 ```
 
-Open [http://localhost:4321](http://localhost:4321) in your browser to see the web application.
-The API is running at [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:4321](http://localhost:4321) in your browser to see the web application. The API is running at [http://localhost:3000](http://localhost:3000).
 
 ## Deployment
 

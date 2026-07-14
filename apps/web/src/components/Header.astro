@@ -1,28 +1,36 @@
 ---
-const links = [
-  { to: "/", label: "Home" },
-  { to: "/dashboard", label: "Dashboard" },
-];
+import { NAV_LINKS as links } from "./nav/urls";
 ---
 
 <div>
   <div class="flex flex-row items-center justify-between px-4 py-2 md:px-6">
     <nav class="flex gap-4 text-lg">
-      {links.map((link) => (
-        <a href={link.to} class="text-white hover:text-neutral-400 transition-colors">
-          {link.label}
-        </a>
-      ))}
+      {
+        links.map((link: { label: string; to: string }) => (
+          <a
+            href={link.to}
+            class="text-white transition-colors hover:text-neutral-400"
+          >
+            {link.label}
+          </a>
+        ))
+      }
     </nav>
     <div class="flex items-center gap-2" id="user-menu-container">
-      <a href="/login" id="login-link" class="rounded px-3 py-1.5 text-sm bg-indigo-600 hover:bg-indigo-700 text-white transition-colors">
+      <a
+        href="/login"
+        id="login-link"
+        class="rounded bg-indigo-600 px-3 py-1.5 text-sm text-white transition-colors hover:bg-indigo-700"
+      >
         Sign In
       </a>
-      <div id="user-menu" class="hidden flex items-center gap-3">
-        <span class="text-sm text-neutral-400 hidden sm:inline" id="user-display"></span>
+      <div id="user-menu" class="flex hidden items-center gap-3">
+        <span
+          class="hidden text-sm text-neutral-400 sm:inline"
+          id="user-display"></span>
         <button
           id="signout-button"
-          class="rounded px-3 py-1.5 text-sm bg-red-600 hover:bg-red-700 text-white transition-colors"
+          class="rounded bg-red-600 px-3 py-1.5 text-sm text-white transition-colors hover:bg-red-700"
         >
           Sign Out
         </button>
@@ -47,7 +55,8 @@ const links = [
         loginLink?.classList.add("hidden");
         userMenu?.classList.remove("hidden");
         if (userDisplay) {
-          userDisplay.textContent = session.user.name || session.user.email?.split("@")[0] || "User";
+          userDisplay.textContent =
+            session.user.name || session.user.email?.split("@")[0] || "User";
         }
       }
     } catch (e) {

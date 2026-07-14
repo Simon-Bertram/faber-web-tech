@@ -6,34 +6,41 @@ import Layout from "../layouts/Layout.astro";
   <div id="dashboard-content" class="hidden">
     <main class="mx-auto max-w-4xl px-4 py-8">
       <div class="rounded-xl border border-neutral-800 bg-neutral-900/50 p-8">
-        <h1 class="text-3xl font-bold text-white mb-6">Dashboard</h1>
-        
+        <h1 class="mb-6 text-3xl font-bold text-white">Dashboard</h1>
+
         <div class="space-y-4">
           <div class="rounded-lg bg-neutral-800/50 p-4">
             <p class="text-sm text-neutral-400">Welcome back,</p>
-            <p id="user-name" class="text-xl font-medium text-white">Loading...</p>
+            <p id="user-name" class="text-xl font-medium text-white">
+              Loading...
+            </p>
           </div>
-          
+
           <div class="rounded-lg bg-neutral-800/50 p-4">
-            <p class="text-sm text-neutral-400 mb-2">Email</p>
+            <p class="mb-2 text-sm text-neutral-400">Email</p>
             <p id="user-email" class="text-white">Loading...</p>
           </div>
 
           <div class="rounded-lg bg-neutral-800/50 p-4">
-            <p class="text-sm text-neutral-400 mb-2">Server Message</p>
+            <p class="mb-2 text-sm text-neutral-400">Server Message</p>
             <p id="api-message" class="text-white">Loading...</p>
           </div>
-
         </div>
       </div>
     </main>
   </div>
 
-  <div id="loading" class="flex h-[calc(100vh-4rem)] items-center justify-center">
+  <div
+    id="loading"
+    class="flex h-[calc(100vh-4rem)] items-center justify-center"
+  >
     <p class="text-neutral-400">Loading...</p>
   </div>
 
-  <div id="redirect" class="hidden flex h-[calc(100vh-4rem)] items-center justify-center">
+  <div
+    id="redirect"
+    class="flex hidden h-[calc(100vh-4rem)] items-center justify-center"
+  >
     <p class="text-neutral-400">Redirecting to login...</p>
   </div>
 </Layout>
@@ -52,7 +59,7 @@ import Layout from "../layouts/Layout.astro";
   async function init() {
     try {
       const { data: session } = await authClient.getSession();
-      
+
       if (!session?.user) {
         loading.classList.add("hidden");
         redirect.classList.remove("hidden");
@@ -69,7 +76,6 @@ import Layout from "../layouts/Layout.astro";
       } catch (e) {
         apiMessage.textContent = "Failed to load server data";
       }
-
 
       loading.classList.add("hidden");
       dashboardContent.classList.remove("hidden");
