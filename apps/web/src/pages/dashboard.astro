@@ -2,28 +2,42 @@
 import Layout from "../layouts/Layout.astro";
 ---
 
-<Layout title="Dashboard - faber-web">
+<Layout title="Dashboard — Faber">
   <div id="dashboard-content" class="hidden">
-    <main class="mx-auto max-w-4xl px-4 py-8">
-      <div class="rounded-xl border border-neutral-800 bg-neutral-900/50 p-8">
-        <h1 class="mb-6 text-3xl font-bold text-white">Dashboard</h1>
+    <main class="mx-auto max-w-4xl px-4 py-10 md:px-16">
+      <div class="glass-panel p-8">
+        <h1
+          class="font-display text-on-surface mb-8 text-3xl font-semibold tracking-tight"
+        >
+          Dashboard
+        </h1>
 
         <div class="space-y-4">
-          <div class="rounded-lg bg-neutral-800/50 p-4">
-            <p class="text-sm text-neutral-400">Welcome back,</p>
-            <p id="user-name" class="text-xl font-medium text-white">
+          <div
+            class="border-border-glass border-t-primary-container bg-surface-container-low/50 rounded border border-t-2 p-4"
+          >
+            <p class="label-caps text-on-surface-variant">Welcome back</p>
+            <p id="user-name" class="text-on-surface mt-1 text-xl font-medium">
               Loading...
             </p>
           </div>
 
-          <div class="rounded-lg bg-neutral-800/50 p-4">
-            <p class="mb-2 text-sm text-neutral-400">Email</p>
-            <p id="user-email" class="text-white">Loading...</p>
+          <div
+            class="border-border-glass border-t-secondary-container bg-surface-container-low/50 rounded border border-t-2 p-4"
+          >
+            <p class="label-caps text-on-surface-variant mb-2">Email</p>
+            <p id="user-email" class="text-on-surface">Loading...</p>
           </div>
 
-          <div class="rounded-lg bg-neutral-800/50 p-4">
-            <p class="mb-2 text-sm text-neutral-400">Server Message</p>
-            <p id="api-message" class="text-white">Loading...</p>
+          <div
+            class="border-border-glass border-t-tertiary-container bg-surface-container-low/50 rounded border border-t-2 p-4"
+          >
+            <p class="label-caps text-on-surface-variant mb-2">
+              Server Message
+            </p>
+            <p id="api-message" class="text-on-surface font-mono text-sm">
+              Loading...
+            </p>
           </div>
         </div>
       </div>
@@ -32,16 +46,16 @@ import Layout from "../layouts/Layout.astro";
 
   <div
     id="loading"
-    class="flex h-[calc(100vh-4rem)] items-center justify-center"
+    class="flex h-[calc(100vh-3.5rem)] items-center justify-center"
   >
-    <p class="text-neutral-400">Loading...</p>
+    <p class="label-caps text-on-surface-variant">Loading...</p>
   </div>
 
   <div
     id="redirect"
-    class="flex hidden h-[calc(100vh-4rem)] items-center justify-center"
+    class="hidden h-[calc(100vh-3.5rem)] items-center justify-center"
   >
-    <p class="text-neutral-400">Redirecting to login...</p>
+    <p class="label-caps text-on-surface-variant">Redirecting to login...</p>
   </div>
 </Layout>
 
@@ -63,6 +77,7 @@ import Layout from "../layouts/Layout.astro";
       if (!session?.user) {
         loading.classList.add("hidden");
         redirect.classList.remove("hidden");
+        redirect.classList.add("flex");
         window.location.href = "/login";
         return;
       }
@@ -82,6 +97,7 @@ import Layout from "../layouts/Layout.astro";
     } catch (error) {
       loading.classList.add("hidden");
       redirect.classList.remove("hidden");
+      redirect.classList.add("flex");
       window.location.href = "/login";
     }
   }

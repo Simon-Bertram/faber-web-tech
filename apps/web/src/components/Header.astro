@@ -2,43 +2,50 @@
 import { NAV_LINKS as links } from "./nav/urls";
 ---
 
-<div>
-  <div class="flex flex-row items-center justify-between px-4 py-2 md:px-6">
-    <nav class="flex gap-4 text-lg">
+<header
+  class="border-border-glass bg-glass/75 sticky top-0 z-50 border-b backdrop-blur-md"
+>
+  <div
+    class="mx-auto flex max-w-[1280px] flex-row items-center justify-between gap-4 px-4 py-3 md:px-16"
+  >
+    <a
+      href="/"
+      class="font-display text-on-surface hover:text-primary text-xl font-bold tracking-tight transition-colors"
+    >
+      Faber
+    </a>
+
+    <nav class="hidden items-center gap-6 md:flex">
       {
         links.map((link: { label: string; to: string }) => (
           <a
             href={link.to}
-            class="text-white transition-colors hover:text-neutral-400"
+            class="text-on-surface/70 hover:text-on-surface text-sm transition-colors"
           >
             {link.label}
           </a>
         ))
       }
     </nav>
+
     <div class="flex items-center gap-2" id="user-menu-container">
-      <a
-        href="/login"
-        id="login-link"
-        class="rounded bg-indigo-600 px-3 py-1.5 text-sm text-white transition-colors hover:bg-indigo-700"
-      >
+      <a href="/login" id="login-link" class="btn-primary px-3 py-1.5 text-sm">
         Sign In
       </a>
-      <div id="user-menu" class="flex hidden items-center gap-3">
+      <div id="user-menu" class="hidden items-center gap-3">
         <span
-          class="hidden text-sm text-neutral-400 sm:inline"
+          class="label-caps text-on-surface-variant hidden sm:inline"
           id="user-display"></span>
         <button
           id="signout-button"
-          class="rounded bg-red-600 px-3 py-1.5 text-sm text-white transition-colors hover:bg-red-700"
+          class="btn-secondary border-error/40 text-error hover:bg-error/10 px-3 py-1.5 text-sm"
         >
           Sign Out
         </button>
       </div>
     </div>
   </div>
-  <hr class="border-neutral-800" />
-</div>
+</header>
 
 <script>
   import { authClient } from "../lib/auth-client";
@@ -54,6 +61,7 @@ import { NAV_LINKS as links } from "./nav/urls";
       if (session?.user) {
         loginLink?.classList.add("hidden");
         userMenu?.classList.remove("hidden");
+        userMenu?.classList.add("flex");
         if (userDisplay) {
           userDisplay.textContent =
             session.user.name || session.user.email?.split("@")[0] || "User";
