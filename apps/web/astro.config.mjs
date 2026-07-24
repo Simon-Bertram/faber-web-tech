@@ -2,6 +2,7 @@ import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 // @ts-check
+import node from "@astrojs/node";
 import tailwindcss from "@tailwindcss/vite";
 import alchemy from "alchemy/cloudflare/astro";
 import { defineConfig, envField } from "astro/config";
@@ -17,7 +18,6 @@ const cloudflareWorkersAlias = shouldUseAlchemy
   : {
       "cloudflare:workers": cloudflareWorkersShimPath,
     };
-import node from "@astrojs/node";
 
 // https://astro.build/config
 export default defineConfig({
@@ -34,6 +34,15 @@ export default defineConfig({
       }),
     },
   },
+  integrations: [
+    sanity({
+      projectId: "<your-project-id>",
+      dataset: "<dataset-name>",
+      useCdn: false, // See note on using the CDN
+      apiVersion: "2026-07-23", // insert the current date to access the latest version of the API
+    }),
+    react(),
+  ],
   vite: {
     plugins: [tailwindcss()],
     resolve: { alias: cloudflareWorkersAlias },
