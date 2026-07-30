@@ -5,60 +5,60 @@
     Create Account
   </h1>
 
-  <form id="signup-form" class="space-y-4">
+  <form class="space-y-4" id="signup-form">
     <div class="space-y-1">
-      <label for="name" class="text-on-surface/80 block text-sm font-medium"
+      <label class="text-on-surface/80 block text-sm font-medium" for="name"
         >Name</label
       >
       <input
+        class="input-field"
         id="name"
         name="name"
-        type="text"
-        required
-        class="input-field"
         placeholder="John Doe"
+        required
+        type="text"
       />
     </div>
 
     <div class="space-y-1">
-      <label for="email" class="text-on-surface/80 block text-sm font-medium"
+      <label class="text-on-surface/80 block text-sm font-medium" for="email"
         >Email</label
       >
       <input
+        class="input-field"
         id="email"
         name="email"
-        type="email"
-        required
-        class="input-field"
         placeholder="you@example.com"
+        required
+        type="email"
       />
     </div>
 
     <div class="space-y-1">
-      <label for="password" class="text-on-surface/80 block text-sm font-medium"
+      <label class="text-on-surface/80 block text-sm font-medium" for="password"
         >Password</label
       >
       <input
-        id="password"
-        name="password"
-        type="password"
-        required
-        minlength="8"
         class="input-field"
+        id="password"
+        minlength="8"
+        name="password"
         placeholder="••••••••"
+        required
+        type="password"
       />
       <p class="text-on-surface/50 text-xs">Must be at least 8 characters</p>
     </div>
 
-    <p id="form-error" class="text-error hidden text-sm"></p>
+    <p class="text-error hidden text-sm" id="form-error"></p>
 
-    <button type="submit" class="btn-primary w-full"> Sign Up </button>
+    <button class="btn-primary w-full" type="submit"> Sign Up </button>
   </form>
 
   <div class="mt-4 text-center">
     <a
-      href="/login"
       class="text-primary hover:text-primary-fixed text-sm transition-colors"
+      href="/login"
     >
       Already have an account? Sign In
     </a>

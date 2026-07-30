@@ -9,8 +9,8 @@ import { NAV_LINKS as links } from "./nav/urls";
     class="mx-auto flex max-w-[1280px] flex-row items-center justify-between gap-4 px-4 py-3 md:px-16"
   >
     <a
-      href="/"
       class="font-display text-on-surface hover:text-primary text-xl font-bold tracking-tight transition-colors"
+      href="/"
     >
       Faber
     </a>
@@ -19,8 +19,8 @@ import { NAV_LINKS as links } from "./nav/urls";
       {
         links.map((link: { label: string; to: string }) => (
           <a
-            href={link.to}
             class="text-on-surface/70 hover:text-on-surface text-sm transition-colors"
+            href={link.to}
           >
             {link.label}
           </a>
@@ -29,16 +29,16 @@ import { NAV_LINKS as links } from "./nav/urls";
     </nav>
 
     <div class="flex items-center gap-2" id="user-menu-container">
-      <a href="/login" id="login-link" class="btn-primary px-3 py-1.5 text-sm">
+      <a class="btn-primary px-3 py-1.5 text-sm" href="/login" id="login-link">
         Sign In
       </a>
-      <div id="user-menu" class="hidden items-center gap-3">
+      <div class="hidden items-center gap-3" id="user-menu">
         <span
           class="label-caps text-on-surface-variant hidden sm:inline"
           id="user-display"></span>
         <button
-          id="signout-button"
           class="btn-secondary border-error/40 text-error hover:bg-error/10 px-3 py-1.5 text-sm"
+          id="signout-button"
         >
           Sign Out
         </button>

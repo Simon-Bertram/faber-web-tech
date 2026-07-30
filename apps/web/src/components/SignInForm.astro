@@ -5,46 +5,46 @@
     Welcome Back
   </h1>
 
-  <form id="signin-form" class="space-y-4">
+  <form class="space-y-4" id="signin-form">
     <div class="space-y-1">
-      <label for="email" class="text-on-surface/80 block text-sm font-medium"
+      <label class="text-on-surface/80 block text-sm font-medium" for="email"
         >Email</label
       >
       <input
+        class="input-field"
         id="email"
         name="email"
-        type="email"
-        required
-        class="input-field"
         placeholder="you@example.com"
+        required
+        type="email"
       />
-      <p id="email-error" class="text-error hidden text-sm"></p>
+      <p class="text-error hidden text-sm" id="email-error"></p>
     </div>
 
     <div class="space-y-1">
-      <label for="password" class="text-on-surface/80 block text-sm font-medium"
+      <label class="text-on-surface/80 block text-sm font-medium" for="password"
         >Password</label
       >
       <input
+        class="input-field"
         id="password"
         name="password"
-        type="password"
-        required
-        class="input-field"
         placeholder="••••••••"
+        required
+        type="password"
       />
-      <p id="password-error" class="text-error hidden text-sm"></p>
+      <p class="text-error hidden text-sm" id="password-error"></p>
     </div>
 
-    <p id="form-error" class="text-error hidden text-sm"></p>
+    <p class="text-error hidden text-sm" id="form-error"></p>
 
-    <button type="submit" class="btn-primary w-full"> Sign In </button>
+    <button class="btn-primary w-full" type="submit"> Sign In </button>
   </form>
 
   <div class="mt-4 text-center">
     <a
-      href="/signup"
       class="text-primary hover:text-primary-fixed text-sm transition-colors"
+      href="/signup"
     >
       Need an account? Sign Up
     </a>

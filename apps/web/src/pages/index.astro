@@ -7,8 +7,8 @@ import Layout from "../layouts/Layout.astro";
     class="relative flex min-h-[calc(100vh-3.5rem)] flex-col justify-center overflow-hidden"
   >
     <div
-      class="pointer-events-none absolute inset-0"
       aria-hidden="true"
+      class="pointer-events-none absolute inset-0"
       style="background:
 				radial-gradient(ellipse 80% 60% at 15% 20%, rgb(255 92 0 / 0.18), transparent 55%),
 				radial-gradient(ellipse 70% 50% at 85% 30%, rgb(108 4 222 / 0.16), transparent 50%),
@@ -34,17 +34,17 @@ import Layout from "../layouts/Layout.astro";
         with creative energy.
       </p>
       <div class="mt-10 flex flex-wrap items-center gap-4">
-        <a href="/signup" class="btn-primary">Start a project</a>
-        <a href="/login" class="btn-secondary">Sign in</a>
+        <a class="btn-primary" href="/signup">Start a project</a>
+        <a class="btn-secondary" href="/login">Sign in</a>
       </div>
     </div>
 
     <div
       class="relative mx-auto mt-auto flex w-full max-w-[1280px] items-center gap-2 px-4 pb-6 md:px-16"
     >
-      <span id="status-dot" class="bg-outline-variant h-2 w-2 rounded-full"
+      <span class="bg-outline-variant h-2 w-2 rounded-full" id="status-dot"
       ></span>
-      <span id="status-text" class="label-caps text-on-surface-variant/60"
+      <span class="label-caps text-on-surface-variant/60" id="status-text"
         >Connecting…</span
       >
     </div>

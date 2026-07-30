@@ -5,5 +5,9 @@ export default defineConfig({
   format: "esm",
   outDir: "./dist",
   clean: true,
-  noExternal: [/@faber-web\/.*/],
+  deps: {
+    alwaysBundle: [/@faber-web\/.*/],
+    neverBundle: ["cloudflare:workers"],
+    onlyBundle: ["drizzle-orm"],
+  },
 });

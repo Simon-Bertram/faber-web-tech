@@ -1,13 +1,17 @@
+/* eslint-disable import-x/no-nodejs-modules, n/no-sync -- Astro config runs in Node */
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 // @ts-check
 import node from "@astrojs/node";
+import react from "@astrojs/react";
+import sanity from "@sanity/astro";
 import tailwindcss from "@tailwindcss/vite";
 import alchemy from "alchemy/cloudflare/astro";
 import { defineConfig, envField } from "astro/config";
+
 const alchemyConfigPath = fileURLToPath(
-  new URL("./.alchemy/local/wrangler.jsonc", import.meta.url)
+  new URL(".alchemy/local/wrangler.jsonc", import.meta.url)
 );
 const shouldUseAlchemy = existsSync(alchemyConfigPath);
 const cloudflareWorkersShimPath = fileURLToPath(
@@ -36,10 +40,10 @@ export default defineConfig({
   },
   integrations: [
     sanity({
-      projectId: "<your-project-id>",
-      dataset: "<dataset-name>",
+      apiVersion: "2026-07-30", // insert the current date to access the latest version of the API
+      dataset: "development",
+      projectId: "ilx6uwmu",
       useCdn: false, // See note on using the CDN
-      apiVersion: "2026-07-23", // insert the current date to access the latest version of the API
     }),
     react(),
   ],

@@ -3,7 +3,7 @@ import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout title="Dashboard — Faber">
-  <div id="dashboard-content" class="hidden">
+  <div class="hidden" id="dashboard-content">
     <main class="mx-auto max-w-4xl px-4 py-10 md:px-16">
       <div class="glass-panel p-8">
         <h1
@@ -17,7 +17,7 @@ import Layout from "../layouts/Layout.astro";
             class="border-border-glass border-t-primary-container bg-surface-container-low/50 rounded border border-t-2 p-4"
           >
             <p class="label-caps text-on-surface-variant">Welcome back</p>
-            <p id="user-name" class="text-on-surface mt-1 text-xl font-medium">
+            <p class="text-on-surface mt-1 text-xl font-medium" id="user-name">
               Loading...
             </p>
           </div>
@@ -26,7 +26,7 @@ import Layout from "../layouts/Layout.astro";
             class="border-border-glass border-t-secondary-container bg-surface-container-low/50 rounded border border-t-2 p-4"
           >
             <p class="label-caps text-on-surface-variant mb-2">Email</p>
-            <p id="user-email" class="text-on-surface">Loading...</p>
+            <p class="text-on-surface" id="user-email">Loading...</p>
           </div>
 
           <div
@@ -35,7 +35,7 @@ import Layout from "../layouts/Layout.astro";
             <p class="label-caps text-on-surface-variant mb-2">
               Server Message
             </p>
-            <p id="api-message" class="text-on-surface font-mono text-sm">
+            <p class="text-on-surface font-mono text-sm" id="api-message">
               Loading...
             </p>
           </div>
@@ -45,15 +45,15 @@ import Layout from "../layouts/Layout.astro";
   </div>
 
   <div
-    id="loading"
     class="flex h-[calc(100vh-3.5rem)] items-center justify-center"
+    id="loading"
   >
     <p class="label-caps text-on-surface-variant">Loading...</p>
   </div>
 
   <div
-    id="redirect"
     class="hidden h-[calc(100vh-3.5rem)] items-center justify-center"
+    id="redirect"
   >
     <p class="label-caps text-on-surface-variant">Redirecting to login...</p>
   </div>
