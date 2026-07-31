@@ -41,7 +41,7 @@ export default defineConfig({
   integrations: [
     sanity({
       apiVersion: "2026-07-30", // insert the current date to access the latest version of the API
-      dataset: "development",
+      dataset: "production",
       projectId: "ilx6uwmu",
       useCdn: false, // See note on using the CDN
     }),

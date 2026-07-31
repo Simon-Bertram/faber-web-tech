@@ -1,0 +1,148 @@
+---
+import type { SanityImageSource } from "@sanity/image-url";
+import { sanityClient } from "sanity:client";
+import { heroSrc, heroSrcSet } from "../../lib/sanity-image";
+
+interface SlideshowCta {
+  label?: string;
+  url?: string;
+}
+
+type SlideshowImage = SanityImageSource & {
+  alt?: string;
+};
+
+interface SlideshowSlide {
+  _id: string;
+  title?: string;
+  subheading?: string;
+  image?: SlideshowImage;
+  cta?: SlideshowCta | null;
+}
+
+const SLIDESHOW_QUERY = `*[_type == "slideshow"] | order(_createdAt asc) {
+  _id,
+  title,
+  subheading,
+  image {
+    ...,
+    asset->{ _id, metadata { lqip, dimensions } }
+  },
+  cta->{ label, url }
+}`;
+
+const slides = (await sanityClient.fetch(SLIDESHOW_QUERY)) as SlideshowSlide[];
+const hasSlides = slides.length > 0;
+const first = slides[0];
+
+const slideData = slides.map((slide) => ({
+  title: slide.title ?? "",
+  subheading: slide.subheading ?? "",
+  ctaLabel: slide.cta?.label ?? "",
+  ctaUrl: slide.cta?.url ?? "",
+}));
+---
+
+{
+  hasSlides && (
+    <section
+      aria-label="Featured services"
+      aria-roledescription="carousel"
+      class="slideshow relative mx-auto flex min-h-[calc(100vh-3.5rem)] w-full max-w-[1920px] flex-col justify-center overflow-hidden"
+      data-slides={JSON.stringify(slideData)}
+      data-slideshow
+    >
+      <div aria-hidden="true" class="absolute inset-0">
+        {slides.map((slide, index) => {
+          if (!slide.image) {
+            return null;
+          }
+
+          const isFirst = index === 0;
+          const alt = slide.image.alt ?? slide.title ?? "";
+
+          return (
+            <img
+              alt={alt}
+              class:list={[
+                "slideshow-image absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ease-out",
+                {
+                  "opacity-100": isFirst,
+                  "opacity-0": !isFirst,
+                },
+              ]}
+              data-slide-image
+              data-slide-index={index}
+              decoding="async"
+              fetchpriority={isFirst ? "high" : "low"}
+              loading={isFirst ? "eager" : "lazy"}
+              sizes="(max-width: 1920px) 100vw, 1920px"
+              src={heroSrc(slide.image)}
+              srcset={heroSrcSet(slide.image)}
+            />
+          );
+        })}
+        <div class="from-void/95 via-void/70 to-void/30 pointer-events-none absolute inset-0 bg-linear-to-r" />
+        <div class="from-void/90 to-void/40 pointer-events-none absolute inset-0 bg-linear-to-t via-transparent" />
+      </div>
+
+      <div class="relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center px-4 py-20 md:px-16 md:py-28">
+        <p class="font-display text-on-surface text-5xl font-bold tracking-[-0.02em] md:text-7xl md:leading-20">
+          Faber
+        </p>
+
+        <div aria-live="polite" class="mt-4" data-slide-content>
+          <h1
+            class="font-display text-on-surface max-w-3xl text-3xl font-semibold tracking-[-0.01em] md:text-5xl md:leading-14"
+            data-slide-title
+          >
+            {first?.title}
+          </h1>
+          <p
+            class="text-on-surface/75 mt-6 max-w-xl text-lg leading-7"
+            data-slide-subheading
+            hidden={!first?.subheading}
+          >
+            {first?.subheading}
+          </p>
+          <div class="mt-10" data-slide-cta-wrap hidden={!first?.cta?.url}>
+            <a class="btn-primary" data-slide-cta href={first?.cta?.url ?? "#"}>
+              {first?.cta?.label}
+            </a>
+          </div>
+        </div>
+
+        {slides.length > 1 && (
+          <div
+            aria-label="Slide controls"
+            class="mt-12 flex items-center gap-2"
+          >
+            {slides.map((slide, index) => {
+              const isActive = index === 0;
+              return (
+                <button
+                  aria-label={`Show slide ${index + 1}: ${slide.title ?? ""}`}
+                  aria-pressed={isActive ? "true" : "false"}
+                  class:list={[
+                    "h-2 rounded-full transition-all duration-300",
+                    {
+                      "bg-primary-container w-8": isActive,
+                      "bg-on-surface/30 hover:bg-on-surface/50 w-2": !isActive,
+                    },
+                  ]}
+                  data-slide-dot
+                  data-slide-index={index}
+                  type="button"
+                />
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
+
+<script>
+  import "./slideshow-client";
+</script>
