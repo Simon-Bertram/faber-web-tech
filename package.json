@@ -1,20 +1,19 @@
 {
   "name": "faber-web",
   "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
   "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
-    "dev": "turbo dev",
-    "build": "turbo build",
-    "check-types": "turbo check-types",
-    "dev:web": "turbo -F web dev",
-    "dev:server": "turbo -F server dev",
-    "db:generate": "turbo -F @faber-web/db db:generate",
-    "deploy": "turbo -F @faber-web/infra deploy",
-    "destroy": "turbo -F @faber-web/infra destroy",
+    "dev": "turbo run dev --filter=@faber-web/infra",
+    "build": "turbo run build",
+    "check-types": "turbo run check-types",
+    "dev:web": "turbo run dev:bare --filter=web",
+    "dev:server": "turbo run dev --filter=@faber-web/infra",
+    "db:generate": "turbo run db:generate --filter=@faber-web/db",
+    "deploy": "turbo run deploy --filter=@faber-web/infra",
+    "destroy": "turbo run destroy --filter=@faber-web/infra",
     "check": "ultracite check",
     "fix": "ultracite fix"
   },
@@ -43,17 +42,17 @@
     "eslint-plugin-prettier": "^5.5.6",
     "eslint-plugin-promise": "^7.3.0",
     "eslint-plugin-sonarjs": "^4.2.0",
-    "eslint-plugin-storybook": "^10.5.3",
+    "eslint-plugin-storybook": "^10.5.5",
     "eslint-plugin-unicorn": "^64.0.0",
     "eslint-plugin-unused-imports": "^4.4.1",
-    "globals": "^17.7.0",
+    "globals": "^17.9.0",
     "prettier": "latest",
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "stylelint": "latest",
-    "turbo": "^2.10.7",
+    "turbo": "^2.10.8",
     "typescript": "catalog:",
     "ultracite": "7.8.3"
   },
-  "packageManager": "pnpm@11.18.0+sha512.33d83c77da82f49fba836925c6f1b841181ec3132b670639bd012f7075f5c7cf634c5f870147c19aae7478fac01df09d8892e880454896edd23ee9b33757563c"
+  "packageManager": "pnpm@11.20.0+sha512.9a6f330a95b66446ea088faf1521405a8a01f07fde7124cc9958dfed52d4bb436737e65b08f85f37b46fcba375092558ac51262b816844b22f63406ed166bfee"
 }

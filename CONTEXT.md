@@ -82,11 +82,11 @@ Skill precedence when several match: see `.cursor/rules/skill-order.mdc`.
 
 ## Commands
 
-Run in the user’s terminal (Node v24 / ≥22.12), not the agent shell:
+Run in the user’s terminal (Node ≥22.12; project targets v24; root `engines` enforces this), not the agent shell:
 
 - `pnpm install` — install deps
-- `pnpm run dev` — all apps
-- `pnpm run dev:web` / `pnpm run dev:server` — single app
+- `pnpm run dev` / `pnpm run dev:server` — Alchemy full stack (web + server + bindings via `@faber-web/infra`)
+- `pnpm run dev:web` — Astro only (`dev:bare`); no Worker bindings
 - `pnpm run build` — build all
 - `pnpm run check-types` — TypeScript across the monorepo
 - `pnpm run db:generate` — Drizzle migrations
@@ -97,5 +97,5 @@ Web: http://localhost:4321 · API: http://localhost:3000
 
 ## Non-negotiables
 
-- Node ≥22.12 (project targets v24). See `.cursor/rules/delegate-node-to-user.mdc`.
+- Node ≥22.12 (project targets v24; see root `package.json` `engines`). See `.cursor/rules/delegate-node-to-user.mdc`.
 - Follow this file for where to edit; skills for how; rules for behavior.

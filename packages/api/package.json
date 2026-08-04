@@ -1,5 +1,6 @@
 {
   "name": "@faber-web/api",
+  "private": true,
   "type": "module",
   "exports": {
     ".": {
@@ -9,7 +10,9 @@
       "default": "./src/*.ts"
     }
   },
-  "scripts": {},
+  "scripts": {
+    "check-types": "tsc -b --pretty false"
+  },
   "dependencies": {
     "@faber-web/auth": "workspace:*",
     "@faber-web/db": "workspace:*",

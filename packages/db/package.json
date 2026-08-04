@@ -1,5 +1,6 @@
 {
   "name": "@faber-web/db",
+  "private": true,
   "type": "module",
   "exports": {
     ".": {
@@ -10,6 +11,7 @@
     }
   },
   "scripts": {
+    "check-types": "tsc -b --pretty false",
     "db:generate": "drizzle-kit generate"
   },
   "dependencies": {

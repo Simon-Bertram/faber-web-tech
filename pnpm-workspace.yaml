@@ -2,6 +2,7 @@ packages:
   - apps/*
   - packages/*
 allowBuilds:
+  core-js: true
   esbuild: true
   sharp: true
   unrs-resolver: true
@@ -13,13 +14,13 @@ catalog:
   "@types/node": ^22.20.1
   "@cloudflare/workers-types": ^4.20260702.1
   hono: ^4.8.2
-  "@orpc/server": ^1.13.14
-  "@orpc/openapi": ^1.13.14
-  "@orpc/zod": ^1.13.14
+  "@orpc/server": ^1.14.13
+  "@orpc/openapi": ^1.14.13
+  "@orpc/zod": ^1.14.13
   better-auth: 1.6.11
   alchemy: ^0.91.2
-  wrangler: ^4.103.0
-  "@orpc/client": ^1.13.14
+  wrangler: ^4.105.0
+  "@orpc/client": ^1.14.13
 # Alchemy still peers Astro 5 / @astrojs/cloudflare 12; its Astro adapter is a
 # thin wrapper around the Cloudflare adapter and works with Astro 7.
 peerDependencyRules:
