@@ -7,6 +7,6 @@ export const env = createEnv({
     PUBLIC_SERVER_URL: z.url(),
   },
   runtimeEnv: (import.meta as any).env,
-  skipValidation: !!process.env.SKIP_ENV_VALIDATION,
+  skipValidation: Boolean(process.env.SKIP_ENV_VALIDATION),
   emptyStringAsUndefined: true,
 });

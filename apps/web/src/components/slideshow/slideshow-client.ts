@@ -12,10 +12,10 @@ function initSlideshow(root: HTMLElement) {
   const dots = [
     ...root.querySelectorAll<HTMLButtonElement>("[data-slide-dot]"),
   ];
-  const titleEl = root.querySelector<HTMLElement>("[data-slide-title]");
-  const subEl = root.querySelector<HTMLElement>("[data-slide-subheading]");
+  const titleElement = root.querySelector<HTMLElement>("[data-slide-title]");
+  const subElement = root.querySelector<HTMLElement>("[data-slide-subheading]");
   const ctaWrap = root.querySelector<HTMLElement>("[data-slide-cta-wrap]");
-  const ctaEl = root.querySelector<HTMLAnchorElement>("[data-slide-cta]");
+  const ctaElement = root.querySelector<HTMLAnchorElement>("[data-slide-cta]");
 
   let slides: SlideData[] = [];
   try {
@@ -32,7 +32,7 @@ function initSlideshow(root: HTMLElement) {
 
   let index = 0;
   let timer: ReturnType<typeof setInterval> | undefined;
-  const prefersReduced = window.matchMedia(
+  const prefersReduced = globalThis.matchMedia(
     "(prefers-reduced-motion: reduce)"
   ).matches;
 
@@ -41,32 +41,32 @@ function initSlideshow(root: HTMLElement) {
     const slide = slides[index];
 
     for (const image of images) {
-      const i = Number(image.dataset.slideIndex);
-      image.classList.toggle("opacity-100", i === index);
-      image.classList.toggle("opacity-0", i !== index);
+      const index_ = Number(image.dataset.slideIndex);
+      image.classList.toggle("opacity-100", index_ === index);
+      image.classList.toggle("opacity-0", index_ !== index);
     }
 
-    if (titleEl && slide) {
-      titleEl.textContent = slide.title;
+    if (titleElement && slide) {
+      titleElement.textContent = slide.title;
     }
 
-    if (subEl && slide) {
-      subEl.textContent = slide.subheading;
-      subEl.hidden = !slide.subheading;
+    if (subElement && slide) {
+      subElement.textContent = slide.subheading;
+      subElement.hidden = !slide.subheading;
     }
 
-    if (ctaWrap && ctaEl && slide) {
+    if (ctaWrap && ctaElement && slide) {
       const hasCta = Boolean(slide.ctaUrl && slide.ctaLabel);
       ctaWrap.hidden = !hasCta;
       if (hasCta) {
-        ctaEl.href = slide.ctaUrl;
-        ctaEl.textContent = slide.ctaLabel;
+        ctaElement.href = slide.ctaUrl;
+        ctaElement.textContent = slide.ctaLabel;
       }
     }
 
     for (const dot of dots) {
-      const i = Number(dot.dataset.slideIndex);
-      const isActive = i === index;
+      const index_ = Number(dot.dataset.slideIndex);
+      const isActive = index_ === index;
       dot.setAttribute("aria-pressed", isActive ? "true" : "false");
       dot.classList.toggle("bg-primary-container", isActive);
       dot.classList.toggle("w-8", isActive);

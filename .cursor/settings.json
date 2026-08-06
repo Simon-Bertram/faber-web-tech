@@ -2,6 +2,12 @@
   "plugins": {
     "cloudflare": {
       "enabled": true
+    },
+    "context7-plugin": {
+      "enabled": true
+    },
+    "sanity": {
+      "enabled": true
     }
   }
 }

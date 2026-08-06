@@ -1,0 +1,2 @@
+# drizzle-kit rewrites these on every db:generate, so formatting them is lost
+packages/db/src/migrations/

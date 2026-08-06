@@ -5,13 +5,13 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 
 export function createAuth() {
-  const db = createDb();
+  const database = createDb();
 
   return betterAuth({
-    database: drizzleAdapter(db, {
+    database: drizzleAdapter(database, {
       provider: "sqlite",
 
-      schema: schema,
+      schema,
     }),
     trustedOrigins: [env.CORS_ORIGIN],
     emailAndPassword: {

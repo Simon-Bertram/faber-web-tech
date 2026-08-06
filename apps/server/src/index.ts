@@ -24,7 +24,11 @@ app.use(
   })
 );
 
-app.on(["POST", "GET"], "/api/auth/*", (c) => createAuth().handler(c.req.raw));
+app.on(
+  ["POST", "GET"],
+  "/api/auth/*",
+  async (c) => await createAuth().handler(c.req.raw)
+);
 
 export const apiHandler = new OpenAPIHandler(appRouter, {
   plugins: [
@@ -52,7 +56,7 @@ app.use("/*", async (c, next) => {
 
   const rpcResult = await rpcHandler.handle(c.req.raw, {
     prefix: "/rpc",
-    context: context,
+    context,
   });
 
   if (rpcResult.matched) {
@@ -61,7 +65,7 @@ app.use("/*", async (c, next) => {
 
   const apiResult = await apiHandler.handle(c.req.raw, {
     prefix: "/api-reference",
-    context: context,
+    context,
   });
 
   if (apiResult.matched) {
@@ -71,8 +75,6 @@ app.use("/*", async (c, next) => {
   await next();
 });
 
-app.get("/", (c) => {
-  return c.text("OK");
-});
+app.get("/", (c) => c.text("OK"));
 
 export default app;

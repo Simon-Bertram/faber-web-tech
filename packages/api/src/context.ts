@@ -5,14 +5,28 @@ export type CreateContextOptions = {
   context: HonoContext;
 };
 
-export async function createContext({ context }: CreateContextOptions) {
+export type Context = {
+  auth: null;
+  clientIp: string | undefined;
+  session: Awaited<
+    ReturnType<ReturnType<typeof createAuth>["api"]["getSession"]>
+  >;
+};
+
+export const createContext = async ({
+  context,
+}: CreateContextOptions): Promise<Context> => {
   const session = await createAuth().api.getSession({
     headers: context.req.raw.headers,
   });
+  const forwarded = context.req.header("x-forwarded-for");
+  const clientIp =
+    context.req.header("cf-connecting-ip") ??
+    forwarded?.split(",")[0]?.trim() ??
+    undefined;
   return {
     auth: null,
+    clientIp,
     session,
   };
-}
-
-export type Context = Awaited<ReturnType<typeof createContext>>;
+};

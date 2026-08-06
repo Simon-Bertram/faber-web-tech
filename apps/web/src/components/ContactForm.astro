@@ -1,0 +1,138 @@
+<div class="glass-panel mx-auto w-full max-w-xl p-8">
+  <h1
+    class="font-display text-on-surface mb-2 text-center text-3xl font-semibold tracking-tight"
+  >
+    Let's build something
+  </h1>
+  <p class="text-on-surface/70 mb-6 text-center text-sm">
+    Tell me about your project. I'll get back to you soon.
+  </p>
+
+  <form class="space-y-4" id="contact-form">
+    <div class="space-y-1">
+      <label class="text-on-surface/80 block text-sm font-medium" for="name"
+        >Name</label
+      >
+      <input
+        aria-label="Name"
+        autocomplete="name"
+        class="input-field"
+        id="name"
+        maxlength="200"
+        name="name"
+        placeholder="Jane Doe"
+        required
+        type="text"
+      />
+    </div>
+
+    <div class="space-y-1">
+      <label class="text-on-surface/80 block text-sm font-medium" for="email"
+        >Email</label
+      >
+      <input
+        aria-label="Email"
+        autocomplete="email"
+        class="input-field"
+        id="email"
+        maxlength="320"
+        name="email"
+        placeholder="you@company.com"
+        required
+        type="email"
+      />
+    </div>
+
+    <div class="space-y-1">
+      <label class="text-on-surface/80 block text-sm font-medium" for="company"
+        >Company <span class="text-on-surface/50">(optional)</span></label
+      >
+      <input
+        aria-label="Company (optional)"
+        autocomplete="organization"
+        class="input-field"
+        id="company"
+        maxlength="200"
+        name="company"
+        placeholder="Acme Inc."
+        type="text"
+      />
+    </div>
+
+    <div class="space-y-1">
+      <label
+        class="text-on-surface/80 block text-sm font-medium"
+        for="projectType">Project type</label
+      >
+      <select class="input-field" id="projectType" name="projectType" required>
+        <option disabled selected value="">Select a type</option>
+        <option value="Website">Website</option>
+        <option value="Web app">Web app</option>
+        <option value="E-commerce">E-commerce</option>
+        <option value="Redesign">Redesign</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+
+    <div class="space-y-1">
+      <label class="text-on-surface/80 block text-sm font-medium" for="budget"
+        >Budget</label
+      >
+      <select class="input-field" id="budget" name="budget" required>
+        <option disabled selected value="">Select a range</option>
+        <option value="Under £5k">Under £5k</option>
+        <option value="£5k–£15k">£5k–£15k</option>
+        <option value="£15k–£50k">£15k–£50k</option>
+        <option value="£50k+">£50k+</option>
+        <option value="Not sure">Not sure</option>
+      </select>
+    </div>
+
+    <div class="space-y-1">
+      <label class="text-on-surface/80 block text-sm font-medium" for="message"
+        >Message</label
+      >
+      <textarea
+        aria-label="Message"
+        class="input-field min-h-32 resize-y"
+        id="message"
+        maxlength="5000"
+        name="message"
+        placeholder="What are you looking to build?"
+        required
+        rows="5"></textarea>
+    </div>
+
+    <div
+      class="cf-turnstile"
+      data-action="turnstile-spin-v2"
+      data-sitekey="0x4AAAAAAEGQrjTl9Eh2AoWh"
+      data-theme="dark"
+    >
+    </div>
+
+    <p
+      aria-live="assertive"
+      class="text-error hidden text-sm"
+      id="form-error"
+      role="alert"
+    >
+    </p>
+    <output
+      aria-live="polite"
+      class="text-tertiary hidden text-sm"
+      id="form-success"
+    >
+    </output>
+
+    <button class="btn-primary w-full" type="submit">Send message</button>
+  </form>
+</div>
+
+<script
+  async
+  defer
+  is:inline
+  src="https://challenges.cloudflare.com/turnstile/v0/api.js"></script>
+
+<script src="./contact-form-client.ts"></script>
