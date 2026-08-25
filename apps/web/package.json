@@ -11,16 +11,16 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
-    "@astrojs/node": "^11.0.3",
-    "@astrojs/react": "^6.0.2",
+    "@astrojs/node": "^11.1.4",
+    "@astrojs/react": "^6.0.4",
     "@faber-web/api": "workspace:*",
     "@faber-web/env": "workspace:*",
     "@orpc/client": "catalog:",
-    "@sanity/astro": "^3.5.0",
+    "@sanity/astro": "^3.5.1",
     "@sanity/client": "^7.25.0",
     "@sanity/image-url": "^2.1.1",
     "@tailwindcss/typography": "^0.5.20",
-    "astro": "^7.1.6",
+    "astro": "^7.2.7",
     "astro-portabletext": "^0.13.0",
     "better-auth": "catalog:",
     "dotenv": "catalog:",
@@ -29,13 +29,13 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@astrojs/cloudflare": "^14.1.7",
+    "@astrojs/cloudflare": "^14.2.5",
     "@cloudflare/workers-types": "catalog:",
     "@faber-web/config": "workspace:*",
-    "@tailwindcss/vite": "^4.3.1",
+    "@tailwindcss/vite": "^4.3.3",
     "alchemy": "catalog:",
-    "tailwindcss": "^4.1.18",
-    "typescript": "catalog:",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^7.0.2",
     "wrangler": "catalog:"
   }
 }
