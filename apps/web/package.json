@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@astrojs/cloudflare": "^14.2.5",
-    "@cloudflare/workers-types": "catalog:",
+    "@cloudflare/workers-types": "^5.20260823.1",
     "@faber-web/config": "workspace:*",
     "@tailwindcss/vite": "^4.3.3",
     "alchemy": "catalog:",

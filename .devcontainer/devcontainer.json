@@ -41,7 +41,7 @@
     // Persists Alchemy infrastructure state
     "source=alchemy-state,target=${containerWorkspaceFolder}/.alchemy,type=volume"
   ],
-  "postCreateCommand": "sudo chown -R node:node node_modules",
+  "postCreateCommand": "sudo chown -R node:node node_modules /home/node/.local",
   "forwardPorts": [4321, 3000],
   "portsAttributes": {
     "4321": {

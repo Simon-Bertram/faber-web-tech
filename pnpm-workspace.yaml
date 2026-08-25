@@ -17,7 +17,7 @@ catalog:
   "@orpc/server": ^1.14.13
   "@orpc/openapi": ^1.14.13
   "@orpc/zod": ^1.14.13
-  better-auth: 1.6.11
+  better-auth: 1.7.1
   alchemy: ^0.91.2
   wrangler: ^4.125.0
   "@orpc/client": ^1.15.0
