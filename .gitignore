@@ -23,6 +23,8 @@ local.db-*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+.cursor/mcp.json
+.agents/mcp_config.json
 .idea
 *.swp
 *.swo

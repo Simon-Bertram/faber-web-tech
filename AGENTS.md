@@ -1,3 +1,98 @@
+# Project Overview
+
+## Vision
+
+To create a fast, SEO-optimized, modern-looking, and highly responsive web developer site that is highly effective at converting visitors into customers.
+
+## Tech Stack
+
+- **Frontend**: Astro
+- **Backend**: Hono
+- **Hosting**: Cloudflare Workers
+- **Typesafe API**: oRPC
+- **Database ORM**: Drizzle ORM
+- **Database**: Cloudflare D1
+- **Authentication**: Better-Auth
+- **Observability**: Evlog
+
+---
+
+# Agent Routing & Workflow Guidelines
+
+## Directory & Package Map
+
+| Directory / Package | Role & Technology | Key Files to Examine / Modify |
+| :--- | :--- | :--- |
+| `apps/web` | Frontend UI (Astro, TailwindCSS) | Pages (`src/pages`), Components (`src/components`), Layouts (`src/layouts`), Styles (`src/styles`), Middleware (`src/middleware.ts`), Client API callers (`src/lib/orpc.ts`, `src/lib/auth-client.ts`) |
+| `apps/server` | API runtime on Cloudflare Workers (Hono) | Server entry (`src/index.ts`), CORS, Hono route handlers, oRPC OpenAPI fetch handlers, Better-Auth handler |
+| `packages/api` | End-to-end typesafe API definitions (oRPC) | Routers (`src/routers/`), Context (`src/context.ts`), procedure contracts, input/output validation schemas |
+| `packages/auth` | Authentication logic (Better-Auth) | Auth configuration (`src/index.ts`), session definitions, plugins |
+| `packages/db` | Database layer (Drizzle ORM & Cloudflare D1) | Table schemas (`src/schema/`), migrations (`src/migrations/`), client instantiation (`src/index.ts`) |
+| `packages/infra` | Infrastructure-as-Code (Alchemy & Cloudflare) | Worker topologies, D1 database definitions, KV namespaces, and environment wiring in `alchemy.run.ts` |
+| `packages/env` | Shared environment validation | Environment schemas and validation logic |
+| `packages/config` | Shared tooling configuration | Shared configs across workspace packages |
+
+## Skill Routing Matrix
+
+Always activate and follow the corresponding skill before beginning specialized work:
+
+- **Frontend & UI / Conversion Optimization**:
+  - `modern-web-guidance`: Consult for modern CSS, layout patterns, container queries, view transitions, and accessible web standards.
+  - `debug-optimize-lcp` & `chrome-devtools`: Consult for performance audits, Core Web Vitals (CWV), Largest Contentful Paint (LCP), and browser inspection.
+  - `a11y-debugging`: Consult for accessibility checks, keyboard navigation, tap targets, and ARIA attributes.
+- **Authentication & Security**:
+  - `better-auth-best-practices`: Core Better-Auth server/client configuration, plugins, and session management.
+  - `better-auth-security-best-practices`: Rate limiting, secret management, CSRF protection, trusted origins, and cookie security.
+  - `email-and-password-best-practices`: Password policies, verification flows, and credential authentication.
+- **Observability & Logging**:
+  - `review-logging-patterns` & `build-audit-logs`: Implementing wide events, Evlog structured logging, audit trails, and drain adapters.
+- **Monorepo & Code Standards**:
+  - `turborepo`: Managing task pipelines, caching, and monorepo boundaries in `turbo.json`.
+  - `ultracite`: Linting and formatting rules via Biome (`pnpm dlx ultracite fix`).
+
+## Recommended Order of Edits
+
+To preserve type safety, prevent broken builds, and ensure smooth data flow, follow these dependency-aware edit orders:
+
+### 1. Full-Stack Feature Flow (Bottom-Up)
+When adding a new end-to-end capability:
+1. **Infrastructure & Environment** (`packages/infra`, `packages/env`): Declare any new Cloudflare bindings (D1, KV, Images) or environment variables in `alchemy.run.ts`.
+2. **Database Schema & Migrations** (`packages/db`): Define new tables or fields in `packages/db/src/schema/`, then run `pnpm run db:generate`.
+3. **Authentication & Authorization** (`packages/auth`): Update Better-Auth models, permissions, or plugins if the feature impacts user access.
+4. **API Contracts & Procedures** (`packages/api`): Build typed oRPC procedures, input schemas, and query/mutation resolvers using DB and auth context.
+5. **Backend Server Mounting** (`apps/server`): Expose procedures in the router or attach new Hono middleware/routes if outside oRPC.
+6. **Frontend Consumption & UI** (`apps/web`): Build Astro components, pages, forms, and interactive islands consuming `orpc` or `authClient`.
+7. **Standards Verification**: Run `pnpm dlx ultracite fix` and `pnpm run check-types`.
+
+### 2. Frontend-Only Edits (Astro & UI)
+When refining UI, responsiveness, or conversion flows:
+1. Update markup, layouts, and styles under `apps/web/src/`.
+2. Ensure accessibility standards using `a11y-debugging`.
+3. Check performance implications using `debug-optimize-lcp`.
+4. Run `pnpm dlx ultracite fix`.
+
+### 3. Backend & API-Only Edits (Hono & oRPC)
+When changing server endpoints or business logic:
+1. Touch `packages/db` if data models need updating (and regenerate migrations).
+2. Update procedures, validators, or routers in `packages/api/src/routers/`.
+3. Verify Hono handlers in `apps/server/src/index.ts`.
+4. Run `pnpm run check-types`.
+
+### 4. Authentication Edits (Better-Auth)
+When configuring auth providers, policies, or session handling:
+1. Review `better-auth-best-practices` and `better-auth-security-best-practices`.
+2. Modify auth setup in `packages/auth/src/index.ts`.
+3. Update auth schema in `packages/db/src/schema/auth.ts` if adding plugins with custom tables; run `pnpm run db:generate`.
+4. Update client-side authentication calls in `apps/web/src/lib/auth-client.ts` or `apps/web/src/middleware.ts`.
+
+### 5. Infrastructure Edits (Cloudflare / Alchemy)
+When modifying Cloudflare resources, bindings, or deployment topology:
+1. Modify `packages/infra/alchemy.run.ts`.
+2. Mirror any new bindings in `apps/web/src/env.d.ts` and `apps/server/src/index.ts`.
+3. Test locally using `alchemy dev` or stage deployments.
+
+---
+
 # Ultracite Code Standards
 
 This project uses **Ultracite**, a zero-config preset that enforces strict code quality standards through automated formatting and linting.
