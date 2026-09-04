@@ -4,108 +4,125 @@ import ChevronRightIcon from "../assets/icons/chevron-right.svg";
 // HeroCarousel.astro - WCAG 2.1 AA Accessible Dynamic Slideshow
 const slides = [
   {
-    id: "modern-websites",
-    tier: "TIER 01 // MARKETING & BRAND",
-    title: "High-Performance, Conversion-Engineered Websites",
+    accentBg: "var(--primary-container)",
+    accentColor: "var(--primary)",
+    badgeColor:
+      "text-[var(--primary)] border-[var(--primary)]/30 bg-[var(--primary-container)]",
     description:
       "Speed is revenue. We engineer ultra-fast marketing websites with modern static and edge rendering architectures, achieving flawless 100/100 Core Web Vitals, organic search dominance, and maximum conversion rates.",
-    primaryCtaText: "Start Your Website",
-    primaryCtaLink: "/#contact",
-    secondaryCtaText: "Explore Architecture",
-    secondaryCtaLink: "/#modern-websites",
-    accentColor: "var(--primary)",
-    accentBg: "var(--primary-container)",
-    badgeColor: "text-[var(--primary)] border-[var(--primary)]/30 bg-[var(--primary-container)]",
+    id: "modern-websites",
     previewType: "performance",
+    primaryCtaLink: "/#contact",
+    primaryCtaText: "Start Your Website",
+    secondaryCtaLink: "/#modern-websites",
+    secondaryCtaText: "Explore Architecture",
+    tier: "TIER 01 // MARKETING & BRAND",
+    title: "High-Performance, Conversion-Engineered Websites",
   },
   {
-    id: "web-apps",
-    tier: "TIER 02 // WEB APPS & SAAS",
-    title: "Full-Stack SaaS & Scalable Digital Products",
+    accentBg: "var(--secondary-container)",
+    accentColor: "var(--secondary)",
+    badgeColor:
+      "text-[var(--secondary)] border-[var(--secondary)]/30 bg-[var(--secondary-container)]",
     description:
       "Transform your vision into high-scale software. Built on modern edge infrastructure (Cloudflare Workers, Hono, oRPC, Drizzle D1), delivering sub-50ms global latency, end-to-end type safety, and real-time responsiveness.",
-    primaryCtaText: "Build Your App",
-    primaryCtaLink: "/#contact",
-    secondaryCtaText: "Review Stack",
-    secondaryCtaLink: "/#web-apps",
-    accentColor: "var(--secondary)",
-    accentBg: "var(--secondary-container)",
-    badgeColor: "text-[var(--secondary)] border-[var(--secondary)]/30 bg-[var(--secondary-container)]",
+    id: "web-apps",
     previewType: "architecture",
+    primaryCtaLink: "/#contact",
+    primaryCtaText: "Build Your App",
+    secondaryCtaLink: "/#web-apps",
+    secondaryCtaText: "Review Stack",
+    tier: "TIER 02 // WEB APPS & SAAS",
+    title: "Full-Stack SaaS & Scalable Digital Products",
   },
   {
-    id: "ai-automation",
-    tier: "TIER 03 // INTELLIGENCE & AUTOMATION",
-    title: "Intelligent Workflows & Custom LLM Systems",
+    accentBg: "var(--tertiary-container)",
+    accentColor: "var(--tertiary)",
+    badgeColor:
+      "text-[var(--tertiary)] border-[var(--tertiary)]/30 bg-[var(--tertiary-container)]",
     description:
       "Automate manual bottlenecks and multiply human output. We develop autonomous agentic pipelines, tailored LLM integrations, and self-healing business automations with strict validation and enterprise data security.",
-    primaryCtaText: "Automate Your Business",
-    primaryCtaLink: "/#contact",
-    secondaryCtaText: "Explore AI Solutions",
-    secondaryCtaLink: "/#ai-automation",
-    accentColor: "var(--tertiary)",
-    accentBg: "var(--tertiary-container)",
-    badgeColor: "text-[var(--tertiary)] border-[var(--tertiary)]/30 bg-[var(--tertiary-container)]",
+    id: "ai-automation",
     previewType: "automation",
+    primaryCtaLink: "/#contact",
+    primaryCtaText: "Automate Your Business",
+    secondaryCtaLink: "/#ai-automation",
+    secondaryCtaText: "Explore AI Solutions",
+    tier: "TIER 03 // INTELLIGENCE & AUTOMATION",
+    title: "Intelligent Workflows & Custom LLM Systems",
   },
 ];
 ---
 
 <section
-  id="hero-carousel"
-  class="relative overflow-hidden pt-8 pb-16 md:pt-14 md:pb-24 border-b border-(--border-subtle)"
-  aria-roledescription="carousel"
   aria-label="Core Services Showcase"
+  aria-roledescription="carousel"
+  class="relative overflow-hidden pt-8 pb-16 md:pt-14 md:pb-24 border-b border-(--border-subtle)"
+  id="hero-carousel"
 >
   <!-- Background Kinetic Light Leaks / Ambient Gradients -->
-  <div class="pointer-events-none absolute -top-40 left-1/2 -z-10 h-125 w-200 -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(255,92,0,0.12),transparent_70%)] blur-3xl" aria-hidden="true"></div>
-  <div class="pointer-events-none absolute top-1/3 -right-40 -z-10 h-[400px] w-[600px] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(94,53,177,0.12),transparent_70%)] blur-3xl" aria-hidden="true"></div>
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute -top-40 left-1/2 -z-10 h-125 w-200 -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(255,92,0,0.12),transparent_70%)] blur-3xl"
+  ></div>
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute top-1/3 -right-40 -z-10 h-[400px] w-[600px] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(94,53,177,0.12),transparent_70%)] blur-3xl"
+  ></div>
 
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <!-- Brand Strapline Banner -->
-    <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-4 py-1.5 text-xs font-mono tracking-wide shadow-sm">
-      <span class="inline-block h-2 w-2 rounded-full bg-[var(--primary)] animate-pulse" aria-hidden="true"></span>
-      <span class="font-semibold text-[var(--text-secondary)]">FABER WEB TECH:</span>
-      <span class="font-medium text-[var(--text-primary)]">Modern web tech to boost your business.</span>
+    <div
+      class="mb-6 inline-flex items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-4 py-1.5 text-xs font-mono tracking-wide shadow-sm"
+    >
+      <span
+        aria-hidden="true"
+        class="inline-block h-2 w-2 rounded-full bg-[var(--primary)] animate-pulse"
+      ></span>
+      <span class="font-semibold text-[var(--text-secondary)]"
+        >FABER WEB TECH:</span
+      >
+      <span class="font-medium text-[var(--text-primary)]"
+        >Modern web tech to boost your business.</span
+      >
     </div>
 
     <!-- Carousel Viewport -->
     <div class="relative min-h-[480px] md:min-h-[420px]">
       {slides.map((slide, index) => (
-        <div
+        <section
           id={`slide-${index + 1}`}
           class={`hero-slide transition-opacity duration-500 ease-in-out ${
             index === 0 ? "relative opacity-100 z-10" : "absolute inset-0 opacity-0 pointer-events-none z-0"
           }`}
-          role="group"
           aria-roledescription="slide"
           aria-label={`Slide ${index + 1} of ${slides.length}: ${slide.title}`}
           data-slide-index={index}
         >
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-            <!-- Left Column: Copy & Actions -->
+            {/* Left Column: Copy & Actions */}
             <div class="lg:col-span-7 flex flex-col items-start">
-              <!-- Tier Badge -->
+              {/* Tier Badge */}
               <span class={`inline-block rounded-full border px-3 py-1 font-mono text-xs font-semibold uppercase tracking-wider mb-4 ${slide.badgeColor}`}>
                 {slide.tier}
               </span>
 
-              <!-- Slide Headline -->
+              {/* Slide Headline */}
               <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[var(--text-primary)] leading-[1.15] mb-4">
                 {slide.title}
               </h1>
 
-              <!-- Strapline Accent -->
+              {/* Strapline Accent */}
               <p class="text-lg sm:text-xl font-medium text-[var(--primary)] mb-4">
                 Modern web tech to boost your business.
               </p>
 
-              <!-- Service Description -->
+              {/* Service Description */}
               <p class="text-base sm:text-lg text-[var(--text-secondary)] leading-relaxed max-w-2xl mb-8">
                 {slide.description}
               </p>
 
-              <!-- Call to Actions -->
+              {/* Call to Actions */}
               <div class="flex flex-wrap items-center gap-4 w-full sm:w-auto">
                 <a
                   href={slide.primaryCtaLink}
@@ -125,7 +142,7 @@ const slides = [
               </div>
             </div>
 
-            <!-- Right Column: Interactive Tech Visual Mockup -->
+            {/* Right Column: Interactive Tech Visual Mockup */}
             <div class="lg:col-span-5 w-full">
               {slide.previewType === "performance" && (
                 <div class="rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-6 shadow-xl transition-all hover:border-[var(--border-hover)]">
@@ -197,7 +214,7 @@ const slides = [
                     <p class="pl-4">runtime: <span class="text-violet-400">"Cloudflare Workers"</span>,</p>
                     <p class="pl-4">database: <span class="text-violet-400">"D1 / Drizzle ORM"</span>,</p>
                     <p>{`}`});</p>
-                    <p class="pt-2 text-[var(--text-muted)]">// Latency benchmark across 300+ edge PoPs:</p>
+                    <p class="pt-2 text-[var(--text-muted)]">{"// Latency benchmark across 300+ edge PoPs:"}</p>
                     <p class="text-emerald-500 font-semibold">Query latency: 28ms (Cold start: 0ms)</p>
                   </div>
 
@@ -245,14 +262,20 @@ const slides = [
               )}
             </div>
           </div>
-        </div>
+        </section>
       ))}
     </div>
 
     <!-- Carousel Controls Bar (Arrows, Tabs, and Pause/Play) -->
-    <div class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-[var(--border-subtle)] pt-6">
+    <div
+      class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-[var(--border-subtle)] pt-6"
+    >
       <!-- Tablist Indicators for 3 Service Tiers -->
-      <div class="flex flex-wrap items-center gap-2" role="tablist" aria-label="Carousel slide selection">
+      <div
+        aria-label="Carousel slide selection"
+        class="flex flex-wrap items-center gap-2"
+        role="tablist"
+      >
         {slides.map((slide, index) => (
           <button
             type="button"
@@ -276,40 +299,71 @@ const slides = [
       <!-- Arrow Buttons & Pause/Play Control -->
       <div class="flex items-center gap-2">
         <button
-          type="button"
-          id="carousel-pause-play"
-          class="inline-flex h-10 w-10 items-center justify-center rounded border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-secondary)] transition-colors hover:border-[var(--border-hover)] hover:text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]"
           aria-label="Pause automatic slide rotation"
+          class="inline-flex h-10 w-10 items-center justify-center rounded border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-secondary)] transition-colors hover:border-[var(--border-hover)] hover:text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]"
+          id="carousel-pause-play"
           title="Pause automatic slide rotation"
+          type="button"
         >
           <!-- Pause Icon -->
-          <svg id="pause-icon" class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path fill-rule="evenodd" d="M6.75 5.25a.75.75 0 0 1 .75.75v12a.75.75 0 0 1-1.5 0v-12a.75.75 0 0 1 .75-.75Zm10.5 0a.75.75 0 0 1 .75.75v12a.75.75 0 0 1-1.5 0v-12a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" />
+          <svg
+            aria-hidden="true"
+            class="h-4 w-4"
+            fill="currentColor"
+            id="pause-icon"
+            viewBox="0 0 24 24"
+          >
+            <path
+              clip-rule="evenodd"
+              d="M6.75 5.25a.75.75 0 0 1 .75.75v12a.75.75 0 0 1-1.5 0v-12a.75.75 0 0 1 .75-.75Zm10.5 0a.75.75 0 0 1 .75.75v12a.75.75 0 0 1-1.5 0v-12a.75.75 0 0 1 .75-.75Z"
+              fill-rule="evenodd"
+            />
           </svg>
           <!-- Play Icon -->
-          <svg id="play-icon" class="hidden h-4 w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path fill-rule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clip-rule="evenodd" />
+          <svg
+            aria-hidden="true"
+            class="hidden h-4 w-4"
+            fill="currentColor"
+            id="play-icon"
+            viewBox="0 0 24 24"
+          >
+            <path
+              clip-rule="evenodd"
+              d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z"
+              fill-rule="evenodd"
+            />
           </svg>
         </button>
 
         <button
-          type="button"
-          id="carousel-prev"
-          class="inline-flex h-10 w-10 items-center justify-center rounded border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-secondary)] transition-colors hover:border-[var(--border-hover)] hover:text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]"
           aria-label="Previous slide"
+          class="inline-flex h-10 w-10 items-center justify-center rounded border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-secondary)] transition-colors hover:border-[var(--border-hover)] hover:text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]"
+          id="carousel-prev"
+          type="button"
         >
-          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          <svg
+            aria-hidden="true"
+            class="h-4 w-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M15 19l-7-7 7-7"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
           </svg>
         </button>
 
         <button
-          type="button"
-          id="carousel-next"
-          class="inline-flex h-10 w-10 items-center justify-center rounded border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-secondary)] transition-colors hover:border-[var(--border-hover)] hover:text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]"
           aria-label="Next slide"
+          class="inline-flex h-10 w-10 items-center justify-center rounded border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-secondary)] transition-colors hover:border-[var(--border-hover)] hover:text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]"
+          id="carousel-next"
+          type="button"
         >
-          <ChevronRightIcon class="h-4 w-4" aria-hidden="true" />
+          <ChevronRightIcon aria-hidden="true" class="h-4 w-4" />
         </button>
       </div>
     </div>
@@ -319,10 +373,16 @@ const slides = [
 <script>
   function initCarousel() {
     const carousel = document.getElementById("hero-carousel");
-    if (!carousel) return;
+    if (!carousel) {
+      return;
+    }
 
-    const slides = Array.from(carousel.querySelectorAll<HTMLElement>(".hero-slide"));
-    const tabs = Array.from(carousel.querySelectorAll<HTMLElement>(".carousel-tab"));
+    const slides = Array.from(
+      carousel.querySelectorAll<HTMLElement>(".hero-slide")
+    );
+    const tabs = Array.from(
+      carousel.querySelectorAll<HTMLElement>(".carousel-tab")
+    );
     const prevBtn = document.getElementById("carousel-prev");
     const nextBtn = document.getElementById("carousel-next");
     const pausePlayBtn = document.getElementById("carousel-pause-play");
@@ -335,14 +395,18 @@ const slides = [
     const intervalTime = 6000;
 
     // Check prefers-reduced-motion
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
     if (prefersReducedMotion) {
       isPlaying = false;
       updatePausePlayButton();
     }
 
     function goToSlide(newIndex: number) {
-      if (newIndex === currentIndex) return;
+      if (newIndex === currentIndex) {
+        return;
+      }
 
       // Handle cyclic index
       if (newIndex < 0) {
@@ -354,7 +418,13 @@ const slides = [
       // Hide current slide
       const currentSlide = slides[currentIndex];
       currentSlide.classList.remove("relative", "opacity-100", "z-10");
-      currentSlide.classList.add("absolute", "inset-0", "opacity-0", "pointer-events-none", "z-0");
+      currentSlide.classList.add(
+        "absolute",
+        "inset-0",
+        "opacity-0",
+        "pointer-events-none",
+        "z-0"
+      );
 
       const currentTab = tabs[currentIndex];
       currentTab.setAttribute("aria-selected", "false");
@@ -363,7 +433,13 @@ const slides = [
 
       // Show new slide
       const nextSlide = slides[newIndex];
-      nextSlide.classList.remove("absolute", "inset-0", "opacity-0", "pointer-events-none", "z-0");
+      nextSlide.classList.remove(
+        "absolute",
+        "inset-0",
+        "opacity-0",
+        "pointer-events-none",
+        "z-0"
+      );
       nextSlide.classList.add("relative", "opacity-100", "z-10");
 
       const nextTab = tabs[newIndex];
@@ -375,7 +451,9 @@ const slides = [
     }
 
     function startAutoPlay() {
-      if (prefersReducedMotion || !isPlaying) return;
+      if (prefersReducedMotion || !isPlaying) {
+        return;
+      }
       stopAutoPlay();
       autoPlayInterval = window.setInterval(() => {
         goToSlide(currentIndex + 1);
@@ -393,30 +471,42 @@ const slides = [
       if (isPlaying) {
         pauseIcon?.classList.remove("hidden");
         playIcon?.classList.add("hidden");
-        pausePlayBtn?.setAttribute("aria-label", "Pause automatic slide rotation");
+        pausePlayBtn?.setAttribute(
+          "aria-label",
+          "Pause automatic slide rotation"
+        );
         pausePlayBtn?.setAttribute("title", "Pause automatic slide rotation");
       } else {
         pauseIcon?.classList.add("hidden");
         playIcon?.classList.remove("hidden");
-        pausePlayBtn?.setAttribute("aria-label", "Start automatic slide rotation");
+        pausePlayBtn?.setAttribute(
+          "aria-label",
+          "Start automatic slide rotation"
+        );
         pausePlayBtn?.setAttribute("title", "Start automatic slide rotation");
       }
     }
 
     prevBtn?.addEventListener("click", () => {
       goToSlide(currentIndex - 1);
-      if (isPlaying) startAutoPlay();
+      if (isPlaying) {
+        startAutoPlay();
+      }
     });
 
     nextBtn?.addEventListener("click", () => {
       goToSlide(currentIndex + 1);
-      if (isPlaying) startAutoPlay();
+      if (isPlaying) {
+        startAutoPlay();
+      }
     });
 
     tabs.forEach((tab, i) => {
       tab.addEventListener("click", () => {
         goToSlide(i);
-        if (isPlaying) startAutoPlay();
+        if (isPlaying) {
+          startAutoPlay();
+        }
       });
     });
 
@@ -433,11 +523,15 @@ const slides = [
     // Pause on hover & on keyboard focus within carousel for WCAG compliance
     carousel.addEventListener("mouseenter", stopAutoPlay);
     carousel.addEventListener("mouseleave", () => {
-      if (isPlaying) startAutoPlay();
+      if (isPlaying) {
+        startAutoPlay();
+      }
     });
     carousel.addEventListener("focusin", stopAutoPlay);
     carousel.addEventListener("focusout", () => {
-      if (isPlaying) startAutoPlay();
+      if (isPlaying) {
+        startAutoPlay();
+      }
     });
 
     // Keyboard navigation (Arrow keys, Home, End)

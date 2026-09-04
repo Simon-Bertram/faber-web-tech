@@ -4,12 +4,28 @@
   "files": {
     "includes": ["!.astro", "!.wrangler", "!dist", "!drizzle", "!node_modules"]
   },
+  "formatter": {
+    "enabled": true,
+    "formatWithErrors": false
+  },
   "linter": {
+    "enabled": true,
     "rules": {
       "correctness": {
         // Allows Hono/oRPC handlers to discard unused params like (_c, _opts)
         "noUnusedVariables": "off",
         "noUnusedImports": "error"
+      },
+      "preset": "recommended",
+      "nursery": {
+        "useSortedClasses": {
+          "level": "error",
+          "fix": "safe",
+          "options": {
+            "attributes": ["classList", "className", "class"],
+            "functions": ["clsx", "cva", "cn", "twMerge"]
+          }
+        }
       }
     }
   }

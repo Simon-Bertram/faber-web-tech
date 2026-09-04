@@ -9,6 +9,7 @@
   "scripts": {
     "build": "turbo run build",
     "check": "ultracite check",
+    "check:classes": "biome check --only=lint/nursery/useSortedClasses apps packages",
     "check-types": "turbo run check-types",
     "db:generate": "turbo run db:generate -F @faber-web/db --",
     "deploy": "turbo run deploy -F @faber-web/infra --",
@@ -17,6 +18,7 @@
     "dev:server": "turbo run dev -F server --",
     "dev:web": "turbo run dev -F web --",
     "fix": "ultracite fix",
+    "fix:classes": "biome check --write --only=lint/nursery/useSortedClasses apps packages",
     "format": "biome format --write .",
     "lint": "ultracite check"
   },

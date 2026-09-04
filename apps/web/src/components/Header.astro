@@ -28,8 +28,7 @@ const navLinks = [
         F
       </span>
       <span class="font-display tracking-tight text-xl font-bold">
-        FABER<span class="text-(--primary)">.</span
-        ><span
+        FABER<span class="text-(--primary)">.</span><span
           class="font-mono text-xs uppercase tracking-widest text-(--text-muted) font-normal ml-1"
           >TECH</span
         >
@@ -38,14 +37,16 @@ const navLinks = [
 
     <!-- Desktop Navigation Links -->
     <nav aria-label="Main Navigation" class="hidden md:flex items-center gap-6">
-      {navLinks.map((link) => (
+      {
+        navLinks.map((link) => (
           <a
             href={link.to}
-            class="text-sm font-medium text-(--text-secondary) transition-colors hover:text-(--primary) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--primary) rounded py-1 px-1.5"
+            class="rounded px-1.5 py-1 font-medium text-(--text-secondary) text-sm transition-colors hover:text-(--primary) focus-visible:outline-none focus-visible:ring-(--primary) focus-visible:ring-2"
           >
             {link.label}
           </a>
-        ))}
+        ))
+      }
     </nav>
 
     <!-- Header Actions (Theme Toggle & Auth) -->
@@ -64,8 +65,7 @@ const navLinks = [
         <div class="hidden flex items-center gap-3" id="user-menu">
           <span
             class="hidden text-xs font-mono text-(--text-muted) sm:inline"
-            id="user-display"
-          ></span>
+            id="user-display"></span>
           <button
             class="rounded border border-(--border-subtle) bg-(--bg-surface) px-3 py-1.5 text-xs font-medium text-(--text-secondary) transition-colors hover:border-red-500/50 hover:text-red-500 hover:bg-red-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
             id="signout-button"
@@ -98,8 +98,7 @@ const navLinks = [
             d="M4 6h16M4 12h16M4 18h16"
             stroke-linecap="round"
             stroke-linejoin="round"
-            stroke-width="2"
-          ></path>
+            stroke-width="2"></path>
         </svg>
         <!-- Close X SVG -->
         <svg
@@ -114,8 +113,7 @@ const navLinks = [
             d="M6 18L18 6M6 6l12 12"
             stroke-linecap="round"
             stroke-linejoin="round"
-            stroke-width="2"
-          ></path>
+            stroke-width="2"></path>
         </svg>
       </button>
     </div>
@@ -128,14 +126,16 @@ const navLinks = [
     id="mobile-nav"
   >
     <div class="flex flex-col gap-2">
-      {navLinks.map((link) => (
+      {
+        navLinks.map((link) => (
           <a
             href={link.to}
-            class="rounded-md px-3 py-2 text-sm font-medium text-(--text-secondary) hover:bg-(--bg-surface-elevated) hover:text-(--primary) transition-colors"
+            class="rounded-md px-3 py-2 font-medium text-(--text-secondary) text-sm transition-colors hover:bg-(--bg-surface-elevated) hover:text-(--primary)"
           >
             {link.label}
           </a>
-        ))}
+        ))
+      }
     </div>
   </nav>
 </header>
@@ -160,7 +160,7 @@ const navLinks = [
             session.user.name || session.user.email?.split("@")[0] || "User";
         }
       }
-    } catch (_) {
+    } catch {
       // Not logged in
     }
   }
@@ -206,12 +206,13 @@ const navLinks = [
   });
 
   // Close mobile menu when clicking nav link
-  mobileNav?.querySelectorAll("a").forEach((link) => {
+  const navLinks = mobileNav?.querySelectorAll("a") ?? [];
+  for (const link of navLinks) {
     link.addEventListener("click", () => {
       menuBtn?.setAttribute("aria-expanded", "false");
       mobileNav?.classList.add("hidden");
       hamburgerIcon?.classList.remove("hidden");
       closeIcon?.classList.add("hidden");
     });
-  });
+  }
 </script>

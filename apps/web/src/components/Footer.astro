@@ -72,14 +72,14 @@ const footerNavigation = [
       <!-- Navigation Sections -->
       {footerNavigation.map((section) => (
           <div>
-            <h3 class="font-mono text-xs font-semibold uppercase tracking-widest text-(--text-primary) mb-3">
+            <h3 class="mb-3 font-mono font-semibold text-(--text-primary) text-xs uppercase tracking-widest">
               {section.title}
             </h3>
             <ul class="space-y-2 text-xs">
               {section.links.map((link) => (
                 <li>
                   <a
-                    class="hover:text-(--primary) transition-colors"
+                    class="transition-colors hover:text-(--primary)"
                     href={link.href}
                   >
                     {link.label}
