@@ -1,4 +1,6 @@
 ---
+import ChevronRightIcon from "../assets/icons/chevron-right.svg";
+
 // HeroCarousel.astro - WCAG 2.1 AA Accessible Dynamic Slideshow
 const slides = [
   {
@@ -51,12 +53,12 @@ const slides = [
 
 <section
   id="hero-carousel"
-  class="relative overflow-hidden pt-8 pb-16 md:pt-14 md:pb-24 border-b border-[var(--border-subtle)]"
+  class="relative overflow-hidden pt-8 pb-16 md:pt-14 md:pb-24 border-b border-(--border-subtle)"
   aria-roledescription="carousel"
   aria-label="Core Services Showcase"
 >
   <!-- Background Kinetic Light Leaks / Ambient Gradients -->
-  <div class="pointer-events-none absolute -top-40 left-1/2 -z-10 h-[500px] w-[800px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(255,92,0,0.12),transparent_70%)] blur-3xl" aria-hidden="true"></div>
+  <div class="pointer-events-none absolute -top-40 left-1/2 -z-10 h-125 w-200 -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(255,92,0,0.12),transparent_70%)] blur-3xl" aria-hidden="true"></div>
   <div class="pointer-events-none absolute top-1/3 -right-40 -z-10 h-[400px] w-[600px] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(94,53,177,0.12),transparent_70%)] blur-3xl" aria-hidden="true"></div>
 
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -307,9 +309,7 @@ const slides = [
           class="inline-flex h-10 w-10 items-center justify-center rounded border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-secondary)] transition-colors hover:border-[var(--border-hover)] hover:text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]"
           aria-label="Next slide"
         >
-          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-          </svg>
+          <ChevronRightIcon class="h-4 w-4" aria-hidden="true" />
         </button>
       </div>
     </div>

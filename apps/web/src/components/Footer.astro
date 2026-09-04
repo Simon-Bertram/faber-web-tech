@@ -1,125 +1,99 @@
 ---
 // Footer.astro - Semantic Footer with API Status Telemetry
 const currentYear = new Date().getFullYear();
+
+const footerNavigation = [
+  {
+    links: [
+      { href: "/#modern-websites", label: "Modern Websites" },
+      { href: "/#web-apps", label: "Web Applications (SaaS)" },
+      { href: "/#ai-automation", label: "AI & Workflow Automation" },
+    ],
+    title: "Core Services",
+  },
+  {
+    links: [
+      { href: "/dashboard", label: "Client Dashboard" },
+      { href: "/login", label: "Client Login" },
+      { href: "/signup", label: "Register Account" },
+    ],
+    title: "Platform",
+  },
+];
 ---
 
 <footer
-  class="border-t border-[var(--border-subtle)] bg-[var(--bg-canvas)] py-12 text-sm text-[var(--text-secondary)] transition-colors"
+  class="border-t border-(--border-subtle) bg-(--bg-canvas) py-12 text-sm text-(--text-secondary) transition-colors"
 >
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
       <!-- Brand Summary -->
       <div class="md:col-span-2">
         <a
-          class="inline-flex items-center gap-2 font-display text-lg font-bold text-[var(--text-primary)] mb-3"
+          class="inline-flex items-center gap-2 font-display text-lg font-bold text-(--text-primary) mb-3"
           href="/"
         >
           <span
-            class="flex h-7 w-7 items-center justify-center rounded border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] font-mono text-xs font-semibold text-[var(--primary)]"
+            class="flex h-7 w-7 items-center justify-center rounded border border-(--border-subtle) bg-(--bg-surface-elevated) font-mono text-xs font-semibold text-(--primary)"
           >
             F
           </span>
           <span
-            >FABER<span class="text-[var(--primary)]">.</span
+            >FABER<span class="text-(--primary)">.</span
             ><span
-              class="font-mono text-xs text-[var(--text-muted)] font-normal ml-0.5"
+              class="font-mono text-xs text-(--text-muted) font-normal ml-0.5"
               >TECH</span
             ></span
           >
         </a>
-        <p
-          class="text-sm text-[var(--text-muted)] max-w-sm mb-4 leading-relaxed"
-        >
+        <p class="text-sm text-(--text-muted) max-w-sm mb-4 leading-relaxed">
           Modern web tech to boost your business. Delivering high-performance
           websites, scalable web applications, and intelligent AI workflows.
         </p>
 
         <!-- Live Server Health Status -->
         <div
-          class="inline-flex items-center gap-2 rounded border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-3 py-1.5 font-mono text-xs"
+          class="inline-flex items-center gap-2 rounded border border-(--border-subtle) bg-(--bg-surface) px-3 py-1.5 font-mono text-xs"
           id="api-status"
         >
           <div
             class="h-2 w-2 rounded-full bg-amber-500 animate-ping"
             id="footer-status-ping"
           ></div>
-          <span class="text-[var(--text-muted)]">Edge API:</span>
+          <span class="text-(--text-muted)">Edge API:</span>
           <span
-            class="font-semibold text-[var(--text-primary)]"
+            class="font-semibold text-(--text-primary)"
             id="footer-status-text"
             >Checking status...</span
           >
         </div>
       </div>
 
-      <!-- Service Tiers -->
-      <div>
-        <h3
-          class="font-mono text-xs font-semibold uppercase tracking-widest text-[var(--text-primary)] mb-3"
-        >
-          Core Services
-        </h3>
-        <ul class="space-y-2 text-xs">
-          <li>
-            <a
-              class="hover:text-[var(--primary)] transition-colors"
-              href="/#modern-websites"
-              >Modern Websites</a
-            >
-          </li>
-          <li>
-            <a
-              class="hover:text-[var(--primary)] transition-colors"
-              href="/#web-apps"
-              >Web Applications (SaaS)</a
-            >
-          </li>
-          <li>
-            <a
-              class="hover:text-[var(--primary)] transition-colors"
-              href="/#ai-automation"
-              >AI & Workflow Automation</a
-            >
-          </li>
-        </ul>
-      </div>
-
-      <!-- Platform Links -->
-      <div>
-        <h3
-          class="font-mono text-xs font-semibold uppercase tracking-widest text-[var(--text-primary)] mb-3"
-        >
-          Platform
-        </h3>
-        <ul class="space-y-2 text-xs">
-          <li>
-            <a
-              class="hover:text-[var(--primary)] transition-colors"
-              href="/dashboard"
-              >Client Dashboard</a
-            >
-          </li>
-          <li>
-            <a
-              class="hover:text-[var(--primary)] transition-colors"
-              href="/login"
-              >Client Login</a
-            >
-          </li>
-          <li>
-            <a
-              class="hover:text-[var(--primary)] transition-colors"
-              href="/signup"
-              >Register Account</a
-            >
-          </li>
-        </ul>
-      </div>
+      <!-- Navigation Sections -->
+      {footerNavigation.map((section) => (
+          <div>
+            <h3 class="font-mono text-xs font-semibold uppercase tracking-widest text-(--text-primary) mb-3">
+              {section.title}
+            </h3>
+            <ul class="space-y-2 text-xs">
+              {section.links.map((link) => (
+                <li>
+                  <a
+                    class="hover:text-(--primary) transition-colors"
+                    href={link.href}
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
     </div>
 
     <!-- Bottom Bar -->
     <div
-      class="flex flex-col sm:flex-row items-center justify-between border-t border-[var(--border-subtle)] pt-6 text-xs text-[var(--text-muted)] gap-4"
+      class="flex flex-col sm:flex-row items-center justify-between border-t border-(--border-subtle) pt-6 text-xs text-(--text-muted) gap-4"
     >
       <p>&copy; {currentYear} Faber Web Tech. All rights reserved.</p>
       <p class="font-mono text-[11px]">
@@ -143,7 +117,7 @@ const currentYear = new Date().getFullYear();
         statusText.textContent = "Connected (Healthy)";
         statusText.classList.add("text-emerald-500");
       }
-    } catch (_) {
+    } catch {
       if (statusPing && statusText) {
         statusPing.className = "h-2 w-2 rounded-full bg-rose-500";
         statusText.textContent = "Offline";
