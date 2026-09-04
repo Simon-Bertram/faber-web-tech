@@ -1,0 +1,24 @@
+{
+  "name": "@faber-web/auth",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "scripts": {},
+  "dependencies": {
+    "@faber-web/db": "workspace:*",
+    "@faber-web/env": "workspace:*",
+    "better-auth": "catalog:",
+    "dotenv": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@faber-web/config": "workspace:*",
+    "typescript": "catalog:"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "name": "faber-web",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "type": "module",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "check-types": "turbo run check-types",
+    "dev:web": "turbo run dev -F web --",
+    "dev:server": "turbo run dev -F server --",
+    "db:generate": "turbo run db:generate -F @faber-web/db --",
+    "deploy": "turbo run deploy -F @faber-web/infra --",
+    "destroy": "turbo run destroy -F @faber-web/infra --",
+    "check": "ultracite check",
+    "fix": "ultracite fix"
+  },
+  "dependencies": {
+    "@faber-web/env": "workspace:*",
+    "dotenv": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.9",
+    "@cloudflare/workers-types": "catalog:",
+    "@faber-web/config": "workspace:*",
+    "@types/node": "catalog:",
+    "turbo": "^2.10.12",
+    "typescript": "catalog:",
+    "ultracite": "7.10.7"
+  },
+  "packageManager": "pnpm@11.25.0"
+}
