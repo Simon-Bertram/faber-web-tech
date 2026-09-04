@@ -1,0 +1,97 @@
+<!-- CtaBanner.astro - Primary Conversion Trigger Section -->
+<section
+  class="relative overflow-hidden py-16 md:py-24 border-t border-[var(--border-subtle)] bg-[var(--bg-surface)] transition-colors"
+  id="contact"
+>
+  <!-- Subtle Ambient Glow -->
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute -bottom-24 left-1/2 -z-10 h-[350px] w-[600px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(255,92,0,0.15),transparent_70%)] blur-3xl"
+  ></div>
+
+  <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 text-center">
+    <span
+      class="inline-block rounded-full border border-[var(--primary)]/30 bg-[var(--primary-container)] px-3.5 py-1 font-mono text-xs font-semibold text-[var(--primary)] uppercase tracking-widest mb-4"
+    >
+      Get Started Today
+    </span>
+
+    <h2
+      class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[var(--text-primary)] leading-tight mb-4"
+    >
+      Ready to Upgrade to Modern Web Tech?
+    </h2>
+
+    <p class="text-lg text-[var(--text-secondary)] max-w-2xl mx-auto mb-8">
+      Whether you need an ultra-fast marketing website, an interactive
+      full-stack web app, or automated AI workflows, we engineer digital
+      products that give your business an unfair advantage.
+    </p>
+
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+      <a
+        class="inline-flex h-12 w-full sm:w-auto items-center justify-center rounded px-8 text-sm font-semibold uppercase tracking-wider text-white bg-[var(--primary)] shadow-lg transition-all hover:bg-[var(--primary-hover)] hover:shadow-[0_4px_20px_var(--primary-glow)] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]"
+        href="mailto:contact@faber.tech"
+      >
+        <span>Schedule Consultation</span>
+        <svg
+          class="ml-2 h-4 w-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M14 5l7 7m0 0l-7 7m7-7H3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          />
+        </svg>
+      </a>
+
+      <a
+        class="inline-flex h-12 w-full sm:w-auto items-center justify-center rounded border border-[var(--border-subtle)] bg-[var(--bg-canvas)] px-8 text-sm font-semibold uppercase tracking-wider text-[var(--text-primary)] transition-all hover:border-[var(--border-hover)] hover:bg-[var(--bg-surface-elevated)] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]"
+        href="/dashboard"
+      >
+        <span>Explore Client Dashboard</span>
+      </a>
+    </div>
+
+    <div
+      class="mt-8 flex items-center justify-center gap-6 text-xs font-mono text-[var(--text-muted)]"
+    >
+      <span class="flex items-center gap-1.5">
+        <svg
+          class="h-4 w-4 text-emerald-500"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M5 13l4 4L19 7"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          />
+        </svg>
+        Direct Senior Developer Access
+      </span>
+      <span class="flex items-center gap-1.5">
+        <svg
+          class="h-4 w-4 text-emerald-500"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M5 13l4 4L19 7"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          />
+        </svg>
+        Clear Milestones & Pricing
+      </span>
+    </div>
+  </div>
+</section>

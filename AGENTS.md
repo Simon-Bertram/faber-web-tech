@@ -27,7 +27,7 @@ To create a fast, SEO-optimized, modern-looking, and highly responsive web devel
 | `apps/server` | API runtime on Cloudflare Workers (Hono) | Server entry (`src/index.ts`), CORS, Hono route handlers, oRPC OpenAPI fetch handlers, Better-Auth handler |
 | `packages/api` | End-to-end typesafe API definitions (oRPC) | Routers (`src/routers/`), Context (`src/context.ts`), procedure contracts, input/output validation schemas |
 | `packages/auth` | Authentication logic (Better-Auth) | Auth configuration (`src/index.ts`), session definitions, plugins |
-| `packages/db` | Database layer (Drizzle ORM & Cloudflare D1) | Table schemas (`src/schema/`), migrations (`src/migrations/`), client instantiation (`src/index.ts`) |
+| `packages/db` | Database layer (Drizzle ORM & Cloudflare D1) | Table schemas (`src/schema/`), D1 SQL migrations (`migrations/`), Drizzle Kit metadata (`drizzle/`), client instantiation (`src/index.ts`) |
 | `packages/infra` | Infrastructure-as-Code (Alchemy & Cloudflare) | Worker topologies, D1 database definitions, KV namespaces, and environment wiring in `alchemy.run.ts` |
 | `packages/env` | Shared environment validation | Environment schemas and validation logic |
 | `packages/config` | Shared tooling configuration | Shared configs across workspace packages |

@@ -3,23 +3,64 @@ import "../styles/global.css";
 import Header from "../components/Header.astro";
 
 interface Props {
+  description?: string;
   title?: string;
 }
 
-const { title = "faber-web" } = Astro.props;
+const {
+  title = "Faber Web Tech | Modern Web Tech to Boost Your Business",
+  description = "High-performance websites, scalable web applications, and intelligent AI automations engineered to accelerate business growth.",
+} = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en" class="dark">
+<html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="generator" content={Astro.generator} />
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link href="/favicon.svg" rel="icon" type="image/svg+xml">
+    <meta content={Astro.generator} name="generator">
     <title>{title}</title>
+    <meta content={description} name="description">
+
+    <!-- Google Fonts Preconnect -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    >
+
+    <!-- Anti-FOUC Theme Script -->
+    <script is:inline>
+      (() => {
+        try {
+          const stored = localStorage.getItem("theme");
+          const prefersDark = window.matchMedia(
+            "(prefers-color-scheme: dark)"
+          ).matches;
+          const theme =
+            stored === "light" || stored === "dark"
+              ? stored
+              : prefersDark
+                ? "dark"
+                : "light";
+          if (theme === "dark") {
+            document.documentElement.classList.add("dark");
+          } else {
+            document.documentElement.classList.remove("dark");
+          }
+          document.documentElement.dataset.theme = theme;
+        } catch (_) {}
+      })();
+    </script>
   </head>
-  <body class="min-h-screen bg-neutral-950 text-white">
+  <body
+    class="min-h-screen antialiased flex flex-col selection:bg-[#ff5c00] selection:text-white"
+  >
     <Header />
-    <slot />
+    <main class="flex-1 flex flex-col" id="main-content">
+      <slot />
+    </main>
   </body>
 </html>

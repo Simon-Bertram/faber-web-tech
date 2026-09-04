@@ -10,7 +10,7 @@
     }
   },
   "scripts": {
-    "db:generate": "drizzle-kit generate",
+    "db:generate": "drizzle-kit generate && node -e \"const fs=require('fs'); fs.mkdirSync('migrations', {recursive:true}); fs.readdirSync('drizzle').filter(f=>f.endsWith('.sql')).forEach(f=>fs.copyFileSync('drizzle/'+f, 'migrations/'+f));\"",
     "db:migrate:deploy": "drizzle-kit migrate"
   },
   "dependencies": {

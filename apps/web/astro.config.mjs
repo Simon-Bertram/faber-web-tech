@@ -4,7 +4,6 @@ import { defineConfig, envField } from "astro/config";
 
 // https://astro.build/config
 export default defineConfig({
-  output: "server",
   env: {
     schema: {
       PUBLIC_SERVER_URL: envField.string({
@@ -14,6 +13,15 @@ export default defineConfig({
       }),
     },
   },
+  markdown: {
+    shikiConfig: {
+      themes: {
+        dark: "github-dark",
+        light: "github-light",
+      },
+    },
+  },
+  output: "server",
   vite: {
     plugins: [tailwindcss()],
   },

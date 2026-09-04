@@ -1,21 +1,21 @@
 {
   "name": "faber-web",
   "private": true,
+  "type": "module",
   "workspaces": [
     "apps/*",
     "packages/*"
   ],
-  "type": "module",
   "scripts": {
-    "dev": "turbo run dev",
     "build": "turbo run build",
+    "check": "ultracite check",
     "check-types": "turbo run check-types",
-    "dev:web": "turbo run dev -F web --",
-    "dev:server": "turbo run dev -F server --",
     "db:generate": "turbo run db:generate -F @faber-web/db --",
     "deploy": "turbo run deploy -F @faber-web/infra --",
     "destroy": "turbo run destroy -F @faber-web/infra --",
-    "check": "ultracite check",
+    "dev": "turbo run dev",
+    "dev:server": "turbo run dev -F server --",
+    "dev:web": "turbo run dev -F web --",
     "fix": "ultracite fix"
   },
   "dependencies": {

@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "check-types": "astro check",
     "astro": "astro",
+    "check-types": "astro check",
     "dev:bare": "astro dev"
   },
   "dependencies": {

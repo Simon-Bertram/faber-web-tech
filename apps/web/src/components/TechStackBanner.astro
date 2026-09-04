@@ -1,0 +1,45 @@
+---
+// TechStackBanner.astro - Trust & High-Performance Architecture Strip
+const technologies = [
+  { name: "Astro", role: "Edge-First Islands & SSG" },
+  { name: "Cloudflare Workers", role: "Global Edge Runtime" },
+  { name: "Hono", role: "Ultrafast Edge API" },
+  { name: "oRPC", role: "End-to-End Type Safety" },
+  { name: "Drizzle D1", role: "Serverless SQL" },
+  { name: "Better-Auth", role: "Hardened Security" },
+];
+---
+
+<section
+  class="border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] py-8 transition-colors"
+>
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div
+      class="flex flex-col md:flex-row md:items-center justify-between gap-6"
+    >
+      <div class="max-w-xs">
+        <span
+          class="font-mono text-xs font-semibold uppercase tracking-widest text-[var(--primary)]"
+        >
+          Architectural Standard
+        </span>
+        <p class="text-sm font-medium text-[var(--text-secondary)] mt-1">
+          Engineered on zero-bloat, edge-native foundational technologies.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 flex-1">
+        {technologies.map((tech) => (
+          <div class="group rounded border border-[var(--border-subtle)] bg-[var(--bg-canvas)] p-3 text-center transition-all hover:border-[var(--border-hover)] hover:bg-[var(--bg-surface-elevated)]">
+            <div class="font-mono text-xs font-bold text-[var(--text-primary)] group-hover:text-[var(--primary)] transition-colors">
+              {tech.name}
+            </div>
+            <div class="text-[11px] text-[var(--text-muted)] mt-0.5 leading-tight">
+              {tech.role}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
