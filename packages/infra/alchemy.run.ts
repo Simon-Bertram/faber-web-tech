@@ -34,7 +34,7 @@ export default Alchemy.Stack(
   "faber-web",
   {
     providers: Cloudflare.providers(),
-    state: Cloudflare.state(),
+    state: Alchemy.localState(),
   },
   Effect.gen(function* () {
     const serverWorker = yield* server;
