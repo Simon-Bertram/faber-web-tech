@@ -1,6 +1,5 @@
-// @ts-check
 import tailwindcss from "@tailwindcss/vite";
-import { defineConfig, envField } from "astro/config";
+import { defineConfig, envField, fontProviders } from "astro/config";
 
 // https://astro.build/config
 export default defineConfig({
@@ -13,6 +12,29 @@ export default defineConfig({
       }),
     },
   },
+  fonts: [
+    {
+      cssVariable: "--font-inter",
+      fallbacks: ["sans-serif"],
+      name: "Inter",
+      provider: fontProviders.google(),
+      weights: [400, 500, 600, 700],
+    },
+    {
+      cssVariable: "--font-hanken-grotesk",
+      fallbacks: ["sans-serif"],
+      name: "Hanken Grotesk",
+      provider: fontProviders.google(),
+      weights: [500, 600, 700, 800],
+    },
+    {
+      cssVariable: "--font-encode-sans-expanded",
+      fallbacks: ["sans-serif"],
+      name: "Encode Sans Expanded",
+      provider: fontProviders.google(),
+      weights: [400, 500, 600, 700],
+    },
+  ],
   markdown: {
     shikiConfig: {
       themes: {

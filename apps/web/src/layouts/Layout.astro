@@ -1,4 +1,5 @@
 ---
+import { Font } from "astro:assets";
 import "../styles/global.css";
 import Header from "../components/Header.astro";
 
@@ -23,13 +24,10 @@ const {
     <title>{title}</title>
     <meta content={description} name="description">
 
-    <!-- Google Fonts Preconnect -->
-    <link href="https://fonts.googleapis.com" rel="preconnect">
-    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
-    <link
-      href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    >
+    <!-- Astro Self-Hosted Optimized Fonts -->
+    <Font cssVariable="--font-inter" preload />
+    <Font cssVariable="--font-hanken-grotesk" />
+    <Font cssVariable="--font-encode-sans-expanded" />
 
     <!-- Anti-FOUC Theme Script -->
     <script is:inline>

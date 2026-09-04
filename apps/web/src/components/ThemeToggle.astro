@@ -1,7 +1,7 @@
 <!-- Accessible Theme Toggle Component -->
 <button
   aria-label="Toggle light and dark theme"
-  class="relative inline-flex h-10 w-10 items-center justify-center rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-secondary)] transition-all hover:border-[var(--border-hover)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-elevated)] focus-visible:outline-2 focus-visible:outline-[var(--primary)]"
+  class="relative inline-flex h-10 w-10 items-center justify-center rounded-md border border-(--border-subtle) bg-(--bg-surface) text-(--text-secondary) transition-all hover:border-(--border-hover) hover:text-(--text-primary) hover:bg-(--bg-surface-elevated) focus-visible:outline-2 focus-visible:outline-(--primary)"
   id="theme-toggle"
   title="Toggle light and dark theme"
   type="button"
@@ -9,7 +9,7 @@
   <!-- Sun Icon (visible in dark mode) -->
   <svg
     aria-hidden="true"
-    class="hidden h-5 w-5 fill-current text-[#ffb59a] transition-transform duration-200"
+    class="hidden h-5 w-5 fill-current text-(--primary) transition-transform duration-200"
     fill="currentColor"
     id="theme-toggle-sun"
     viewBox="0 0 24 24"

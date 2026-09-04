@@ -39,10 +39,12 @@
     // CRITICAL: Persists local D1 database and Cloudflare state
     "source=wrangler-local-state,target=${containerWorkspaceFolder}/.wrangler,type=volume",
     // CRITICAL: Persists Alchemy infrastructure state
-    "source=alchemy-state,target=${containerWorkspaceFolder}/.alchemy,type=volume"
+    "source=alchemy-state,target=${containerWorkspaceFolder}/.alchemy,type=volume",
+    // Persist Alchemy Configure credentials
+    "source=alchemy-home-config,target=/home/node/.alchemy,type=volume"
   ],
   // Named volumes init as root:root; chown after mounts exist (image USER/chown cannot)
-  "postCreateCommand": "sudo chown -R node:node ${containerWorkspaceFolder}/node_modules ${containerWorkspaceFolder}/.wrangler ${containerWorkspaceFolder}/.alchemy /home/node/.local",
+  "postCreateCommand": "sudo chown -R node:node ${containerWorkspaceFolder}/node_modules ${containerWorkspaceFolder}/.wrangler ${containerWorkspaceFolder}/.alchemy /home/node/.local /home/node/.alchemy",
   "forwardPorts": [4321, 3000],
   "portsAttributes": {
     "4321": {

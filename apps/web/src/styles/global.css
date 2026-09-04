@@ -2,11 +2,13 @@
 
 @theme {
   --font-sans:
-    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-display: "Hanken Grotesk", system-ui, sans-serif;
+    var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    sans-serif;
+  --font-display: var(--font-hanken-grotesk), system-ui, sans-serif;
   --font-mono:
-    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    monospace;
+    var(--font-encode-sans-expanded), ui-monospace, SFMono-Regular, Menlo,
+    Monaco, Consolas, monospace;
+  --font-expanded: var(--font-encode-sans-expanded), sans-serif;
 
   --color-canvas: var(--bg-canvas);
   --color-surface: var(--bg-surface);
