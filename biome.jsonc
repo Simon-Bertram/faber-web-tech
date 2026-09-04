@@ -1,4 +1,23 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-  "extends": ["ultracite/biome/core", "ultracite/biome/astro"]
+  "extends": ["ultracite/biome/core", "ultracite/biome/astro"],
+  "files": {
+    "includes": [
+      "**", // 1. Must include everything first
+      "!.astro", // 2. Then explicitly negate the artifacts/generated folders
+      "!.wrangler",
+      "!dist",
+      "!drizzle",
+      "!node_modules"
+    ]
+  },
+  "linter": {
+    "rules": {
+      "correctness": {
+        // Allows Hono/oRPC handlers to discard unused params like (_c, _opts)
+        "noUnusedVariables": "off",
+        "noUnusedImports": "error"
+      }
+    }
+  }
 }
