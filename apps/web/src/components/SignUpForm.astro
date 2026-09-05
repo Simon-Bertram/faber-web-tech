@@ -1,6 +1,4 @@
----
-import { authClient } from "../lib/auth-client";
----
+<!-- SignUpForm.astro -->
 
 <div class="mx-auto mt-10 w-full max-w-md p-6">
   <h1 class="mb-6 text-center font-bold text-3xl text-white">Create Account</h1>
@@ -106,7 +104,7 @@ import { authClient } from "../lib/auth-client";
           },
         }
       );
-    } catch (error) {
+    } catch {
       formError.textContent = "An unexpected error occurred.";
       formError.classList.remove("hidden");
     } finally {

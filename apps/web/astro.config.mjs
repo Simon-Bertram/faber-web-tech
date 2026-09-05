@@ -44,7 +44,25 @@ export default defineConfig({
     },
   },
   output: "server",
+  // Bind IPv4 loopback so Alchemy's WorkerProxy (workerd) can reach the
+  // Astro/Vite child. Default `localhost` binds ::1 here while the proxy
+  // resolves localhost to 127.0.0.1 → 502 ProxyError / Network connection lost.
+  server: {
+    host: "127.0.0.1",
+  },
   vite: {
+    environments: {
+      astro: {
+        optimizeDeps: {
+          noDiscovery: true,
+        },
+      },
+      ssr: {
+        optimizeDeps: {
+          noDiscovery: true,
+        },
+      },
+    },
     plugins: [tailwindcss()],
   },
 });

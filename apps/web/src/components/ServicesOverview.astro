@@ -244,8 +244,7 @@ const services: ServiceTier[] = [
     </div>
 
     <!-- Service Tiers List -->
-    {
-      services.map((service, index) => {
+    {services.map((service, index) => {
         const styles = accentStyles[service.accent];
         return (
           <div
@@ -375,7 +374,6 @@ const services: ServiceTier[] = [
             </div>
           </div>
         );
-      })
-    }
+      })}
   </div>
 </section>

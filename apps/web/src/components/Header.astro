@@ -1,4 +1,5 @@
 ---
+import BrandLogo from "./BrandLogo.astro";
 import ThemeToggle from "./ThemeToggle.astro";
 
 const navLinks = [
@@ -17,36 +18,18 @@ const navLinks = [
     class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8"
   >
     <!-- Brand Logo -->
-    <a
-      aria-label="Faber Web Tech - Return to Homepage"
-      class="group flex items-center gap-2 text-lg font-bold tracking-tight text-(--text-primary) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--primary) rounded-md py-1 px-1.5"
-      href="/"
-    >
-      <span
-        class="flex h-8 w-8 items-center justify-center rounded border border-(--border-subtle) bg-(--bg-surface-elevated) font-mono text-sm font-semibold text-(--primary) transition-transform group-hover:scale-105"
-      >
-        F
-      </span>
-      <span class="font-display tracking-tight text-xl font-bold">
-        FABER<span class="text-(--primary)">.</span><span
-          class="font-mono text-xs uppercase tracking-widest text-(--text-muted) font-normal ml-1"
-          >TECH</span
-        >
-      </span>
-    </a>
+    <BrandLogo class="py-1 px-1.5" size="md" />
 
     <!-- Desktop Navigation Links -->
     <nav aria-label="Main Navigation" class="hidden md:flex items-center gap-6">
-      {
-        navLinks.map((link) => (
+      {navLinks.map((link) => (
           <a
             href={link.to}
             class="rounded px-1.5 py-1 font-medium text-(--text-secondary) text-sm transition-colors hover:text-(--primary) focus-visible:outline-none focus-visible:ring-(--primary) focus-visible:ring-2"
           >
             {link.label}
           </a>
-        ))
-      }
+        ))}
     </nav>
 
     <!-- Header Actions (Theme Toggle & Auth) -->
@@ -65,7 +48,8 @@ const navLinks = [
         <div class="hidden flex items-center gap-3" id="user-menu">
           <span
             class="hidden text-xs font-mono text-(--text-muted) sm:inline"
-            id="user-display"></span>
+            id="user-display"
+          ></span>
           <button
             class="rounded border border-(--border-subtle) bg-(--bg-surface) px-3 py-1.5 text-xs font-medium text-(--text-secondary) transition-colors hover:border-red-500/50 hover:text-red-500 hover:bg-red-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
             id="signout-button"
@@ -98,7 +82,8 @@ const navLinks = [
             d="M4 6h16M4 12h16M4 18h16"
             stroke-linecap="round"
             stroke-linejoin="round"
-            stroke-width="2"></path>
+            stroke-width="2"
+          ></path>
         </svg>
         <!-- Close X SVG -->
         <svg
@@ -113,7 +98,8 @@ const navLinks = [
             d="M6 18L18 6M6 6l12 12"
             stroke-linecap="round"
             stroke-linejoin="round"
-            stroke-width="2"></path>
+            stroke-width="2"
+          ></path>
         </svg>
       </button>
     </div>
@@ -126,16 +112,14 @@ const navLinks = [
     id="mobile-nav"
   >
     <div class="flex flex-col gap-2">
-      {
-        navLinks.map((link) => (
+      {navLinks.map((link) => (
           <a
             href={link.to}
             class="rounded-md px-3 py-2 font-medium text-(--text-secondary) text-sm transition-colors hover:bg-(--bg-surface-elevated) hover:text-(--primary)"
           >
             {link.label}
           </a>
-        ))
-      }
+        ))}
     </div>
   </nav>
 </header>

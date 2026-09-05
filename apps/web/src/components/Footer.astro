@@ -1,4 +1,6 @@
 ---
+import BrandLogo from "./BrandLogo.astro";
+
 // Footer.astro - Semantic Footer with API Status Telemetry
 const currentYear = new Date().getFullYear();
 
@@ -29,23 +31,7 @@ const footerNavigation = [
     <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
       <!-- Brand Summary -->
       <div class="md:col-span-2">
-        <a
-          class="inline-flex items-center gap-2 font-display text-lg font-bold text-(--text-primary) mb-3"
-          href="/"
-        >
-          <span
-            class="flex h-7 w-7 items-center justify-center rounded border border-(--border-subtle) bg-(--bg-surface-elevated) font-mono text-xs font-semibold text-(--primary)"
-          >
-            F
-          </span>
-          <span
-            >FABER<span class="text-(--primary)">.</span
-            ><span
-              class="font-mono text-xs text-(--text-muted) font-normal ml-0.5"
-              >TECH</span
-            ></span
-          >
-        </a>
+        <BrandLogo class="mb-3" size="sm" />
         <p class="text-sm text-(--text-muted) max-w-sm mb-4 leading-relaxed">
           Modern web tech to boost your business. Delivering high-performance
           websites, scalable web applications, and intelligent AI workflows.

@@ -1,0 +1,37 @@
+---
+interface Props {
+  class?: string;
+  size?: "sm" | "md";
+}
+
+const { class: className = "", size = "md" } = Astro.props;
+
+const badgeSizes = {
+  md: "h-8 w-8 text-sm",
+  sm: "h-7 w-7 text-xs",
+};
+
+const textSizes = {
+  md: "text-xl",
+  sm: "text-lg",
+};
+---
+
+<a
+  aria-label="Faber Web Tech - Return to Homepage"
+  class={`group inline-flex items-center gap-2 font-display font-bold tracking-tight text-(--text-primary) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--primary) rounded-md ${className}`}
+  href="/"
+>
+  <span
+    class={`flex items-center justify-center rounded border border-(--border-subtle) bg-(--bg-surface-elevated) font-mono font-semibold text-(--primary) transition-transform group-hover:scale-105 ${badgeSizes[size]}`}
+  >
+    F
+  </span>
+  <span class={`font-display tracking-tight font-bold ${textSizes[size]}`}>
+    FABER<span class="text-(--primary)">.</span
+    ><span
+      class="ml-1 font-mono text-xs font-normal uppercase tracking-widest text-(--text-muted)"
+      >TECH</span
+    >
+  </span>
+</a>
