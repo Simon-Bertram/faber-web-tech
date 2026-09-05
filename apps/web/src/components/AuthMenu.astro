@@ -1,0 +1,61 @@
+<div class="flex items-center gap-2" id="user-menu-container">
+  <a
+    class="inline-flex items-center justify-center rounded px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-white bg-(--primary) transition-all hover:bg-(--primary-hover) hover:shadow-[0_2px_12px_var(--primary-glow)] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--primary)"
+    href="/login"
+    id="login-link"
+  >
+    Sign In
+  </a>
+
+  <div class="hidden items-center gap-3" id="user-menu">
+    <span
+      class="hidden text-xs font-mono text-(--text-muted) sm:inline"
+      id="user-display"
+    ></span>
+    <button
+      class="rounded border border-(--border-subtle) bg-(--bg-surface) px-3 py-1.5 text-xs font-medium text-(--text-secondary) transition-colors hover:border-red-500/50 hover:text-red-500 hover:bg-red-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+      id="signout-button"
+      type="button"
+    >
+      Sign Out
+    </button>
+  </div>
+</div>
+
+<script>
+  import { authClient } from "../lib/auth-client";
+
+  const loginLink = document.getElementById("login-link");
+  const userMenu = document.getElementById("user-menu");
+  const userDisplay = document.getElementById("user-display");
+  const signOutButton = document.getElementById("signout-button");
+
+  async function checkSession() {
+    try {
+      const { data: session } = await authClient.getSession();
+      if (session?.user) {
+        loginLink?.classList.add("hidden");
+        userMenu?.classList.remove("hidden");
+        userMenu?.classList.add("flex");
+        if (userDisplay) {
+          userDisplay.textContent =
+            session.user.name || session.user.email?.split("@")[0] || "User";
+        }
+      }
+    } catch {
+      // Not logged in
+    }
+  }
+
+  signOutButton?.addEventListener("click", async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          window.location.href = "/";
+        },
+      },
+    });
+  });
+
+  checkSession();
+</script>
