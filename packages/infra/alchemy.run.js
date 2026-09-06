@@ -7,11 +7,9 @@ import * as Effect from "effect/Effect";
 config({ path: "./.env" });
 config({ path: "../../apps/web/.env" });
 config({ path: "../../apps/server/.env" });
-
 export const db = Cloudflare.D1.Database("database", {
   migrations: "../../packages/db/migrations",
 });
-
 export const server = Cloudflare.Worker("server", {
   compatibility: {
     flags: ["nodejs_compat"],
@@ -27,16 +25,11 @@ export const server = Cloudflare.Worker("server", {
   },
   main: "../../apps/server/src/index.ts",
 });
-
-export type ServerEnv = Cloudflare.InferEnv<typeof server>;
-
 const CONTACT_INBOX = "contact@faberwebtech.com";
-
 export const contactEmail = Cloudflare.Email.SendEmail("EMAIL", {
   allowedSenderAddresses: [CONTACT_INBOX],
   destinationAddress: CONTACT_INBOX,
 });
-
 export default Alchemy.Stack(
   "faber-web",
   {
@@ -52,12 +45,11 @@ export default Alchemy.Stack(
       env: {
         EMAIL: contactEmail,
         IMAGES: Cloudflare.Images.Images(),
-        PUBLIC_SERVER_URL: serverWorker.url.as<string>(),
+        PUBLIC_SERVER_URL: serverWorker.url.as(),
         SESSION: Cloudflare.KV.Namespace("session"),
       },
       rootDir: "../../apps/web",
     });
-
     return {
       server: serverWorker.url,
       web: webWorker.url,

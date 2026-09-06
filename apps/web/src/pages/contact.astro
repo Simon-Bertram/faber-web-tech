@@ -1,0 +1,52 @@
+---
+import ContactForm from "../components/contact-form.astro";
+import Footer from "../components/Footer.astro";
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout
+  description="Tell us what you want your website, web app, or AI automation to achieve. Faber Web Tech will reply with a clear next step."
+  title="Contact | Faber Web Tech"
+>
+  <section
+    class="relative overflow-hidden border-(--border-subtle) border-b py-16 md:py-24"
+  >
+    <div
+      aria-hidden="true"
+      class="-translate-x-1/2 pointer-events-none absolute top-0 left-1/2 -z-10 h-87.5 w-150 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(255,92,0,0.12),transparent_70%)] blur-3xl"
+    >
+    </div>
+
+    <div
+      class="mx-auto grid max-w-6xl gap-12 px-4 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,28rem)] lg:gap-16 lg:px-8"
+    >
+      <div>
+        <span
+          class="mb-4 inline-block rounded-full border border-(--primary)/30 bg-(--primary-container) px-3.5 py-1 font-mono font-semibold text-(--primary) text-xs uppercase tracking-widest"
+        >
+          Start a project
+        </span>
+        <h1
+          class="mb-4 font-extrabold text-3xl text-(--text-primary) leading-tight tracking-tight sm:text-4xl lg:text-5xl"
+        >
+          Tell us what you want this project to achieve.
+        </h1>
+        <p
+          class="mb-8 max-w-xl text-(--text-secondary) text-lg leading-relaxed"
+        >
+          Share the outcome you need — a faster marketing site, a product you
+          can ship, or an automation that removes busywork. We’ll come back with
+          a senior-developer view on scope, milestones, and pricing.
+        </p>
+        <ul class="space-y-3 font-mono text-(--text-muted) text-sm">
+          <li>Direct access to the engineer doing the work</li>
+          <li>Clear milestones before any build starts</li>
+        </ul>
+      </div>
+
+      <ContactForm />
+    </div>
+  </section>
+
+  <Footer />
+</Layout>
