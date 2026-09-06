@@ -1,30 +1,48 @@
 ---
-// TechStackBanner.astro - Trust & High-Performance Architecture Strip
-
-import AstroIcon from "apps/web/public/tech-icons/astro.svg";
-import CloudflareIcon from "apps/web/public/tech-icons/cloudflare.svg";
-import HonoIcon from "apps/web/public/tech-icons/hono.svg";
-import NextJSIcon from "apps/web/public/tech-icons/nextjs.svg";
-import ReactIcon from "apps/web/public/tech-icons/react.svg";
-import TailwindIcon from "apps/web/public/tech-icons/tailwindcss.svg";
-
-// import TypeScriptIcon from "public/tech-icons/typescript.svg";
+import AstroIcon from "../../public/tech-icons/astro.svg";
+import BetterAuthIcon from "../../public/tech-icons/better-auth.svg";
+import CloudflareIcon from "../../public/tech-icons/cloudflare.svg";
+import HonoIcon from "../../public/tech-icons/hono.svg";
+import ReactIcon from "../../public/tech-icons/react.svg";
+import TailwindIcon from "../../public/tech-icons/tailwindcss.svg";
 
 const technologies = [
   {
+    Icon: AstroIcon,
     name: "Astro",
     role: "Edge-First Islands & SSG",
     url: "https://astro.build/",
   },
   {
+    Icon: CloudflareIcon,
     name: "Cloudflare Workers",
     role: "Global Edge Runtime",
     url: "https://www.cloudflare.com/products/workers/",
   },
-  { name: "Hono", role: "Ultrafast Edge API", url: "https://hono.dev/" },
-  { name: "oRPC", role: "End-to-End Type Safety", url: "https://orpc.dev/" },
-  { name: "Drizzle D1", role: "Serverless SQL" },
-  { name: "Better-Auth", role: "Hardened Security" },
+  {
+    Icon: HonoIcon,
+    name: "Hono",
+    role: "Ultrafast Edge API",
+    url: "https://hono.dev/",
+  },
+  {
+    Icon: ReactIcon,
+    name: "React",
+    role: "Frontend Framework",
+    url: "https://react.dev/",
+  },
+  {
+    Icon: TailwindIcon,
+    name: "Tailwindcss",
+    role: "CSS Framework",
+    url: "https://tailwindcss.com/",
+  },
+  {
+    Icon: BetterAuthIcon,
+    name: "Better-Auth",
+    role: "Authentication",
+    url: "https://better-auth.com/",
+  },
 ];
 ---
 
@@ -47,16 +65,28 @@ const technologies = [
       </div>
 
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 flex-1">
-        {technologies.map((tech) => (
-            <div class="group rounded border border-(--border-subtle) bg-(--bg-canvas) p-3 text-center transition-all hover:border-(--border-hover) hover:bg-(--bg-surface-elevated)">
+        {
+          technologies.map((tech) => (
+            <a
+              class="group rounded border border-(--border-subtle) bg-(--bg-canvas) p-3 text-center transition-all hover:border-(--border-hover) hover:bg-(--bg-surface-elevated) focus-visible:outline-none focus-visible:ring-(--primary) focus-visible:ring-2"
+              href={tech.url}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              <tech.Icon
+                aria-hidden="true"
+                class="mx-auto m-2.5 h-12 w-12 text-(--text-primary)"
+              />
               <div class="font-bold font-mono text-(--text-primary) text-xs transition-colors group-hover:text-(--primary)">
                 {tech.name}
+                <span class="sr-only"> (opens in a new tab)</span>
               </div>
               <div class="mt-0.5 text-(--text-muted) text-[11px] leading-tight">
                 {tech.role}
               </div>
-            </div>
-          ))}
+            </a>
+          ))
+        }
       </div>
     </div>
   </div>
