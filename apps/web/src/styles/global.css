@@ -72,8 +72,8 @@ html[data-theme="dark"] {
   --primary-hover: #ea5000;
   --primary-container: rgba(255, 92, 0, 0.15);
   --primary-glow: rgba(255, 92, 0, 0.35);
-  --secondary: #7e57c2;
-  --secondary-hover: #9575cd;
+  --secondary: #b39ddb;
+  --secondary-hover: #d1c4e9;
   --secondary-container: rgba(94, 53, 177, 0.22);
   --tertiary: #00dbe9;
   --tertiary-container: rgba(0, 219, 233, 0.15);

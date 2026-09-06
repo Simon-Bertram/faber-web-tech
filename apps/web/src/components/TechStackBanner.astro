@@ -1,10 +1,28 @@
 ---
 // TechStackBanner.astro - Trust & High-Performance Architecture Strip
+
+import AstroIcon from "apps/web/public/tech-icons/astro.svg";
+import CloudflareIcon from "apps/web/public/tech-icons/cloudflare.svg";
+import HonoIcon from "apps/web/public/tech-icons/hono.svg";
+import NextJSIcon from "apps/web/public/tech-icons/nextjs.svg";
+import ReactIcon from "apps/web/public/tech-icons/react.svg";
+import TailwindIcon from "apps/web/public/tech-icons/tailwindcss.svg";
+
+// import TypeScriptIcon from "public/tech-icons/typescript.svg";
+
 const technologies = [
-  { name: "Astro", role: "Edge-First Islands & SSG" },
-  { name: "Cloudflare Workers", role: "Global Edge Runtime" },
-  { name: "Hono", role: "Ultrafast Edge API" },
-  { name: "oRPC", role: "End-to-End Type Safety" },
+  {
+    name: "Astro",
+    role: "Edge-First Islands & SSG",
+    url: "https://astro.build/",
+  },
+  {
+    name: "Cloudflare Workers",
+    role: "Global Edge Runtime",
+    url: "https://www.cloudflare.com/products/workers/",
+  },
+  { name: "Hono", role: "Ultrafast Edge API", url: "https://hono.dev/" },
+  { name: "oRPC", role: "End-to-End Type Safety", url: "https://orpc.dev/" },
   { name: "Drizzle D1", role: "Serverless SQL" },
   { name: "Better-Auth", role: "Hardened Security" },
 ];
@@ -30,15 +48,15 @@ const technologies = [
 
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 flex-1">
         {technologies.map((tech) => (
-          <div class="group rounded border border-(--border-subtle) bg-(--bg-canvas) p-3 text-center transition-all hover:border-(--border-hover) hover:bg-(--bg-surface-elevated)">
-            <div class="font-bold font-mono text-(--text-primary) text-xs transition-colors group-hover:text-(--primary)">
-              {tech.name}
+            <div class="group rounded border border-(--border-subtle) bg-(--bg-canvas) p-3 text-center transition-all hover:border-(--border-hover) hover:bg-(--bg-surface-elevated)">
+              <div class="font-bold font-mono text-(--text-primary) text-xs transition-colors group-hover:text-(--primary)">
+                {tech.name}
+              </div>
+              <div class="mt-0.5 text-(--text-muted) text-[11px] leading-tight">
+                {tech.role}
+              </div>
             </div>
-            <div class="mt-0.5 text-(--text-muted) text-[11px] leading-tight">
-              {tech.role}
-            </div>
-          </div>
-        ))}
+          ))}
       </div>
     </div>
   </div>

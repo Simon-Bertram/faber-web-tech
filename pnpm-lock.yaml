@@ -296,9 +296,6 @@ importers:
       '@faber-web/config':
         specifier: workspace:*
         version: link:../config
-      '@faber-web/infra':
-        specifier: workspace:*
-        version: link:../infra
       '@types/node':
         specifier: 'catalog:'
         version: 26.4.1

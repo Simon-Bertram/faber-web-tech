@@ -28,8 +28,6 @@ export const server = Cloudflare.Worker("server", {
   main: "../../apps/server/src/index.ts",
 });
 
-export type ServerEnv = Cloudflare.InferEnv<typeof server>;
-
 const CONTACT_INBOX = "contact@faberwebtech.com";
 
 export const contactEmail = Cloudflare.Email.SendEmail("EMAIL", {

@@ -23,10 +23,10 @@ const projectTypes = [
 
 const budgets = [
   { label: "Select a range", value: "" },
-  { label: "Under $5k", value: "under-5k" },
-  { label: "$5k–$15k", value: "5k-15k" },
-  { label: "$15k–$40k", value: "15k-40k" },
-  { label: "$40k+", value: "40k-plus" },
+  { label: "Under £5k", value: "under-5k" },
+  { label: "£5k–£15k", value: "5k-15k" },
+  { label: "£15k–£40k", value: "15k-40k" },
+  { label: "£40k+", value: "40k-plus" },
   { label: "Not sure", value: "not-sure" },
 ] as const;
 
@@ -68,7 +68,9 @@ const timelines = [
             Name <span class="text-(--primary)">*</span>
           </label>
           <input
-            aria-describedby={inputErrors.name ? "contact-name-error" : undefined}
+            aria-describedby={
+              inputErrors.name ? "contact-name-error" : undefined
+            }
             aria-invalid={Boolean(inputErrors.name)}
             autocomplete="name"
             class={fieldClass}
@@ -141,9 +143,7 @@ const timelines = [
         </legend>
         <div class="grid gap-2 sm:grid-cols-2">
           {projectTypes.map((option) => (
-            <label
-              class="flex min-h-11 cursor-pointer items-center gap-3 rounded border border-(--border-subtle) bg-(--bg-canvas) px-4 py-2.5 text-(--text-primary) text-sm transition-colors hover:border-(--border-hover) has-[:focus-visible]:ring-(--primary) has-[:focus-visible]:ring-2"
-            >
+            <label class="flex min-h-11 cursor-pointer items-center gap-3 rounded border border-(--border-subtle) bg-(--bg-canvas) px-4 py-2.5 text-(--text-primary) text-sm transition-colors hover:border-(--border-hover) has-[:focus-visible]:ring-(--primary) has-[:focus-visible]:ring-2">
               <input
                 class="h-4 w-4 accent-(--primary)"
                 name="projectType"
@@ -239,7 +239,7 @@ const timelines = [
 
       <div
         aria-hidden="true"
-        class="absolute -left-[9999px] h-0 w-0 overflow-hidden"
+        class="absolute left-[-9999px] h-0 w-0 overflow-hidden"
       >
         <label for="contact-company-website">Company website</label>
         <input

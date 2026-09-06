@@ -1,0 +1,119 @@
+---
+import ChevronRightIcon from "../../assets/icons/chevron-right.svg";
+
+interface Props {
+  slides: { id: string }[];
+}
+
+const { slides } = Astro.props;
+
+const tabLabels: Record<string, string> = {
+  "ai-automation": "AI Automations",
+  "modern-websites": "Websites",
+  "web-apps": "Web Apps",
+};
+---
+
+<!-- Carousel Controls Bar (Arrows, Tabs, and Pause/Play) -->
+<div
+  class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-(--border-subtle) pt-6"
+>
+  <!-- Tablist Indicators for 3 Service Tiers -->
+  <div
+    aria-label="Carousel slide selection"
+    class="flex flex-wrap items-center gap-2"
+    role="tablist"
+  >
+    {slides.map((slide, index) => (
+        <button
+          type="button"
+          role="tab"
+          id={`carousel-tab-${index}`}
+          class={`carousel-tab inline-flex items-center gap-2 rounded px-3 py-1.5 text-xs font-mono transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--primary) ${
+            index === 0
+              ? "border border-(--primary) bg-(--primary-container) text-(--primary) font-bold shadow-sm"
+              : "border border-(--border-subtle) bg-(--bg-surface) text-(--text-muted) hover:text-(--text-primary) hover:border-(--border-hover)"
+          }`}
+          aria-selected={index === 0 ? "true" : "false"}
+          aria-controls={`slide-${index + 1}`}
+          data-target-index={index}
+        >
+          <span class="h-1.5 w-1.5 rounded-full bg-current" />
+          <span>
+            {index + 1}. {tabLabels[slide.id]}
+          </span>
+        </button>
+      ))}
+  </div>
+
+  <!-- Arrow Buttons & Pause/Play Control -->
+  <div class="flex items-center gap-2">
+    <button
+      aria-label="Pause automatic slide rotation"
+      class="inline-flex h-10 w-10 items-center justify-center rounded border border-(--border-subtle) bg-(--bg-surface) text-(--text-secondary) transition-colors hover:border-(--border-hover) hover:text-(--text-primary) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--primary)"
+      id="carousel-pause-play"
+      title="Pause automatic slide rotation"
+      type="button"
+    >
+      <!-- Pause Icon -->
+      <svg
+        aria-hidden="true"
+        class="h-4 w-4"
+        fill="currentColor"
+        id="pause-icon"
+        viewBox="0 0 24 24"
+      >
+        <path
+          clip-rule="evenodd"
+          d="M6.75 5.25a.75.75 0 0 1 .75.75v12a.75.75 0 0 1-1.5 0v-12a.75.75 0 0 1 .75-.75Zm10.5 0a.75.75 0 0 1 .75.75v12a.75.75 0 0 1-1.5 0v-12a.75.75 0 0 1 .75-.75Z"
+          fill-rule="evenodd"
+        ></path>
+      </svg>
+      <!-- Play Icon -->
+      <svg
+        aria-hidden="true"
+        class="hidden h-4 w-4"
+        fill="currentColor"
+        id="play-icon"
+        viewBox="0 0 24 24"
+      >
+        <path
+          clip-rule="evenodd"
+          d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z"
+          fill-rule="evenodd"
+        ></path>
+      </svg>
+    </button>
+
+    <button
+      aria-label="Previous slide"
+      class="inline-flex h-10 w-10 items-center justify-center rounded border border-(--border-subtle) bg-(--bg-surface) text-(--text-secondary) transition-colors hover:border-(--border-hover) hover:text-(--text-primary) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--primary)"
+      id="carousel-prev"
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        class="h-4 w-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M15 19l-7-7 7-7"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+        ></path>
+      </svg>
+    </button>
+
+    <button
+      aria-label="Next slide"
+      class="inline-flex h-10 w-10 items-center justify-center rounded border border-(--border-subtle) bg-(--bg-surface) text-(--text-secondary) transition-colors hover:border-(--border-hover) hover:text-(--text-primary) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--primary)"
+      id="carousel-next"
+      type="button"
+    >
+      <ChevronRightIcon aria-hidden="true" class="h-4 w-4" />
+    </button>
+  </div>
+</div>
