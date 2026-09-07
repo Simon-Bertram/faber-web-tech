@@ -1,10 +1,10 @@
 ---
-import AstroIcon from "../../public/tech-icons/astro.svg";
-import BetterAuthIcon from "../../public/tech-icons/better-auth.svg";
-import CloudflareIcon from "../../public/tech-icons/cloudflare.svg";
-import HonoIcon from "../../public/tech-icons/hono.svg";
-import ReactIcon from "../../public/tech-icons/react.svg";
-import TailwindIcon from "../../public/tech-icons/tailwindcss.svg";
+import AstroIcon from "../assets/tech-icons/astro.svg";
+import BetterAuthIcon from "../assets/tech-icons/better-auth.svg";
+import CloudflareIcon from "../assets/tech-icons/cloudflare.svg";
+import HonoIcon from "../assets/tech-icons/hono.svg";
+import ReactIcon from "../assets/tech-icons/react.svg";
+import TailwindIcon from "../assets/tech-icons/tailwindcss.svg";
 
 const technologies = [
   {
@@ -64,9 +64,8 @@ const technologies = [
         </p>
       </div>
 
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 flex-1">
-        {
-          technologies.map((tech) => (
+      <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3 flex-1">
+        {technologies.map((tech) => (
             <a
               class="group rounded border border-(--border-subtle) bg-(--bg-canvas) p-3 text-center transition-all hover:border-(--border-hover) hover:bg-(--bg-surface-elevated) focus-visible:outline-none focus-visible:ring-(--primary) focus-visible:ring-2"
               href={tech.url}
@@ -77,16 +76,15 @@ const technologies = [
                 aria-hidden="true"
                 class="mx-auto m-2.5 h-12 w-12 text-(--text-primary)"
               />
-              <div class="font-bold font-mono text-(--text-primary) text-xs transition-colors group-hover:text-(--primary)">
+              <div class="font-bold font-mono text-(--text-primary) mb-2 transition-colors group-hover:text-(--primary)">
                 {tech.name}
                 <span class="sr-only"> (opens in a new tab)</span>
               </div>
-              <div class="mt-0.5 text-(--text-muted) text-[11px] leading-tight">
+              <div class="mt-0.5 text-(--text-muted) text-sm leading-tight">
                 {tech.role}
               </div>
             </a>
-          ))
-        }
+          ))}
       </div>
     </div>
   </div>

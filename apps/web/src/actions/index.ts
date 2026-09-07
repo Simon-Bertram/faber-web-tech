@@ -122,7 +122,7 @@ export const server = {
         z.string().trim().min(1, "Please enter your name.").max(120)
       ),
       projectType: formText(
-        z.enum(["website", "web-app", "ai-automation", "not-sure"], {
+        z.enum(["website", "web-app", "ai-automation", "seo-geo", "not-sure"], {
           error: "Please choose a project type.",
         })
       ),

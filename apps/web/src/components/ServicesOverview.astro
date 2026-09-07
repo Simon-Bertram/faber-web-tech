@@ -1,5 +1,5 @@
 ---
-// ServicesOverview.astro - Detailed 3-Tier Value Proposition Breakdown
+// ServicesOverview.astro - Detailed 4-Tier Value Proposition Breakdown
 import CheckIcon from "../assets/icons/check.svg";
 import ChevronRightIcon from "../assets/icons/chevron-right.svg";
 
@@ -23,7 +23,13 @@ interface PipelineStage {
   stage: string;
 }
 
+interface CitationStatus {
+  label: string;
+  value: string;
+}
+
 interface ServiceVisual {
+  citations?: CitationStatus[];
   footnote: string;
   headerBadge: string;
   headerBadgeColor: string;
@@ -31,11 +37,11 @@ interface ServiceVisual {
   metrics?: MetricBenchmark[];
   pipeline?: PipelineStage[];
   topology?: StackTopologyItem[];
-  type: "metrics" | "topology" | "pipeline";
+  type: "metrics" | "topology" | "pipeline" | "citations";
 }
 
 interface ServiceTier {
-  accent: "primary" | "secondary" | "tertiary";
+  accent: "primary" | "secondary" | "tertiary" | "quaternary";
   category: string;
   cta: {
     label: string;
@@ -54,6 +60,11 @@ const accentStyles = {
     badgeBg: "bg-(--primary-container)",
     hoverBorder: "hover:border-(--primary)/50",
     text: "text-(--primary)",
+  },
+  quaternary: {
+    badgeBg: "bg-(--quaternary-container)",
+    hoverBorder: "hover:border-(--quaternary)/50",
+    text: "text-(--quaternary)",
   },
   secondary: {
     badgeBg: "bg-(--secondary-container)",
@@ -213,10 +224,58 @@ const services: ServiceTier[] = [
       type: "pipeline",
     },
   },
+  {
+    accent: "quaternary",
+    category: "Search & AI Visibility",
+    cta: {
+      href: "/contact",
+      label: "Talk about search and AI visibility",
+    },
+    description:
+      "People used to type keywords. Now they ask ChatGPT who to trust. We make sure your business shows up in both places — ranked on Google and named when AI tools give an answer.",
+    features: [
+      {
+        description:
+          'When someone asks AI "who should I hire / buy from?", your page is written so the tool can quote you — not skip you for a competitor who said it more clearly.',
+        title: "Show up in the answer, not just the results:",
+      },
+      {
+        description:
+          "Unique proof — your numbers, case studies, and expert insight — so you get recommended instead of blended into everyone else’s generic advice.",
+        title: "Give AI a reason to pick you:",
+      },
+      {
+        description:
+          "Your name, offer, and details stay consistent across your site and the directories AI checks, so it treats you as the real authority in your field.",
+        title: "Make your business easy to trust:",
+      },
+      {
+        description:
+          "We keep AI search tools able to read your public pages and keep key facts (pricing, services, stats) up to date, so stale information doesn’t get you left out.",
+        title: "Stay visible as search changes:",
+      },
+    ],
+    id: "seo-geo",
+    tierNumber: "04",
+    title: "SEO & GEO: Get Found on Google, Get Recommended by AI",
+    visual: {
+      citations: [
+        { label: "Google", value: "Named in answers" },
+        { label: "ChatGPT", value: "Recommended" },
+        { label: "Perplexity", value: "Named as a source" },
+        { label: "Gemini", value: "Recommended" },
+      ],
+      footnote: "Shown as a trusted answer across search and AI tools.",
+      headerBadge: "AI CITED",
+      headerBadgeColor: "text-(--quaternary)",
+      headerTitle: "VISIBILITY SNAPSHOT",
+      type: "citations",
+    },
+  },
 ];
 ---
 
-<!-- ServicesOverview.astro - Detailed 3-Tier Value Proposition Breakdown -->
+<!-- ServicesOverview.astro - Detailed 4-Tier Value Proposition Breakdown -->
 <section
   class="py-16 md:py-24 bg-(--bg-canvas) transition-colors"
   id="services"
@@ -232,7 +291,7 @@ const services: ServiceTier[] = [
       <h2
         class="text-3xl sm:text-4xl font-extrabold tracking-tight text-(--text-primary)"
       >
-        Three Core Service Tiers. Built for Growth.
+        Four Core Service Tiers. Built for Growth.
       </h2>
       <p
         class="mt-4 text-base sm:text-lg text-(--text-secondary) leading-relaxed"
@@ -361,6 +420,20 @@ const services: ServiceTier[] = [
                               {step.stage}:
                             </span>{" "}
                             {step.description}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                  {service.visual.type === "citations" &&
+                    service.visual.citations && (
+                      <div class="space-y-2 font-mono text-xs text-(--text-secondary)">
+                        {service.visual.citations.map((item) => (
+                          <div class="flex items-center justify-between gap-2 p-2 rounded bg-(--bg-surface-elevated)">
+                            <span>{item.label}</span>
+                            <span class="font-bold text-(--quaternary)">
+                              {item.value}
+                            </span>
                           </div>
                         ))}
                       </div>

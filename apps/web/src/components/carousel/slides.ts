@@ -4,7 +4,7 @@ export interface HeroSlide {
   badgeColor: string;
   description: string;
   id: string;
-  previewType: "architecture" | "automation" | "performance";
+  previewType: "architecture" | "automation" | "performance" | "visibility";
   primaryCtaLink: string;
   primaryCtaText: string;
   secondaryCtaLink: string;
@@ -20,7 +20,7 @@ export const slides: HeroSlide[] = [
     badgeColor:
       "text-[var(--primary)] border-[var(--primary)]/30 bg-[var(--primary-container)]",
     description:
-      "Speed is revenue. We engineer ultra-fast marketing websites with modern static and edge rendering architectures, achieving flawless 100/100 Core Web Vitals, organic search dominance, and maximum conversion rates.",
+      "Speed is revenue. We engineer ultra-fast marketing websites with modern static and edge rendering architectures, achieving flawless 100/100 Core Web Vitals and maximum conversion rates.",
     id: "modern-websites",
     previewType: "performance",
     primaryCtaLink: "/#contact",
@@ -61,5 +61,21 @@ export const slides: HeroSlide[] = [
     secondaryCtaText: "Explore AI Solutions",
     tier: "03 // INTELLIGENCE & AUTOMATION",
     title: "Intelligent Workflows & Custom LLM Systems",
+  },
+  {
+    accentBg: "var(--quaternary-container)",
+    accentColor: "var(--quaternary)",
+    badgeColor:
+      "text-[var(--quaternary)] border-[var(--quaternary)]/30 bg-[var(--quaternary-container)]",
+    description:
+      "Customers now ask ChatGPT, not just Google. We get your business ranked in search and recommended by AI tools like ChatGPT, Perplexity, Gemini, and Google AI Overviews — so the right people find you either way.",
+    id: "seo-geo",
+    previewType: "visibility",
+    primaryCtaLink: "/#contact",
+    primaryCtaText: "Start SEO & GEO",
+    secondaryCtaLink: "/#seo-geo",
+    secondaryCtaText: "Explore Visibility",
+    tier: "04 // SEO & GEO",
+    title: "Get Found by Google — and Recommended by AI",
   },
 ];

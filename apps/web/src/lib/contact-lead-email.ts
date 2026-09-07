@@ -4,6 +4,7 @@ const CONTACT_FROM_NAME = "Faber Web Tech";
 export const projectTypeLabels = {
   "ai-automation": "AI Automation",
   "not-sure": "Not sure yet",
+  "seo-geo": "SEO & GEO",
   "web-app": "Web App",
   website: "Modern Website",
 } as const;

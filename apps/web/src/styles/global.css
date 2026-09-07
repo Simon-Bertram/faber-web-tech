@@ -23,6 +23,7 @@
   --color-brand-orange-hover: var(--primary-hover);
   --color-brand-violet: var(--secondary);
   --color-brand-cyan: var(--tertiary);
+  --color-brand-blue: var(--quaternary);
 }
 
 /* 
@@ -49,6 +50,9 @@ html[data-theme="light"] {
   --secondary-container: #f3effc;
   --tertiary: #00a2ac;
   --tertiary-container: #e0f7f8;
+  --quaternary: #1565c0;
+  --quaternary-hover: #0d47a1;
+  --quaternary-container: #e8f0fe;
   --glass-bg: rgba(255, 255, 255, 0.85);
   --card-shadow:
     0 1px 3px 0 rgba(14, 14, 18, 0.04), 0 1px 2px 0 rgba(14, 14, 18, 0.02);
@@ -77,6 +81,9 @@ html[data-theme="dark"] {
   --secondary-container: rgba(94, 53, 177, 0.22);
   --tertiary: #00dbe9;
   --tertiary-container: rgba(0, 219, 233, 0.15);
+  --quaternary: #90caf9;
+  --quaternary-hover: #bbdefb;
+  --quaternary-container: rgba(21, 101, 192, 0.22);
   --glass-bg: rgba(19, 19, 21, 0.75);
   --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
   --card-shadow-hover:
