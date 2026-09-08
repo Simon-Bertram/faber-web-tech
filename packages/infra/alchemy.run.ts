@@ -44,6 +44,16 @@ function serverEnv(corsOrigin: string) {
   };
 }
 
+const workersLogs = {
+  enabled: true,
+  logs: {
+    enabled: true,
+    headSamplingRate: 1,
+    invocationLogs: true,
+    persist: true,
+  },
+};
+
 const serverWorkerOptions = {
   compatibility: {
     flags: ["nodejs_compat"],
@@ -52,6 +62,7 @@ const serverWorkerOptions = {
     port: 3000,
   },
   main: "../../apps/server/src/index.ts",
+  observability: workersLogs,
 };
 
 const CONTACT_INBOX = "contact@faberwebtech.com";
@@ -97,6 +108,7 @@ export default Alchemy.Stack(
         PUBLIC_SERVER_URL: serverWorker.url.as<string>(),
         SESSION: Cloudflare.KV.Namespace("session"),
       },
+      observability: workersLogs,
       rootDir: "../../apps/web",
     });
 

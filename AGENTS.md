@@ -13,7 +13,7 @@ To create a fast, SEO-optimized, modern-looking, and highly responsive web devel
 - **Database ORM**: Drizzle ORM
 - **Database**: Cloudflare D1
 - **Authentication**: Better-Auth
-- **Observability**: Evlog
+- **Observability**: Evlog (see [docs/logging.md](docs/logging.md))
 
 ---
 
