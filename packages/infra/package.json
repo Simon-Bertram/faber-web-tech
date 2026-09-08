@@ -3,8 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "check-types": "tsc --noEmit",
-    "deploy": "alchemy deploy",
+    "check-types": "tsc --noEmit -p alchemy.tsconfig.json",
+    "deploy": "ALCHEMY_NO_TUI=1 alchemy deploy --yes",
     "destroy": "alchemy destroy",
     "dev": "alchemy dev"
   },

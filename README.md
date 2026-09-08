@@ -66,7 +66,7 @@ cd packages/infra && pnpm exec alchemy deploy --stage production
 
 ### Production origins
 
-- Required after the first deploy: set `CORS_ORIGIN` in `apps/server/.env` to the exact deployed web origin, such as `https://app.example.com`, then deploy the server again.
+`CORS_ORIGIN` is optional for `*.workers.dev` deploys: Alchemy sets it to the web Worker origin automatically. Set `CORS_ORIGIN` in `apps/server/.env` only for a custom domain (a single `https://` origin such as `https://app.example.com`), then redeploy. `http://localhost` is allowed for Alchemy dev.
 
 ## Project Structure
 

@@ -3,33 +3,64 @@ import * as Cloudflare from "alchemy/Cloudflare";
 import { config } from "dotenv";
 import * as Config from "effect/Config";
 import * as Effect from "effect/Effect";
+import { getOrUndefined } from "effect/Option";
 
 config({ path: "./.env" });
 config({ path: "../../apps/web/.env" });
 config({ path: "../../apps/server/.env" });
+
+const LOCAL_DEV_WEB_ORIGIN = "http://localhost:4321";
+
 export const db = Cloudflare.D1.Database("database", {
   migrations: "../../packages/db/migrations",
 });
-export const server = Cloudflare.Worker("server", {
+
+function parseAllowedCorsOrigin(value) {
+  try {
+    const { hostname, origin, protocol } = new URL(value);
+    if (hostname.includes("*")) {
+      return;
+    }
+    if (protocol === "https:") {
+      return origin;
+    }
+    if (
+      protocol === "http:" &&
+      (hostname === "localhost" || hostname === "127.0.0.1")
+    ) {
+      return origin;
+    }
+  } catch {
+    // Ignore values that are not a URL origin.
+  }
+}
+
+function serverEnv(corsOrigin) {
+  return {
+    BETTER_AUTH_SECRET: Config.redacted("BETTER_AUTH_SECRET"),
+    BETTER_AUTH_URL: Cloudflare.Worker.URL,
+    CORS_ORIGIN: corsOrigin,
+    DB: db,
+  };
+}
+
+const serverWorkerOptions = {
   compatibility: {
     flags: ["nodejs_compat"],
   },
   dev: {
     port: 3000,
   },
-  env: {
-    BETTER_AUTH_SECRET: Config.redacted("BETTER_AUTH_SECRET"),
-    BETTER_AUTH_URL: Cloudflare.Worker.URL,
-    CORS_ORIGIN: Config.string("CORS_ORIGIN"),
-    DB: db,
-  },
   main: "../../apps/server/src/index.ts",
-});
+};
+
 const CONTACT_INBOX = "contact@faberwebtech.com";
+
 export const contactEmail = Cloudflare.Email.SendEmail("EMAIL", {
   allowedSenderAddresses: [CONTACT_INBOX],
   destinationAddress: CONTACT_INBOX,
 });
+
 export default Alchemy.Stack(
   "faber-web",
   {
@@ -37,7 +68,23 @@ export default Alchemy.Stack(
     state: Alchemy.localState(),
   },
   Effect.gen(function* () {
-    const serverWorker = yield* server;
+    yield* db;
+    const configuredCorsOrigin = getOrUndefined(
+      yield* Config.option(Config.string("CORS_ORIGIN"))
+    );
+    const corsOriginOverride =
+      configuredCorsOrigin === undefined
+        ? undefined
+        : parseAllowedCorsOrigin(configuredCorsOrigin);
+    const httpsCorsOriginOverride =
+      corsOriginOverride === undefined ||
+      !corsOriginOverride.startsWith("https:")
+        ? undefined
+        : corsOriginOverride;
+    const serverWorker = yield* Cloudflare.Worker("server", {
+      ...serverWorkerOptions,
+      env: serverEnv(corsOriginOverride ?? LOCAL_DEV_WEB_ORIGIN),
+    });
     const webWorker = yield* Cloudflare.Website.Astro("web", {
       dev: {
         port: 4321,
@@ -50,6 +97,15 @@ export default Alchemy.Stack(
       },
       rootDir: "../../apps/web",
     });
+    if (httpsCorsOriginOverride === undefined) {
+      yield* Cloudflare.Worker("server", {
+        ...serverWorkerOptions,
+        env: {
+          ...serverEnv(LOCAL_DEV_WEB_ORIGIN),
+          CORS_ORIGIN: webWorker.url.as(),
+        },
+      });
+    }
     return {
       server: serverWorker.url,
       web: webWorker.url,

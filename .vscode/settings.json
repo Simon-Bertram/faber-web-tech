@@ -5,6 +5,12 @@
   "emmet.showExpandedAbbreviation": "never",
   "js/ts.tsdk.path": "node_modules/typescript/lib",
   "js/ts.tsdk.promptToUseWorkspaceVersion": true,
+  "js/ts.tsserver.maxMemory": 8192,
+  "typescript.tsserver.maxTsServerMemory": 8192,
+  "js/ts.tsc.autoDetect": "off",
+  "typescript.tsc.autoDetect": "off",
+  "npm.autoDetect": "off",
+  "task.autoDetect": "off",
   "css.lint.unknownAtRules": "ignore",
   "[astro]": {
     "editor.defaultFormatter": "astro-build.astro-vscode"

@@ -4,6 +4,16 @@ import { env } from "@faber-web/env/server";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 
+function trustedCorsOrigins(): string[] {
+  try {
+    const { origin } = new URL(env.CORS_ORIGIN);
+    return [origin];
+  } catch {
+    // Invalid CORS_ORIGIN is not a URL origin.
+    return [];
+  }
+}
+
 export function createAuth() {
   const db = createDb();
 
@@ -38,6 +48,6 @@ export function createAuth() {
     //   },
     // },
     secret: env.BETTER_AUTH_SECRET,
-    trustedOrigins: [env.CORS_ORIGIN],
+    trustedOrigins: trustedCorsOrigins(),
   });
 }

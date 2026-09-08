@@ -16,6 +16,15 @@ import { type EvlogVariables, evlog } from "evlog/hono";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 
+function allowedCorsOrigin(): string | undefined {
+  try {
+    const { origin } = new URL(env.CORS_ORIGIN);
+    return origin;
+  } catch {
+    // Invalid CORS_ORIGIN is not a URL origin.
+  }
+}
+
 initLogger({
   env: { service: "faber-web-server" },
 });
@@ -41,7 +50,10 @@ app.use(
     allowHeaders: ["Content-Type", "Authorization"],
     allowMethods: ["GET", "POST", "OPTIONS"],
     credentials: true,
-    origin: env.CORS_ORIGIN,
+    origin: (origin) => {
+      const allowed = allowedCorsOrigin();
+      return origin === allowed ? origin : undefined;
+    },
   })
 );
 
