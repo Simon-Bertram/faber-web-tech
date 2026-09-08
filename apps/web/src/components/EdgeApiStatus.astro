@@ -1,0 +1,39 @@
+<div
+  class="inline-flex items-center gap-2 rounded border border-(--border-subtle) bg-(--bg-surface) px-3 py-1.5 font-mono text-xs"
+  id="api-status"
+>
+  <div
+    class="h-2 w-2 rounded-full bg-amber-500 animate-ping"
+    id="footer-status-ping"
+  ></div>
+  <span class="text-(--text-muted)">Edge API:</span>
+  <span class="font-semibold text-(--text-primary)" id="footer-status-text"
+    >Checking status...</span
+  >
+</div>
+
+<script>
+  import { orpc } from "../lib/orpc";
+
+  const statusPing = document.getElementById("footer-status-ping");
+  const statusText = document.getElementById("footer-status-text");
+
+  async function checkHealth() {
+    try {
+      await orpc.healthCheck();
+      if (statusPing && statusText) {
+        statusPing.className = "h-2 w-2 rounded-full bg-emerald-500";
+        statusText.textContent = "Connected (Healthy)";
+        statusText.classList.add("text-emerald-500");
+      }
+    } catch {
+      if (statusPing && statusText) {
+        statusPing.className = "h-2 w-2 rounded-full bg-rose-500";
+        statusText.textContent = "Offline";
+        statusText.classList.add("text-rose-500");
+      }
+    }
+  }
+
+  checkHealth();
+</script>

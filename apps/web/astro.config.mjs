@@ -17,21 +17,57 @@ export default defineConfig({
       cssVariable: "--font-inter",
       fallbacks: ["sans-serif"],
       name: "Inter",
-      provider: fontProviders.google(),
-      weights: [400, 500, 600, 700],
+      options: {
+        variants: [
+          {
+            src: ["./src/assets/fonts/Inter/Inter-VariableFont_opsz,wght.ttf"],
+            style: "normal",
+            weight: "100 900",
+          },
+        ],
+      },
+      provider: fontProviders.local(),
     },
     {
       cssVariable: "--font-hanken-grotesk",
       fallbacks: ["sans-serif"],
       name: "Hanken Grotesk",
-      provider: fontProviders.google(),
-      weights: [500, 600, 700, 800],
+      options: {
+        variants: [
+          {
+            src: [
+              "./src/assets/fonts/Hanken_Grotesk/HankenGrotesk-VariableFont_wght.ttf",
+            ],
+            style: "normal",
+            weight: "100 900",
+          },
+        ],
+      },
+      provider: fontProviders.local(),
+    },
+    {
+      cssVariable: "--font-playfair",
+      fallbacks: ["serif"],
+      name: "Playfair Display",
+      options: {
+        variants: [
+          {
+            src: [
+              "./src/assets/fonts/Playfair_Display/PlayfairDisplay-VariableFont_wght.ttf",
+            ],
+            style: "normal",
+            weight: "400 900",
+          },
+        ],
+      },
+      provider: fontProviders.local(),
     },
     {
       cssVariable: "--font-encode-sans-expanded",
       fallbacks: ["sans-serif"],
       name: "Encode Sans Expanded",
       provider: fontProviders.google(),
+      styles: ["normal"],
       weights: [400, 500, 600, 700],
     },
   ],
