@@ -35,8 +35,16 @@ function parseAllowedCorsOrigin(value) {
   }
 }
 
+function axiomEnv() {
+  return {
+    AXIOM_API_KEY: Config.redacted("AXIOM_API_KEY"),
+    AXIOM_DATASET: Config.string("AXIOM_DATASET"),
+  };
+}
+
 function serverEnv(corsOrigin) {
   return {
+    ...axiomEnv(),
     BETTER_AUTH_SECRET: Config.redacted("BETTER_AUTH_SECRET"),
     BETTER_AUTH_URL: Cloudflare.Worker.URL,
     CORS_ORIGIN: corsOrigin,
@@ -90,6 +98,7 @@ export default Alchemy.Stack(
         port: 4321,
       },
       env: {
+        ...axiomEnv(),
         EMAIL: contactEmail,
         IMAGES: Cloudflare.Images.Images(),
         PUBLIC_SERVER_URL: serverWorker.url.as(),

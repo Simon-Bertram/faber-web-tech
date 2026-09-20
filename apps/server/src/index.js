@@ -1,12 +1,14 @@
 import { createContext } from "@faber-web/api/context";
 import { appRouter } from "@faber-web/api/routers/index";
 import { createAuth } from "@faber-web/auth";
+import { env } from "@faber-web/env/server";
 import { OpenAPIHandler } from "@orpc/openapi/fetch";
 import { OpenAPIReferencePlugin } from "@orpc/openapi/plugins";
 import { onError } from "@orpc/server";
 import { RPCHandler } from "@orpc/server/fetch";
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
 import { initLogger } from "evlog";
+import { createAxiomDrain } from "evlog/axiom";
 import { createAuthMiddleware } from "evlog/better-auth";
 import { evlog } from "evlog/hono";
 import { Hono } from "hono";
@@ -39,6 +41,14 @@ function isNoisySuccess(path, status) {
   }
   return isGetSessionPath(path) || isHealthCheckPath(path);
 }
+function createOptionalAxiomDrain() {
+  const apiKey = env.AXIOM_API_KEY;
+  const dataset = env.AXIOM_DATASET;
+  if (!(apiKey && dataset)) {
+    return;
+  }
+  return createAxiomDrain({ apiKey, dataset });
+}
 initLogger({
   env: { service: "faber-web-server" },
   pretty: false,
@@ -49,6 +59,7 @@ initLogger({
 const app = new Hono();
 app.use(
   evlog({
+    drain: createOptionalAxiomDrain(),
     keep: (ctx) => {
       const path = ctx.path ?? "";
       if (isNoisySuccess(path, ctx.status)) {

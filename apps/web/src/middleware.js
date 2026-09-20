@@ -1,9 +1,20 @@
 import { defineMiddleware } from "astro:middleware";
+import { env, waitUntil } from "cloudflare:workers";
 import { createRequestLogger, initLogger } from "evlog";
+import { createAxiomDrain } from "evlog/axiom";
 
 const CRAWLER_USER_AGENT =
   /Googlebot|Bingbot|DuckDuckBot|Baiduspider|YandexBot|Slurp|facebookexternalhit|Applebot|Amazonbot|GPTBot|ChatGPT-User|ClaudeBot|anthropic-ai|Bytespider|CCBot|PerplexityBot|Diffbot/i;
+function createOptionalAxiomDrain() {
+  const apiKey = env.AXIOM_API_KEY;
+  const dataset = env.AXIOM_DATASET;
+  if (!(apiKey && dataset)) {
+    return;
+  }
+  return createAxiomDrain({ apiKey, dataset });
+}
 initLogger({
+  drain: createOptionalAxiomDrain(),
   env: { service: "faber-web-web" },
   pretty: import.meta.env.DEV,
 });
@@ -39,6 +50,7 @@ export const onRequest = defineMiddleware(async ({ request, locals }, next) => {
   const log = createRequestLogger({
     method: request.method,
     path: url.pathname,
+    waitUntil,
   });
   locals.log = log;
   try {

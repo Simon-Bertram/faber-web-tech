@@ -21,6 +21,8 @@ declare module "cloudflare:workers" {
   // biome-ignore lint/style/noNamespace: Cloudflare Env uses declaration merging
   namespace Cloudflare {
     interface Env {
+      AXIOM_API_KEY: string;
+      AXIOM_DATASET: string;
       EMAIL: SendEmail;
     }
   }
