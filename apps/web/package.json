@@ -12,7 +12,7 @@
     "@faber-web/api": "workspace:*",
     "@faber-web/env": "workspace:*",
     "@orpc/client": "catalog:",
-    "astro": "^7.1.5",
+    "astro": "^7.3.3",
     "better-auth": "catalog:",
     "dotenv": "catalog:",
     "evlog": "catalog:",
