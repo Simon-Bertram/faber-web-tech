@@ -1,4 +1,5 @@
 import { ActionError, defineAction } from "astro:actions";
+import { env } from "cloudflare:workers";
 import { z } from "astro/zod";
 import {
   buildContactLeadEmail,
@@ -8,8 +9,8 @@ import {
 
 const SEND_FAILED_MESSAGE = "Unable to send your message. Please try again.";
 
-function getEmailBinding(locals: App.Locals): SendEmail | undefined {
-  return locals.runtime?.env.EMAIL;
+function getEmailBinding(): SendEmail | undefined {
+  return env.EMAIL;
 }
 
 function formText<Schema extends z.ZodType>(schema: Schema) {
@@ -42,7 +43,7 @@ export const server = {
         return { submitted: true as const };
       }
 
-      const email = getEmailBinding(context.locals);
+      const email = getEmailBinding();
 
       if (!email) {
         log.set({

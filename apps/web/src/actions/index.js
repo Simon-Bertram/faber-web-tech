@@ -1,4 +1,5 @@
 import { ActionError, defineAction } from "astro:actions";
+import { env } from "cloudflare:workers";
 import { z } from "astro/zod";
 import {
   buildContactLeadEmail,
@@ -7,8 +8,8 @@ import {
 } from "../lib/contact-lead-email";
 
 const SEND_FAILED_MESSAGE = "Unable to send your message. Please try again.";
-function getEmailBinding(locals) {
-  return locals.runtime?.env.EMAIL;
+function getEmailBinding() {
+  return env.EMAIL;
 }
 function formText(schema) {
   return z.preprocess(
@@ -35,7 +36,7 @@ export const server = {
         });
         return { submitted: true };
       }
-      const email = getEmailBinding(context.locals);
+      const email = getEmailBinding();
       if (!email) {
         log.set({
           action: "contact.submit",
@@ -110,7 +111,7 @@ export const server = {
         z.string().trim().min(1, "Please enter your name.").max(120)
       ),
       projectType: formText(
-        z.enum(["website", "web-app", "ai-automation", "not-sure"], {
+        z.enum(["website", "web-app", "ai-automation", "seo-geo", "not-sure"], {
           error: "Please choose a project type.",
         })
       ),

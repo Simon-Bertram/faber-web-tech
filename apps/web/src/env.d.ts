@@ -8,11 +8,6 @@ declare global {
   namespace App {
     interface Locals {
       log: RequestLogger;
-      runtime?: {
-        env: {
-          EMAIL: SendEmail;
-        };
-      };
     }
   }
 }
