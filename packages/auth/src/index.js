@@ -5,13 +5,32 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 
 function trustedCorsOrigins(corsOrigin) {
-  try {
-    const { origin } = new URL(corsOrigin);
-    return [origin];
-  } catch {
-    // Invalid CORS_ORIGIN is not a URL origin.
-    return [];
+  const origins = [];
+  for (const part of corsOrigin.split(",")) {
+    const value = part.trim();
+    if (value.length === 0) {
+      continue;
+    }
+    try {
+      const { hostname, origin, protocol } = new URL(value);
+      if (hostname.includes("*")) {
+        continue;
+      }
+      if (protocol === "https:") {
+        origins.push(origin);
+        continue;
+      }
+      if (
+        protocol === "http:" &&
+        (hostname === "localhost" || hostname === "127.0.0.1")
+      ) {
+        origins.push(origin);
+      }
+    } catch {
+      // Skip values that are not a URL origin.
+    }
   }
+  return origins;
 }
 
 export function createAuth(bindings = env) {

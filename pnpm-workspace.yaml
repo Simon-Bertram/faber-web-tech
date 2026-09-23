@@ -11,11 +11,11 @@ catalog:
   zod: ^4.6.5
   typescript: ^6.0.3
   "@types/node": ^26.6.2
-  "@cloudflare/workers-types": ^5.20260919.1
+  "@cloudflare/workers-types": ^5.20260922.1
   hono: ^4.13.8
   "@orpc/server": ^1.15.2
   "@orpc/openapi": ^1.15.2
   "@orpc/zod": ^1.15.2
   better-auth: 1.7.5
   evlog: ^2.29.0
-  "@orpc/client": ^1.15.2
+  "@orpc/client": ^1.15.3

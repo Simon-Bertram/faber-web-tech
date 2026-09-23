@@ -10,6 +10,10 @@ config({ path: "../../apps/web/.env" });
 config({ path: "../../apps/server/.env" });
 
 const LOCAL_DEV_WEB_ORIGIN = "http://localhost:4321";
+const PRODUCTION_SITE_DOMAINS = ["faberwebtech.com", "www.faberwebtech.com"];
+const PRODUCTION_SITE_ORIGINS = PRODUCTION_SITE_DOMAINS.map(
+  (domain) => `https://${domain}`
+).join(",");
 
 export const db = Cloudflare.D1.Database("database", {
   migrations: "../../packages/db/migrations",
@@ -87,6 +91,21 @@ export default Alchemy.Stack(
     state: Alchemy.localState(),
   },
   Effect.gen(function* () {
+    const { stage } = yield* Alchemy.Stack;
+    const isProduction = stage === "production";
+    const productionServerName = isProduction
+      ? { name: "faber-web-server" }
+      : {};
+    const productionWebName = isProduction ? { name: "faber-web-node" } : {};
+    const productionSiteDomain = isProduction
+      ? {
+          domain: {
+            aliases: ["www.faberwebtech.com"],
+            name: "faberwebtech.com",
+          },
+        }
+      : {};
+
     yield* db;
 
     const configuredCorsOrigin = getOrUndefined(
@@ -104,9 +123,12 @@ export default Alchemy.Stack(
 
     const serverWorker = yield* Cloudflare.Worker("server", {
       ...serverWorkerOptions,
+      ...productionServerName,
       env: serverEnv(corsOriginOverride ?? LOCAL_DEV_WEB_ORIGIN),
     });
     const webWorker = yield* Cloudflare.Website.Astro("web", {
+      ...productionWebName,
+      ...productionSiteDomain,
       dev: {
         port: 4321,
       },
@@ -124,9 +146,12 @@ export default Alchemy.Stack(
     if (httpsCorsOriginOverride === undefined) {
       yield* Cloudflare.Worker("server", {
         ...serverWorkerOptions,
+        ...productionServerName,
         env: {
           ...serverEnv(LOCAL_DEV_WEB_ORIGIN),
-          CORS_ORIGIN: webWorker.url.as<string>(),
+          CORS_ORIGIN: isProduction
+            ? PRODUCTION_SITE_ORIGINS
+            : webWorker.url.as<string>(),
         },
       });
     }

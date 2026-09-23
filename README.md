@@ -58,15 +58,20 @@ The API is running at [http://localhost:3000](http://localhost:3000).
 
 `alchemy login --configure` stores the selected Cloudflare, Neon, PlanetScale, and/or Prisma provider profiles under `~/.alchemy`; no provider-specific setup command is required by this scaffold.
 
-Deploys are staged and default to a personal `dev_<username>` stage. For production, run the deploy with an explicit stage from `packages/infra`:
+`pnpm run deploy` uses `--stage production`. Cloudflare script names are pinned:
 
-```bash
-cd packages/infra && pnpm exec alchemy deploy --stage production
-```
+- Site: `faber-web-node` on `https://faberwebtech.com` and `https://www.faberwebtech.com` (workers.dev stays enabled)
+- API: `faber-web-server` → `https://faber-web-server.<account>.workers.dev`
+
+Before the first deploy that attaches `www`, delete the existing **www** CNAME (content `faberwebtech.com`, proxied) in the `faberwebtech.com` DNS zone. Alchemy creates the custom-domain DNS records and certificate. `pnpm run dev` does not claim those hostnames.
+
+Leftover `*-dev-node-*` scripts are not deleted by deploy; remove them in the dashboard if you no longer need them.
+
+`pnpm run dev` uses a personal `dev_<username>` stage and **does not** use those production script names, so local Alchemy cannot replace the live Workers. Do not pass `--stage production` to `alchemy dev` or `pnpm run destroy`.
 
 ### Production origins
 
-`CORS_ORIGIN` is optional for `*.workers.dev` deploys: Alchemy sets it to the web Worker origin automatically. Set `CORS_ORIGIN` in `apps/server/.env` only for a custom domain (a single `https://` origin such as `https://app.example.com`), then redeploy. `http://localhost` is allowed for Alchemy dev.
+Leave `CORS_ORIGIN` unset. Production deploy allows `https://faberwebtech.com` and `https://www.faberwebtech.com`. Set `CORS_ORIGIN` in `apps/server/.env` only to replace that list with one `https://` origin, then redeploy. `http://localhost` is allowed for Alchemy dev.
 
 ## Project Structure
 

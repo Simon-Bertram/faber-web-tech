@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "check-types": "tsc --noEmit -p alchemy.tsconfig.json",
-    "deploy": "ALCHEMY_NO_TUI=1 alchemy deploy --yes",
+    "deploy": "ALCHEMY_NO_TUI=1 alchemy deploy --yes --stage production",
     "destroy": "alchemy destroy",
     "dev": "alchemy dev"
   },

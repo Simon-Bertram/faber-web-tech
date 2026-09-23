@@ -17,20 +17,52 @@ import { type EvlogVariables, evlog } from "evlog/hono";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 
+function allowedCorsOrigins(corsOrigin: string | undefined): string[] {
+  if (!corsOrigin) {
+    return [];
+  }
+
+  const origins: string[] = [];
+  for (const part of corsOrigin.split(",")) {
+    const value = part.trim();
+    if (value.length === 0) {
+      continue;
+    }
+
+    try {
+      const { hostname, origin, protocol } = new URL(value);
+      if (hostname.includes("*")) {
+        continue;
+      }
+      if (protocol === "https:") {
+        origins.push(origin);
+        continue;
+      }
+      if (
+        protocol === "http:" &&
+        (hostname === "localhost" || hostname === "127.0.0.1")
+      ) {
+        origins.push(origin);
+      }
+    } catch {
+      // Skip values that are not a URL origin.
+    }
+  }
+
+  return origins;
+}
+
 function corsOriginFromBinding(
   corsOrigin: string | undefined,
   requestOrigin: string | undefined
 ): string | undefined {
-  if (!(requestOrigin && corsOrigin)) {
+  if (!requestOrigin) {
     return;
   }
 
-  try {
-    const { origin } = new URL(corsOrigin);
-    return requestOrigin === origin ? requestOrigin : undefined;
-  } catch {
-    // Invalid CORS_ORIGIN is not a URL origin.
-  }
+  return allowedCorsOrigins(corsOrigin).includes(requestOrigin)
+    ? requestOrigin
+    : undefined;
 }
 
 function isGetSessionPath(path: string): boolean {
