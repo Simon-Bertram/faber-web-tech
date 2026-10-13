@@ -1,6 +1,9 @@
 packages:
   - apps/*
   - packages/*
+# Pin to match effect@4.0.0-rc.112; ^4.0.0-rc.112 resolves incompatible 4.0.3.
+overrides:
+  "@effect/platform-node-shared": "4.0.0-rc.112"
 allowBuilds:
   esbuild: true
   sharp: true
@@ -8,14 +11,14 @@ allowBuilds:
   workerd: true
 catalog:
   dotenv: ^17.4.2
-  zod: ^4.6.5
+  zod: ^4.6.6
   typescript: ^6.0.3
-  "@types/node": ^26.6.2
-  "@cloudflare/workers-types": ^5.20260922.1
-  hono: ^4.13.8
-  "@orpc/server": ^1.15.2
-  "@orpc/openapi": ^1.15.2
-  "@orpc/zod": ^1.15.2
+  "@types/node": ^26.6.5
+  "@cloudflare/workers-types": ^5.20261012.1
+  hono: ^4.13.13
+  "@orpc/server": ^1.15.6
+  "@orpc/openapi": ^1.15.6
+  "@orpc/zod": ^1.15.6
   better-auth: 1.7.5
-  evlog: ^2.29.0
-  "@orpc/client": ^1.15.3
+  evlog: ^2.31.0
+  "@orpc/client": ^1.15.6
