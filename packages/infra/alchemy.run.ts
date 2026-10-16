@@ -4,6 +4,7 @@ import { config } from "dotenv";
 import * as Config from "effect/Config";
 import * as Effect from "effect/Effect";
 import { getOrUndefined } from "effect/Option";
+import * as Redacted from "effect/Redacted";
 
 config({ path: "./.env" });
 config({ path: "../../apps/web/.env" });
@@ -40,16 +41,20 @@ function parseAllowedCorsOrigin(value: string): string | undefined {
 }
 
 function axiomEnv() {
+  // Effect 4 treats empty .env values as missing; allow unset/empty so the
+  // Axiom drain can no-op until real credentials are provided.
   return {
-    AXIOM_API_KEY: Config.redacted("AXIOM_API_KEY"),
-    AXIOM_DATASET: Config.string("AXIOM_DATASET"),
+    AXIOM_API_KEY: Config.Redacted("AXIOM_API_KEY").pipe(
+      Config.withDefault(Redacted.make(""))
+    ),
+    AXIOM_DATASET: Config.String("AXIOM_DATASET").pipe(Config.withDefault("")),
   };
 }
 
 function serverEnv(corsOrigin: string) {
   return {
     ...axiomEnv(),
-    BETTER_AUTH_SECRET: Config.redacted("BETTER_AUTH_SECRET"),
+    BETTER_AUTH_SECRET: Config.Redacted("BETTER_AUTH_SECRET"),
     BETTER_AUTH_URL: Cloudflare.Worker.URL,
     CORS_ORIGIN: corsOrigin,
     DB: db,
@@ -81,7 +86,6 @@ const CONTACT_INBOX = "contact@faberwebtech.com";
 
 export const contactEmail = Cloudflare.Email.SendEmail("EMAIL", {
   allowedSenderAddresses: [CONTACT_INBOX],
-  destinationAddress: CONTACT_INBOX,
 });
 
 export default Alchemy.Stack(
@@ -109,7 +113,7 @@ export default Alchemy.Stack(
     yield* db;
 
     const configuredCorsOrigin = getOrUndefined(
-      yield* Config.option(Config.string("CORS_ORIGIN"))
+      yield* Config.option(Config.String("CORS_ORIGIN"))
     );
     const corsOriginOverride =
       configuredCorsOrigin === undefined

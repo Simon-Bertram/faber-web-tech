@@ -1,0 +1,323 @@
+---
+const guarantees = [
+  "Sub-1 Second Load Times",
+  "WCAG Accessible",
+  "Zero-Maintenance Infrastructure",
+  "Guaranteed 95+ Google Lighthouse Score",
+] as const;
+---
+
+<section
+  aria-labelledby="hero-heading"
+  class="relative overflow-hidden border-(--border-subtle) border-b"
+>
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute -top-40 left-1/2 -z-10 h-125 w-200 -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(255,92,0,0.12),transparent_70%)] blur-3xl"
+  ></div>
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute top-1/3 -right-40 -z-10 h-100 w-150 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(94,53,177,0.1),transparent_70%)] blur-3xl"
+  ></div>
+
+  <div
+    class="mx-auto max-w-7xl px-4 pt-10 pb-12 sm:px-6 md:pt-16 md:pb-16 lg:px-8"
+  >
+    <div class="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+      <div>
+        <span
+          class="mb-4 inline-block rounded-full border border-(--primary)/30 bg-(--primary-container) px-3.5 py-1 font-mono font-semibold text-(--primary) text-xs uppercase tracking-widest"
+        >
+          Digital Infrastructure
+        </span>
+
+        <h1
+          class="mb-5 font-extrabold text-3xl text-(--text-primary) leading-tight tracking-tight sm:text-4xl lg:text-5xl"
+          id="hero-heading"
+        >
+          Your website should be your most relentless employee. Right now, it is
+          a bottleneck.
+        </h1>
+
+        <p
+          class="mb-8 max-w-xl text-(--text-secondary) text-base leading-relaxed sm:text-lg"
+        >
+          I engineer high-performance web applications and custom AI automations
+          that work 24/7. Stop losing customers to slow-loading pages and
+          wasting weekends on manual operations. Let's build digital
+          infrastructure that scales your profit.
+        </p>
+
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <a
+            class="inline-flex h-12 w-full items-center justify-center rounded bg-(--primary) px-7 font-semibold text-sm text-white uppercase tracking-wider shadow-lg transition-all hover:bg-(--primary-hover) hover:shadow-[0_4px_20px_var(--primary-glow)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--primary) active:scale-[0.98] sm:w-auto"
+            href="/contact"
+          >
+            Request a Digital Growth Audit
+          </a>
+          <a
+            class="inline-flex h-12 w-full items-center justify-center gap-1.5 rounded px-4 font-semibold text-(--text-secondary) text-sm transition-colors hover:text-(--primary) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--primary) sm:w-auto"
+            href="/solutions"
+          >
+            See How We Do It
+            <svg
+              aria-hidden="true"
+              class="h-4 w-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M9 5l7 7-7 7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              ></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Shift dashboard visual: bottleneck → relentless employee -->
+      <div
+        aria-hidden="true"
+        class="hero-dashboard relative mx-auto w-full max-w-md lg:max-w-none"
+      >
+        <div
+          class="rounded-xl border border-(--border-subtle) bg-(--bg-surface) p-5 shadow-(--card-shadow) sm:p-6"
+        >
+          <div class="mb-5 flex items-center justify-between">
+            <span
+              class="font-mono font-semibold text-(--text-muted) text-xs uppercase tracking-widest"
+            >
+              Live Shift Dashboard
+            </span>
+            <span
+              class="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-0.5 font-mono text-emerald-600 text-xs dark:text-emerald-400"
+            >
+              <span
+                class="hero-pulse inline-block h-1.5 w-1.5 rounded-full bg-emerald-500"
+              ></span>
+              Online 24/7
+            </span>
+          </div>
+
+          <div class="grid gap-4 sm:grid-cols-2">
+            <!-- Load time meter -->
+            <div
+              class="rounded-lg border border-(--border-subtle) bg-(--bg-canvas) p-4"
+            >
+              <p
+                class="mb-3 font-mono text-(--text-muted) text-xs uppercase tracking-wider"
+              >
+                Page Load
+              </p>
+              <p
+                class="mb-2 font-bold text-2xl text-(--text-primary) tabular-nums"
+              >
+                <span class="hero-load-value">0.8</span>s
+              </p>
+              <div
+                class="h-2 overflow-hidden rounded-full bg-(--bg-surface-elevated)"
+              >
+                <div
+                  class="hero-load-bar h-full rounded-full bg-(--primary)"
+                ></div>
+              </div>
+              <p class="mt-2 text-(--text-muted) text-xs">Target: sub-1s</p>
+            </div>
+
+            <!-- Lighthouse ring -->
+            <div
+              class="flex flex-col items-center justify-center rounded-lg border border-(--border-subtle) bg-(--bg-canvas) p-4"
+            >
+              <p
+                class="mb-2 font-mono text-(--text-muted) text-xs uppercase tracking-wider"
+              >
+                Lighthouse
+              </p>
+              <div class="relative h-20 w-20">
+                <svg
+                  aria-hidden="true"
+                  class="-rotate-90 h-full w-full"
+                  focusable="false"
+                  viewBox="0 0 36 36"
+                >
+                  <circle
+                    class="stroke-(--border-subtle)"
+                    cx="18"
+                    cy="18"
+                    fill="none"
+                    r="15.5"
+                    stroke-width="3"
+                  ></circle>
+                  <circle
+                    class="hero-lighthouse-ring stroke-emerald-500"
+                    cx="18"
+                    cy="18"
+                    fill="none"
+                    r="15.5"
+                    stroke-dasharray="97.4 100"
+                    stroke-linecap="round"
+                    stroke-width="3"
+                  ></circle>
+                </svg>
+                <span
+                  class="absolute inset-0 flex items-center justify-center font-bold text-(--text-primary) text-lg tabular-nums"
+                >
+                  <span class="hero-lighthouse-value">95</span>+
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Inquiry counter -->
+          <div
+            class="mt-4 flex items-center justify-between rounded-lg border border-(--border-subtle) bg-(--bg-canvas) px-4 py-3"
+          >
+            <div>
+              <p
+                class="font-mono text-(--text-muted) text-xs uppercase tracking-wider"
+              >
+                Qualified Inquiries
+              </p>
+              <p class="mt-0.5 text-(--text-secondary) text-sm">
+                Captured while you sleep
+              </p>
+            </div>
+            <p class="font-bold text-3xl text-(--primary) tabular-nums">
+              <span class="hero-inquiry-value">0</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trust & guarantee bar -->
+  <div
+    class="border-(--border-subtle) border-t bg-(--bg-surface) py-4 transition-colors"
+  >
+    <ul
+      class="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-6 gap-y-2 px-4 sm:gap-x-8 sm:px-6 lg:px-8"
+    >
+      {guarantees.map((guarantee) => (
+          <li class="flex items-center gap-2 font-mono text-(--text-secondary) text-xs sm:text-sm">
+            <span
+              aria-hidden="true"
+              class="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-(--primary)"
+            />
+            {guarantee}
+          </li>
+        ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .hero-load-bar {
+    width: 80%;
+    animation: hero-load-settle 2.4s ease-out both;
+  }
+
+  .hero-lighthouse-ring {
+    stroke-dashoffset: 100;
+    animation: hero-ring-fill 2s ease-out 0.3s both;
+  }
+
+  .hero-pulse {
+    animation: hero-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes hero-load-settle {
+    0% {
+      width: 28%;
+    }
+    100% {
+      width: 80%;
+    }
+  }
+
+  @keyframes hero-ring-fill {
+    0% {
+      stroke-dashoffset: 100;
+    }
+    100% {
+      stroke-dashoffset: 2.6;
+    }
+  }
+
+  @keyframes hero-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.35;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-load-bar,
+    .hero-lighthouse-ring,
+    .hero-pulse {
+      animation: none;
+    }
+
+    .hero-lighthouse-ring {
+      stroke-dashoffset: 2.6;
+    }
+  }
+</style>
+
+<script>
+  const prefersReduced = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches;
+
+  const inquiryEl = document.querySelector(".hero-inquiry-value");
+  const loadEl = document.querySelector(".hero-load-value");
+  const lighthouseEl = document.querySelector(".hero-lighthouse-value");
+
+  if (prefersReduced) {
+    if (inquiryEl) {
+      inquiryEl.textContent = "24";
+    }
+    if (loadEl) {
+      loadEl.textContent = "0.8";
+    }
+    if (lighthouseEl) {
+      lighthouseEl.textContent = "98";
+    }
+  } else {
+    const animateCount = (
+      el: Element,
+      target: number,
+      durationMs: number,
+      decimals = 0
+    ) => {
+      const start = performance.now();
+      const tick = (now: number) => {
+        const progress = Math.min((now - start) / durationMs, 1);
+        const eased = 1 - (1 - progress) ** 3;
+        const value = target * eased;
+        el.textContent =
+          decimals > 0 ? value.toFixed(decimals) : String(Math.round(value));
+        if (progress < 1) {
+          requestAnimationFrame(tick);
+        }
+      };
+      requestAnimationFrame(tick);
+    };
+
+    if (inquiryEl) {
+      animateCount(inquiryEl, 24, 2200);
+    }
+    if (loadEl) {
+      animateCount(loadEl, 0.8, 1800, 1);
+    }
+    if (lighthouseEl) {
+      animateCount(lighthouseEl, 98, 2000);
+    }
+  }
+</script>

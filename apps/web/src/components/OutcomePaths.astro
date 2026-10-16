@@ -1,0 +1,112 @@
+---
+import ChevronRightIcon from "../assets/icons/chevron-right.svg";
+
+interface OutcomePath {
+  accent: "primary" | "secondary" | "tertiary";
+  copy: string;
+  href: string;
+  linkLabel: string;
+  problem: string;
+  tag: string;
+}
+
+const accentStyles = {
+  primary: {
+    badgeBg: "bg-(--primary-container)",
+    hoverBorder: "hover:border-(--primary)/50",
+    text: "text-(--primary)",
+  },
+  secondary: {
+    badgeBg: "bg-(--secondary-container)",
+    hoverBorder: "hover:border-(--secondary)/50",
+    text: "text-(--secondary)",
+  },
+  tertiary: {
+    badgeBg: "bg-(--tertiary-container)",
+    hoverBorder: "hover:border-(--tertiary)/50",
+    text: "text-(--tertiary)",
+  },
+} as const;
+
+const outcomes: OutcomePath[] = [
+  {
+    accent: "primary",
+    copy: "Your current website is slow and invisible to search engines. I build ultra-fast, SEO-optimized web assets that rank at the top of Google and convert traffic into qualified inquiries before your competitors' sites even finish loading.",
+    href: "/solutions#modern-websites",
+    linkLabel: "Explore Growth Web Development",
+    problem: "I am losing local leads to competitors.",
+    tag: "Revenue Problem",
+  },
+  {
+    accent: "tertiary",
+    copy: "You are drowning in manual data entry, quoting, and client follow-ups. I build custom internal web apps and AI workflows that automate the busywork so you can step out of the weeds and get back to being the CEO.",
+    href: "/solutions#ai-automation",
+    linkLabel: "Explore Custom Automation",
+    problem: "My operations are running me.",
+    tag: "Efficiency Problem",
+  },
+  {
+    accent: "secondary",
+    copy: "You need a Minimum Viable Product (MVP) that doesn't just work—it scales. Skip the bloated agency retainers. I build enterprise-grade applications on modern, serverless infrastructure designed for infinite growth.",
+    href: "/solutions#web-apps",
+    linkLabel: "Explore MVP Development",
+    problem: "I need to launch a scalable product, fast.",
+    tag: "Speed-to-Market Problem",
+  },
+];
+---
+
+<section
+  aria-labelledby="outcomes-heading"
+  class="border-(--border-subtle) border-b bg-(--bg-canvas) py-16 transition-colors md:py-24"
+>
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="mx-auto mb-12 max-w-3xl text-center">
+      <span
+        class="mb-3 inline-block rounded-full border border-(--primary)/30 bg-(--primary-container) px-3.5 py-1 font-mono font-semibold text-(--primary) text-xs uppercase tracking-widest"
+      >
+        Choose Your Outcome
+      </span>
+      <h2
+        class="font-extrabold text-3xl text-(--text-primary) tracking-tight sm:text-4xl"
+        id="outcomes-heading"
+      >
+        Where is your business leaking margin?
+      </h2>
+    </div>
+
+    <div class="grid gap-6 lg:grid-cols-3">
+      {outcomes.map((outcome) => {
+          const styles = accentStyles[outcome.accent];
+          return (
+            <a
+              class={`group flex h-full flex-col rounded-xl border border-(--border-subtle) bg-(--bg-surface) p-6 shadow-sm transition-all ${styles.hoverBorder} hover:shadow-md focus-visible:outline-none focus-visible:ring-(--primary) focus-visible:ring-2 sm:p-7`}
+              href={outcome.href}
+            >
+              <span
+                class={`mb-4 inline-flex w-fit rounded-full px-2.5 py-0.5 font-mono font-semibold text-xs uppercase tracking-wider ${styles.badgeBg} ${styles.text}`}
+              >
+                {outcome.tag}
+              </span>
+              <h3 class="mb-3 font-bold text-(--text-primary) text-xl leading-snug tracking-tight">
+                {outcome.problem}
+              </h3>
+              <p class="mb-6 flex-1 text-(--text-secondary) text-sm leading-relaxed">
+                {outcome.copy}
+              </p>
+              <span
+                class={`inline-flex items-center gap-1.5 font-semibold text-sm uppercase tracking-wider ${styles.text} group-hover:underline`}
+              >
+                {outcome.linkLabel}
+                <ChevronRightIcon
+                  aria-hidden="true"
+                  class="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+                  role="img"
+                />
+              </span>
+            </a>
+          );
+        })}
+    </div>
+  </div>
+</section>

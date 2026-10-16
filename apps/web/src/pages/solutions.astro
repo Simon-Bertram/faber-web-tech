@@ -1,0 +1,21 @@
+---
+import CtaBanner from "../components/CtaBanner.astro";
+import Footer from "../components/Footer.astro";
+import HeroCarousel from "../components/HeroCarousel.astro";
+import ServicesOverview from "../components/ServicesOverview.astro";
+import TechStackBanner from "../components/TechStackBanner.astro";
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout
+  description="How Faber Web Tech builds high-performance sites, edge web apps, AI automations, and SEO & GEO visibility — methodology, stack, and the four core service tiers."
+  title="Solutions & Methodology | Faber Web Tech"
+>
+  <div class="flex w-full flex-col">
+    <HeroCarousel />
+    <TechStackBanner />
+    <ServicesOverview />
+    <CtaBanner />
+    <Footer />
+  </div>
+</Layout>

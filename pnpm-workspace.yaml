@@ -1,9 +1,9 @@
 packages:
   - apps/*
   - packages/*
-# Pin to match effect@4.0.0-rc.112; ^4.0.0-rc.112 resolves incompatible 4.0.3.
+# Keep Effect platform packages aligned with effect@4.0.4 (Alchemy beta.83 peers ^4.0.0).
 overrides:
-  "@effect/platform-node-shared": "4.0.0-rc.112"
+  "@effect/platform-node-shared": "4.0.4"
 allowBuilds:
   esbuild: true
   sharp: true
@@ -22,3 +22,31 @@ catalog:
   better-auth: 1.7.5
   evlog: ^2.31.0
   "@orpc/client": ^1.15.6
+minimumReleaseAgeExclude:
+  - '@alchemy.run/cloudflare-runtime@2.0.0-beta.83'
+  - '@alchemy.run/floci@2.0.0-beta.83'
+  - '@alchemy.run/node-utils@2.0.0-beta.83'
+  - '@distilled.cloud/acme@1.0.0-rc.15'
+  - '@distilled.cloud/aws@1.0.0-rc.15'
+  - '@distilled.cloud/axiom@1.0.0-rc.15'
+  - '@distilled.cloud/cloudflare@1.0.0-rc.15'
+  - '@distilled.cloud/core@1.0.0-rc.15'
+  - '@distilled.cloud/doppler@1.0.0-rc.15'
+  - '@distilled.cloud/fly-io@1.0.0-rc.15'
+  - '@distilled.cloud/gcp@1.0.0-rc.15'
+  - '@distilled.cloud/hetzner@1.0.0-rc.15'
+  - '@distilled.cloud/iceberg@1.0.0-rc.15'
+  - '@distilled.cloud/infisical@1.0.0-rc.15'
+  - '@distilled.cloud/neon@1.0.0-rc.15'
+  - '@distilled.cloud/planetscale@1.0.0-rc.15'
+  - '@distilled.cloud/prisma@1.0.0-rc.15'
+  - '@distilled.cloud/railway@1.0.0-rc.15'
+  - '@distilled.cloud/stripe@1.0.0-rc.15'
+  - '@distilled.cloud/turso@1.0.0-rc.15'
+  - '@distilled.cloud/zerossl@1.0.0-rc.15'
+  - alchemy@2.0.0-beta.83
+  - '@alchemy.run/frontend-frameworks@2.0.0-beta.83'
+  - '@effect/platform-node-shared@4.0.4'
+  - '@effect/platform-bun@4.0.4'
+  - '@effect/platform-node@4.0.4'
+  - effect@4.0.4
