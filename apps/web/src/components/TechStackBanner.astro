@@ -6,51 +6,17 @@ import HonoIcon from "../assets/tech-icons/hono.svg";
 import OrpcIcon from "../assets/tech-icons/orpc.svg";
 import ReactIcon from "../assets/tech-icons/react.svg";
 import TailwindIcon from "../assets/tech-icons/tailwindcss.svg";
+import { technologies } from "../data/tech-stack";
 
-const technologies = [
-  {
-    Icon: AstroIcon,
-    name: "Astro",
-    role: "Edge-First Islands & SSG",
-    url: "https://astro.build/",
-  },
-  {
-    Icon: CloudflareIcon,
-    name: "Cloudflare Workers",
-    role: "Global Edge Runtime",
-    url: "https://www.cloudflare.com/products/workers/",
-  },
-  {
-    Icon: HonoIcon,
-    name: "Hono",
-    role: "Ultrafast Edge API",
-    url: "https://hono.dev/",
-  },
-  {
-    Icon: OrpcIcon,
-    name: "oRPC",
-    role: "Typesafe APIs, made simple",
-    url: "https://orpc.dev/",
-  },
-  {
-    Icon: ReactIcon,
-    name: "React",
-    role: "Frontend Framework",
-    url: "https://react.dev/",
-  },
-  {
-    Icon: TailwindIcon,
-    name: "Tailwindcss",
-    role: "CSS Framework",
-    url: "https://tailwindcss.com/",
-  },
-  {
-    Icon: BetterAuthIcon,
-    name: "Better-Auth",
-    role: "Authentication",
-    url: "https://better-auth.com/",
-  },
-];
+const icons = {
+  astro: AstroIcon,
+  "better-auth": BetterAuthIcon,
+  "cloudflare-workers": CloudflareIcon,
+  hono: HonoIcon,
+  orpc: OrpcIcon,
+  react: ReactIcon,
+  tailwindcss: TailwindIcon,
+} as const;
 ---
 
 <section
@@ -72,26 +38,26 @@ const technologies = [
       </div>
 
       <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-7 gap-3 flex-1">
-        {technologies.map((tech) => (
+        {technologies.map((tech) => {
+          const Icon = icons[tech.slug as keyof typeof icons];
+          return (
             <a
               class="group rounded border border-(--border-subtle) bg-(--bg-canvas) p-3 text-center transition-all hover:border-(--border-hover) hover:bg-(--bg-surface-elevated) focus-visible:outline-none focus-visible:ring-(--primary) focus-visible:ring-2"
-              href={tech.url}
-              rel="noopener noreferrer"
-              target="_blank"
+              href={`#why-${tech.slug}`}
             >
-              <tech.Icon
+              <Icon
                 aria-hidden="true"
-                class="mx-auto m-2.5 h-12 w-12 text-(--text-primary)"
+                class="m-2.5 mx-auto h-12 w-12 text-(--text-primary)"
               />
-              <div class="font-bold font-mono text-(--text-primary) mb-2 transition-colors group-hover:text-(--primary)">
+              <div class="mb-2 font-bold font-mono text-(--text-primary) transition-colors group-hover:text-(--primary)">
                 {tech.name}
-                <span class="sr-only"> (opens in a new tab)</span>
               </div>
               <div class="mt-0.5 text-(--text-muted) text-sm leading-tight">
                 {tech.role}
               </div>
             </a>
-          ))}
+          );
+        })}
       </div>
     </div>
   </div>

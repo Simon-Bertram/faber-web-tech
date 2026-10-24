@@ -1,0 +1,114 @@
+---
+import CheckIcon from "../assets/icons/check.svg";
+import AstroIcon from "../assets/tech-icons/astro.svg";
+import BetterAuthIcon from "../assets/tech-icons/better-auth.svg";
+import CloudflareIcon from "../assets/tech-icons/cloudflare.svg";
+import HonoIcon from "../assets/tech-icons/hono.svg";
+import OrpcIcon from "../assets/tech-icons/orpc.svg";
+import ReactIcon from "../assets/tech-icons/react.svg";
+import TailwindIcon from "../assets/tech-icons/tailwindcss.svg";
+import { technologies } from "../data/tech-stack";
+
+const icons = {
+  astro: AstroIcon,
+  "better-auth": BetterAuthIcon,
+  "cloudflare-workers": CloudflareIcon,
+  hono: HonoIcon,
+  orpc: OrpcIcon,
+  react: ReactIcon,
+  tailwindcss: TailwindIcon,
+} as const;
+---
+
+<section
+  class="border-b border-(--border-subtle) bg-(--bg-canvas) py-16 md:py-24 transition-colors"
+  id="tech-stack"
+>
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <span
+        class="inline-block rounded-full border border-(--primary)/30 bg-(--primary-container) px-3.5 py-1 font-mono text-xs font-semibold text-(--primary) uppercase tracking-widest mb-3"
+      >
+        Why This Stack
+      </span>
+      <h2
+        class="text-3xl sm:text-4xl font-extrabold tracking-tight text-(--text-primary)"
+      >
+        Tools chosen for outcomes, not fashion.
+      </h2>
+      <p
+        class="mt-4 text-base sm:text-lg text-(--text-secondary) leading-relaxed"
+      >
+        Each piece of the stack exists to make sites faster, safer, and easier
+        to grow — here is what that means for your project in plain language.
+      </p>
+    </div>
+
+    <div class="space-y-12">
+      {technologies.map((tech) => {
+        const Icon = icons[tech.slug as keyof typeof icons];
+        return (
+          <section
+            class="scroll-mt-24 rounded-xl border border-(--border-subtle) bg-(--bg-surface) p-6 shadow-sm transition-all hover:border-(--primary)/50 hover:shadow-md sm:p-8 lg:p-10"
+            id={`why-${tech.slug}`}
+          >
+            <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start">
+              <div
+                class="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg border border-(--border-subtle) bg-(--bg-canvas)"
+              >
+                <Icon
+                  aria-hidden="true"
+                  class="h-8 w-8 text-(--text-primary)"
+                />
+              </div>
+              <div class="min-w-0 flex-1">
+                <span
+                  class="font-mono font-semibold text-(--primary) text-xs uppercase tracking-wider"
+                >
+                  {tech.role}
+                </span>
+                <h3
+                  class="mt-1 font-bold text-(--text-primary) text-2xl tracking-tight sm:text-3xl"
+                >
+                  {tech.why.headline}
+                </h3>
+                <p
+                  class="mt-3 max-w-3xl text-(--text-secondary) text-base leading-relaxed"
+                >
+                  {tech.why.lead}
+                </p>
+              </div>
+            </div>
+
+            <div class="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {tech.why.features.map((feature) => (
+                <div class="flex items-start gap-2.5">
+                  <CheckIcon
+                    aria-hidden="true"
+                    class="mt-0.5 h-5 w-5 shrink-0 text-(--primary)"
+                    role="img"
+                  />
+                  <span class="text-(--text-secondary) text-sm">
+                    <strong class="text-(--text-primary)">{feature.title}</strong>
+                    {" "}
+                    {feature.description}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <a
+              class="inline-flex items-center gap-1.5 rounded font-medium text-(--text-muted) text-sm transition-colors hover:text-(--primary) focus-visible:outline-none focus-visible:ring-(--primary) focus-visible:ring-2"
+              href={tech.docsUrl}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Official docs
+              <span class="sr-only"> for {tech.name} (opens in a new tab)</span>
+            </a>
+          </section>
+        );
+      })}
+    </div>
+  </div>
+</section>
