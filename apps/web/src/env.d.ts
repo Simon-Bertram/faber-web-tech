@@ -3,11 +3,14 @@
 
 import type { RequestLogger } from "evlog";
 
+import type { PortalSessionUser } from "./lib/portal-session";
+
 declare global {
   // biome-ignore lint/style/noNamespace: Astro App.Locals uses declaration merging
   namespace App {
     interface Locals {
       log: RequestLogger;
+      portalUser?: PortalSessionUser;
     }
   }
 }

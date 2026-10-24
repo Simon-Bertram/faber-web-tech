@@ -1,58 +1,73 @@
-<!-- SignInForm.astro -->
+---
+const fieldClass =
+  "min-h-11 w-full rounded border border-(--border-subtle) bg-(--bg-canvas) px-4 py-2.5 text-(--text-primary) placeholder:text-(--text-muted) transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--primary)";
+const labelClass = "mb-1.5 block font-medium text-(--text-primary) text-sm";
+---
 
 <div class="mx-auto mt-10 w-full max-w-md p-6">
-  <h1 class="mb-6 text-center font-bold text-3xl text-white">Welcome Back</h1>
+  <h1
+    class="mb-2 text-center font-display font-bold text-3xl text-(--text-primary)"
+  >
+    Welcome back
+  </h1>
+  <p class="mb-6 text-center text-(--text-secondary) text-sm">
+    Sign in to your client or admin portal.
+  </p>
 
   <form class="space-y-4" id="signin-form">
-    <div class="space-y-1">
-      <label class="block text-sm font-medium text-neutral-300" for="email"
-        >Email</label
-      >
+    <div>
+      <label class={labelClass} for="email">Email</label>
       <input
-        class="w-full rounded-lg border border-neutral-700 bg-neutral-800 px-4 py-2.5 text-white placeholder-neutral-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+        autocomplete="email"
+        class={fieldClass}
         id="email"
         name="email"
         placeholder="you@example.com"
         required
         type="email"
       >
-      <p class="text-sm text-red-500 hidden" id="email-error"></p>
     </div>
 
-    <div class="space-y-1">
-      <label class="block text-sm font-medium text-neutral-300" for="password"
-        >Password</label
-      >
+    <div>
+      <label class={labelClass} for="password">Password</label>
       <input
-        class="w-full rounded-lg border border-neutral-700 bg-neutral-800 px-4 py-2.5 text-white placeholder-neutral-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+        autocomplete="current-password"
+        class={fieldClass}
         id="password"
         name="password"
         placeholder="••••••••"
         required
         type="password"
       >
-      <p class="text-sm text-red-500 hidden" id="password-error"></p>
     </div>
 
-    <p class="text-sm text-red-500 hidden" id="form-error"></p>
+    <p
+      class="hidden text-rose-600 text-sm dark:text-rose-400"
+      id="form-error"
+    ></p>
 
     <button
-      class="w-full rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-neutral-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+      class="inline-flex w-full min-h-11 items-center justify-center rounded bg-(--primary) px-4 py-2.5 font-semibold text-sm text-white transition-colors hover:bg-(--primary-hover) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--primary) disabled:cursor-not-allowed disabled:opacity-50"
       type="submit"
     >
-      Sign In
+      Sign in
     </button>
   </form>
 
   <div class="mt-4 text-center">
-    <a class="text-indigo-400 hover:text-indigo-300 text-sm" href="/signup">
-      Need an account? Sign Up
+    <a
+      class="text-(--primary) text-sm hover:text-(--primary-hover)"
+      href="/signup"
+    >
+      Need an account? Sign up
     </a>
   </div>
 </div>
 
 <script>
   import { authClient } from "../lib/auth-client";
+  import { orpc } from "../lib/orpc";
+  import { postAuthPath } from "../lib/portal-session";
 
   const form = document.getElementById("signin-form") as HTMLFormElement;
   const emailInput = document.getElementById("email") as HTMLInputElement;
@@ -83,8 +98,13 @@
               ctx.error.message || "Sign in failed. Please try again.";
             formError.classList.remove("hidden");
           },
-          onSuccess: () => {
-            window.location.href = "/dashboard";
+          onSuccess: async () => {
+            try {
+              const profile = await orpc.me.getProfile();
+              window.location.href = postAuthPath(profile.user.role);
+            } catch {
+              window.location.href = "/dashboard";
+            }
           },
         }
       );
@@ -93,7 +113,7 @@
       formError.classList.remove("hidden");
     } finally {
       submitButton.disabled = false;
-      submitButton.textContent = "Sign In";
+      submitButton.textContent = "Sign in";
     }
   });
 </script>

@@ -1,0 +1,125 @@
+---
+import AdminGate from "../../components/AdminGate.astro";
+import PortalLayout from "../../layouts/PortalLayout.astro";
+
+const fieldClass =
+  "min-h-11 w-full rounded border border-(--border-subtle) bg-(--bg-canvas) px-4 py-2.5 text-(--text-primary) placeholder:text-(--text-muted) transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--primary)";
+const labelClass = "mb-1.5 block font-medium text-(--text-primary) text-sm";
+---
+
+<AdminGate />
+<PortalLayout active="clients" title="Clients - Admin" variant="admin">
+  <div class="space-y-8">
+    <div>
+      <h1 class="font-display font-bold text-3xl text-(--text-primary)">
+        Clients
+      </h1>
+      <p class="mt-1 text-(--text-secondary) text-sm">
+        Agency-facing client profiles linked to projects.
+      </p>
+    </div>
+
+    <form
+      class="space-y-4 rounded-xl border border-(--border-subtle) bg-(--bg-surface) p-5"
+      id="create-client-form"
+    >
+      <h2 class="font-display font-semibold text-(--text-primary) text-lg">
+        New client
+      </h2>
+      <div>
+        <label class={labelClass} for="client-name">Name</label>
+        <input class={fieldClass} id="client-name" name="name" required>
+      </div>
+      <div>
+        <label class={labelClass} for="client-notes">Notes</label>
+        <textarea
+          class={fieldClass}
+          id="client-notes"
+          name="notes"
+          rows="3"
+        ></textarea>
+      </div>
+      <p
+        class="hidden text-rose-600 text-sm dark:text-rose-400"
+        id="client-error"
+      ></p>
+      <button
+        class="inline-flex min-h-11 items-center justify-center rounded bg-(--primary) px-4 py-2 font-semibold text-sm text-white transition-colors hover:bg-(--primary-hover) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--primary) disabled:opacity-50"
+        type="submit"
+      >
+        Create client
+      </button>
+    </form>
+
+    <div class="space-y-3" id="client-list">
+      <p class="text-(--text-muted) text-sm">Loading…</p>
+    </div>
+  </div>
+</PortalLayout>
+
+<script>
+  import { getById, getForm, getInput, getTextArea } from "../../lib/dom";
+  import { orpc } from "../../lib/orpc";
+
+  const form = getForm("create-client-form");
+  const list = getById("client-list");
+  const errorEl = getById("client-error");
+  const nameInput = getInput("client-name");
+  const notesInput = getTextArea("client-notes");
+
+  async function loadClients() {
+    try {
+      const clients = await orpc.admin.clients.list();
+      if (clients.length === 0) {
+        list.innerHTML =
+          '<p class="text-(--text-muted) text-sm">No clients yet.</p>';
+        return;
+      }
+
+      list.innerHTML = clients
+        .map(
+          (client) => `
+        <article class="rounded-xl border border-(--border-subtle) bg-(--bg-surface) p-5">
+          <h3 class="font-medium text-(--text-primary)">${client.name}</h3>
+          <p class="mt-1 font-mono text-(--text-muted) text-xs">${client.id}</p>
+          ${
+            client.notes
+              ? `<p class="mt-2 text-(--text-secondary) text-sm whitespace-pre-wrap">${client.notes}</p>`
+              : ""
+          }
+        </article>`
+        )
+        .join("");
+    } catch {
+      list.innerHTML =
+        '<p class="text-rose-600 text-sm dark:text-rose-400">Failed to load clients.</p>';
+    }
+  }
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    errorEl.classList.add("hidden");
+    const submit = form.querySelector("button[type='submit']");
+    if (!(submit instanceof HTMLButtonElement)) {
+      return;
+    }
+    submit.disabled = true;
+
+    try {
+      await orpc.admin.clients.create({
+        name: nameInput.value,
+        notes: notesInput.value.trim() || undefined,
+      });
+      form.reset();
+      await loadClients();
+    } catch (error) {
+      errorEl.textContent =
+        error instanceof Error ? error.message : "Could not create client.";
+      errorEl.classList.remove("hidden");
+    } finally {
+      submit.disabled = false;
+    }
+  });
+
+  loadClients();
+</script>

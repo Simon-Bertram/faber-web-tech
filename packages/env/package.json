@@ -4,7 +4,10 @@
   "private": true,
   "type": "module",
   "exports": {
+    "./admin": "./src/admin.ts",
+    "./cors": "./src/cors.ts",
     "./server": "./src/server.ts",
+    "./server-bindings": "./src/server-bindings.ts",
     "./web": "./src/web.ts"
   },
   "dependencies": {

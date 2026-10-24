@@ -1,0 +1,56 @@
+---
+import AdminGate from "../../components/AdminGate.astro";
+import PortalLayout from "../../layouts/PortalLayout.astro";
+---
+
+<AdminGate />
+<PortalLayout active="admin" title="Admin - Faber Web Tech" variant="admin">
+  <div class="space-y-6">
+    <div>
+      <p class="font-mono text-(--text-muted) text-xs uppercase tracking-wider">
+        Developer view
+      </p>
+      <h1 class="mt-1 font-display font-bold text-3xl text-(--text-primary)">
+        Admin dashboard
+      </h1>
+      <p class="mt-2 max-w-2xl text-(--text-secondary) text-sm">
+        Create clients and projects, define milestones and specs, then link
+        registered users to project access.
+      </p>
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-3">
+      <a
+        class="rounded-xl border border-(--border-subtle) bg-(--bg-surface) p-5 transition-colors hover:border-(--border-hover)"
+        href="/admin/clients"
+      >
+        <h2 class="font-display font-semibold text-(--text-primary)">
+          Clients
+        </h2>
+        <p class="mt-1 text-(--text-muted) text-sm">
+          Create and manage client profiles
+        </p>
+      </a>
+      <a
+        class="rounded-xl border border-(--border-subtle) bg-(--bg-surface) p-5 transition-colors hover:border-(--border-hover)"
+        href="/admin/projects"
+      >
+        <h2 class="font-display font-semibold text-(--text-primary)">
+          Projects
+        </h2>
+        <p class="mt-1 text-(--text-muted) text-sm">
+          Milestones, requirements, and status
+        </p>
+      </a>
+      <a
+        class="rounded-xl border border-(--border-subtle) bg-(--bg-surface) p-5 transition-colors hover:border-(--border-hover)"
+        href="/admin/access"
+      >
+        <h2 class="font-display font-semibold text-(--text-primary)">Access</h2>
+        <p class="mt-1 text-(--text-muted) text-sm">
+          Link users to client projects
+        </p>
+      </a>
+    </div>
+  </div>
+</PortalLayout>

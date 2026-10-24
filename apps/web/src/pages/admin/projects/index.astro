@@ -1,0 +1,147 @@
+---
+import AdminGate from "../../../components/AdminGate.astro";
+import PortalLayout from "../../../layouts/PortalLayout.astro";
+
+const fieldClass =
+  "min-h-11 w-full rounded border border-(--border-subtle) bg-(--bg-canvas) px-4 py-2.5 text-(--text-primary) placeholder:text-(--text-muted) transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--primary)";
+const labelClass = "mb-1.5 block font-medium text-(--text-primary) text-sm";
+---
+
+<AdminGate />
+<PortalLayout active="projects" title="Projects - Admin" variant="admin">
+  <div class="space-y-8">
+    <div>
+      <h1 class="font-display font-bold text-3xl text-(--text-primary)">
+        Projects
+      </h1>
+      <p class="mt-1 text-(--text-secondary) text-sm">
+        Create projects under a client profile.
+      </p>
+    </div>
+
+    <form
+      class="space-y-4 rounded-xl border border-(--border-subtle) bg-(--bg-surface) p-5"
+      id="create-project-form"
+    >
+      <h2 class="font-display font-semibold text-(--text-primary) text-lg">
+        New project
+      </h2>
+      <div>
+        <label class={labelClass} for="project-client">Client</label>
+        <select
+          class={fieldClass}
+          id="project-client"
+          name="clientProfileId"
+          required
+        >
+          <option value="">Select a client</option>
+        </select>
+      </div>
+      <div>
+        <label class={labelClass} for="project-name">Name</label>
+        <input class={fieldClass} id="project-name" name="name" required>
+      </div>
+      <p
+        class="hidden text-rose-600 text-sm dark:text-rose-400"
+        id="project-error"
+      ></p>
+      <button
+        class="inline-flex min-h-11 items-center justify-center rounded bg-(--primary) px-4 py-2 font-semibold text-sm text-white transition-colors hover:bg-(--primary-hover) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--primary) disabled:opacity-50"
+        type="submit"
+      >
+        Create project
+      </button>
+    </form>
+
+    <div class="space-y-3" id="project-list">
+      <p class="text-(--text-muted) text-sm">Loading…</p>
+    </div>
+  </div>
+</PortalLayout>
+
+<script>
+  import { getById, getForm, getInput, getSelect } from "../../../lib/dom";
+  import { orpc } from "../../../lib/orpc";
+
+  const form = getForm("create-project-form");
+  const clientSelect = getSelect("project-client");
+  const nameInput = getInput("project-name");
+  const list = getById("project-list");
+  const errorEl = getById("project-error");
+
+  function statusLabel(value: string) {
+    return value.replaceAll("_", " ");
+  }
+
+  async function loadClients() {
+    const clients = await orpc.admin.clients.list();
+    for (const client of clients) {
+      const option = document.createElement("option");
+      option.value = client.id;
+      option.textContent = client.name;
+      clientSelect.appendChild(option);
+    }
+  }
+
+  async function loadProjects() {
+    try {
+      const projects = await orpc.admin.projects.list();
+      if (projects.length === 0) {
+        list.innerHTML =
+          '<p class="text-(--text-muted) text-sm">No projects yet.</p>';
+        return;
+      }
+
+      list.innerHTML = projects
+        .map(
+          (project) => `
+        <a
+          class="block rounded-xl border border-(--border-subtle) bg-(--bg-surface) p-5 transition-colors hover:border-(--border-hover)"
+          href="/admin/projects/${project.id}"
+        >
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <h3 class="font-medium text-(--text-primary)">${project.name}</h3>
+              <p class="mt-1 text-(--text-muted) text-sm">${project.clientName}</p>
+            </div>
+            <span class="rounded border border-(--border-subtle) px-2 py-0.5 font-mono text-(--text-secondary) text-xs uppercase">${statusLabel(project.status)}</span>
+          </div>
+        </a>`
+        )
+        .join("");
+    } catch {
+      list.innerHTML =
+        '<p class="text-rose-600 text-sm dark:text-rose-400">Failed to load projects.</p>';
+    }
+  }
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    errorEl.classList.add("hidden");
+    const submit = form.querySelector("button[type='submit']");
+    if (!(submit instanceof HTMLButtonElement)) {
+      return;
+    }
+    submit.disabled = true;
+
+    try {
+      await orpc.admin.projects.create({
+        clientProfileId: clientSelect.value,
+        name: nameInput.value,
+      });
+      nameInput.value = "";
+      await loadProjects();
+    } catch (error) {
+      errorEl.textContent =
+        error instanceof Error ? error.message : "Could not create project.";
+      errorEl.classList.remove("hidden");
+    } finally {
+      submit.disabled = false;
+    }
+  });
+
+  Promise.all([loadClients(), loadProjects()]).catch(() => {
+    list.innerHTML =
+      '<p class="text-rose-600 text-sm dark:text-rose-400">Failed to load admin data.</p>';
+  });
+</script>

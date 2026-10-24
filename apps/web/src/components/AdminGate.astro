@@ -1,0 +1,16 @@
+<script>
+  import { orpc } from "../lib/orpc";
+
+  async function ensureAdmin() {
+    try {
+      const profile = await orpc.me.getProfile();
+      if (profile.user.role !== "admin") {
+        window.location.replace("/dashboard");
+      }
+    } catch {
+      window.location.replace("/login");
+    }
+  }
+
+  ensureAdmin();
+</script>

@@ -4,6 +4,7 @@ packages:
 # Keep Effect platform packages aligned with effect@4.0.4 (Alchemy beta.83 peers ^4.0.0).
 overrides:
   "@effect/platform-node-shared": "4.0.4"
+  hono: "catalog:"
 allowBuilds:
   esbuild: true
   sharp: true
@@ -11,17 +12,17 @@ allowBuilds:
   workerd: true
 catalog:
   dotenv: ^17.4.2
-  zod: ^4.6.6
+  zod: ^4.6.7
   typescript: ^6.0.3
   "@types/node": ^26.6.5
-  "@cloudflare/workers-types": ^5.20261012.1
+  "@cloudflare/workers-types": ^5.20261023.1
   hono: ^4.13.13
   "@orpc/server": ^1.15.6
   "@orpc/openapi": ^1.15.6
   "@orpc/zod": ^1.15.6
   better-auth: 1.7.5
-  evlog: ^2.31.0
-  "@orpc/client": ^1.15.6
+  evlog: ^2.33.1
+  "@orpc/client": ^1.16.1
 minimumReleaseAgeExclude:
   - '@alchemy.run/cloudflare-runtime@2.0.0-beta.83'
   - '@alchemy.run/floci@2.0.0-beta.83'

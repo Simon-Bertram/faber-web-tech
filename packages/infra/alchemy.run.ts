@@ -1,3 +1,5 @@
+import { DEFAULT_ADMIN_EMAILS } from "@faber-web/env/admin";
+import { parseAllowedCorsOrigins } from "@faber-web/env/cors";
 import * as Alchemy from "alchemy";
 import * as Cloudflare from "alchemy/Cloudflare";
 import { config } from "dotenv";
@@ -21,23 +23,7 @@ export const db = Cloudflare.D1.Database("database", {
 });
 
 function parseAllowedCorsOrigin(value: string): string | undefined {
-  try {
-    const { hostname, origin, protocol } = new URL(value);
-    if (hostname.includes("*")) {
-      return;
-    }
-    if (protocol === "https:") {
-      return origin;
-    }
-    if (
-      protocol === "http:" &&
-      (hostname === "localhost" || hostname === "127.0.0.1")
-    ) {
-      return origin;
-    }
-  } catch {
-    // Ignore values that are not a URL origin.
-  }
+  return parseAllowedCorsOrigins(value)[0];
 }
 
 function axiomEnv() {
@@ -54,6 +40,9 @@ function axiomEnv() {
 function serverEnv(corsOrigin: string) {
   return {
     ...axiomEnv(),
+    ADMIN_EMAILS: Config.String("ADMIN_EMAILS").pipe(
+      Config.withDefault(DEFAULT_ADMIN_EMAILS)
+    ),
     BETTER_AUTH_SECRET: Config.Redacted("BETTER_AUTH_SECRET"),
     BETTER_AUTH_URL: Cloudflare.Worker.URL,
     CORS_ORIGIN: corsOrigin,

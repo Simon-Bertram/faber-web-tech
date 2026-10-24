@@ -1,13 +1,14 @@
 import { createContext } from "@faber-web/api/context";
 import { appRouter } from "@faber-web/api/routers/index";
 import { createAuth } from "@faber-web/auth";
+import { corsOriginFromList } from "@faber-web/env/cors";
 import { env } from "@faber-web/env/server";
 import { OpenAPIHandler } from "@orpc/openapi/fetch";
 import { OpenAPIReferencePlugin } from "@orpc/openapi/plugins";
 import { onError } from "@orpc/server";
 import { RPCHandler } from "@orpc/server/fetch";
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
-import { initLogger } from "evlog";
+import { createLogger, initLogger } from "evlog";
 import { createAxiomDrain } from "evlog/axiom";
 import {
   type BetterAuthInstance,
@@ -16,54 +17,6 @@ import {
 import { type EvlogVariables, evlog } from "evlog/hono";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-
-function allowedCorsOrigins(corsOrigin: string | undefined): string[] {
-  if (!corsOrigin) {
-    return [];
-  }
-
-  const origins: string[] = [];
-  for (const part of corsOrigin.split(",")) {
-    const value = part.trim();
-    if (value.length === 0) {
-      continue;
-    }
-
-    try {
-      const { hostname, origin, protocol } = new URL(value);
-      if (hostname.includes("*")) {
-        continue;
-      }
-      if (protocol === "https:") {
-        origins.push(origin);
-        continue;
-      }
-      if (
-        protocol === "http:" &&
-        (hostname === "localhost" || hostname === "127.0.0.1")
-      ) {
-        origins.push(origin);
-      }
-    } catch {
-      // Skip values that are not a URL origin.
-    }
-  }
-
-  return origins;
-}
-
-function corsOriginFromBinding(
-  corsOrigin: string | undefined,
-  requestOrigin: string | undefined
-): string | undefined {
-  if (!requestOrigin) {
-    return;
-  }
-
-  return allowedCorsOrigins(corsOrigin).includes(requestOrigin)
-    ? requestOrigin
-    : undefined;
-}
 
 function isGetSessionPath(path: string): boolean {
   return (
@@ -94,6 +47,12 @@ function createOptionalAxiomDrain() {
   return createAxiomDrain({ apiKey, dataset });
 }
 
+function logOrpcError(error: unknown) {
+  const log = createLogger({ action: "orpc.error" });
+  log.error(error instanceof Error ? error : new Error(String(error)));
+  log.emit();
+}
+
 initLogger({
   env: { service: "faber-web-server" },
   pretty: false,
@@ -103,7 +62,11 @@ initLogger({
 });
 
 interface ServerBindings {
+  ADMIN_EMAILS: string;
+  BETTER_AUTH_SECRET: string;
+  BETTER_AUTH_URL: string;
   CORS_ORIGIN: string;
+  DB: D1Database;
 }
 
 const app = new Hono<{ Bindings: ServerBindings } & EvlogVariables>();
@@ -126,17 +89,14 @@ app.use(
   "/*",
   cors({
     credentials: true,
-    origin: (origin, c) => corsOriginFromBinding(c.env.CORS_ORIGIN, origin),
+    origin: (origin, c) => corsOriginFromList(c.env.CORS_ORIGIN, origin),
   })
 );
 
 app.use("/*", async (c, next) => {
   await next();
 
-  const allowed = corsOriginFromBinding(
-    c.env.CORS_ORIGIN,
-    c.req.header("origin")
-  );
+  const allowed = corsOriginFromList(c.env.CORS_ORIGIN, c.req.header("origin"));
   if (allowed) {
     c.res.headers.set("Access-Control-Allow-Origin", allowed);
     c.res.headers.set("Access-Control-Allow-Credentials", "true");
@@ -163,7 +123,7 @@ app.on(["POST", "GET"], "/api/auth/*", (c) =>
 export const apiHandler = new OpenAPIHandler(appRouter, {
   interceptors: [
     onError((error) => {
-      console.error(error);
+      logOrpcError(error);
     }),
   ],
   plugins: [
@@ -176,7 +136,7 @@ export const apiHandler = new OpenAPIHandler(appRouter, {
 export const rpcHandler = new RPCHandler(appRouter, {
   interceptors: [
     onError((error) => {
-      console.error(error);
+      logOrpcError(error);
     }),
   ],
 });

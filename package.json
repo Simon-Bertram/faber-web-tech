@@ -32,7 +32,7 @@
     "@cloudflare/workers-types": "catalog:",
     "@faber-web/config": "workspace:*",
     "@types/node": "catalog:",
-    "turbo": "^2.11.7",
+    "turbo": "^2.11.10",
     "typescript": "catalog:",
     "ultracite": "7.10.7"
   },

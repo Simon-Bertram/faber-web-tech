@@ -1,0 +1,239 @@
+---
+import AdminGate from "../../../components/AdminGate.astro";
+import PortalLayout from "../../../layouts/PortalLayout.astro";
+
+const { id } = Astro.params;
+
+const fieldClass =
+  "min-h-11 w-full rounded border border-(--border-subtle) bg-(--bg-canvas) px-4 py-2.5 text-(--text-primary) placeholder:text-(--text-muted) transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--primary)";
+const labelClass = "mb-1.5 block font-medium text-(--text-primary) text-sm";
+---
+
+<AdminGate />
+<PortalLayout active="projects" title="Project detail - Admin" variant="admin">
+  <div class="space-y-10" data-project-id={id}>
+    <div>
+      <a
+        class="text-(--text-muted) text-sm hover:text-(--primary)"
+        href="/admin/projects"
+      >
+        ← All projects
+      </a>
+      <h1
+        class="mt-3 font-display font-bold text-3xl text-(--text-primary)"
+        id="project-name"
+      >
+        Loading…
+      </h1>
+      <p class="mt-1 text-(--text-secondary) text-sm" id="project-meta"></p>
+    </div>
+
+    <section class="space-y-4">
+      <div class="flex items-center justify-between gap-3">
+        <h2 class="font-display font-semibold text-(--text-primary) text-xl">
+          Milestones
+        </h2>
+      </div>
+      <form class="grid gap-3 sm:grid-cols-[1fr_auto_auto]" id="milestone-form">
+        <input
+          class={fieldClass}
+          id="milestone-title"
+          placeholder="Milestone title"
+          required
+        >
+        <select class={fieldClass} id="milestone-status">
+          <option value="pending">Pending</option>
+          <option value="in_progress">In progress</option>
+          <option value="completed">Completed</option>
+        </select>
+        <button
+          class="inline-flex min-h-11 items-center justify-center rounded bg-(--primary) px-4 py-2 font-semibold text-sm text-white hover:bg-(--primary-hover) disabled:opacity-50"
+          type="submit"
+        >
+          Add
+        </button>
+      </form>
+      <ul class="space-y-2" id="milestone-list"></ul>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="font-display font-semibold text-(--text-primary) text-xl">
+        Requirements & specs
+      </h2>
+      <form class="space-y-3" id="requirement-form">
+        <div>
+          <label class={labelClass} for="requirement-title">Title</label>
+          <input class={fieldClass} id="requirement-title" required>
+        </div>
+        <div>
+          <label class={labelClass} for="requirement-body">Body</label>
+          <textarea
+            class={fieldClass}
+            id="requirement-body"
+            required
+            rows="4"
+          ></textarea>
+        </div>
+        <button
+          class="inline-flex min-h-11 items-center justify-center rounded bg-(--primary) px-4 py-2 font-semibold text-sm text-white hover:bg-(--primary-hover) disabled:opacity-50"
+          type="submit"
+        >
+          Add requirement
+        </button>
+      </form>
+      <div class="space-y-3" id="requirement-list"></div>
+    </section>
+
+    <p class="text-(--text-muted) text-sm" id="detail-status"></p>
+  </div>
+</PortalLayout>
+
+<script>
+  import {
+    getById,
+    getForm,
+    getInput,
+    getSelect,
+    getTextArea,
+  } from "../../../lib/dom";
+  import { orpc } from "../../../lib/orpc";
+
+  const root = document.querySelector("[data-project-id]");
+  const projectIdAttr =
+    root instanceof HTMLElement ? root.dataset.projectId : undefined;
+  if (!projectIdAttr) {
+    throw new Error("Missing project root");
+  }
+  const projectId = projectIdAttr;
+  const nameEl = getById("project-name");
+  const metaEl = getById("project-meta");
+  const milestoneList = getById("milestone-list");
+  const requirementList = getById("requirement-list");
+  const statusEl = getById("detail-status");
+  const milestoneForm = getForm("milestone-form");
+  const requirementForm = getForm("requirement-form");
+
+  function statusLabel(value: string) {
+    return value.replaceAll("_", " ");
+  }
+
+  async function loadProject() {
+    const project = await orpc.admin.projects.get({ id: projectId });
+    nameEl.textContent = project.name;
+    metaEl.textContent = `${project.clientName} · ${statusLabel(project.status)}`;
+  }
+
+  async function loadMilestones() {
+    const milestones = await orpc.admin.milestones.list({ projectId });
+    if (milestones.length === 0) {
+      milestoneList.innerHTML =
+        '<li class="text-(--text-muted) text-sm">No milestones yet.</li>';
+      return;
+    }
+
+    milestoneList.innerHTML = milestones
+      .map(
+        (item) => `
+      <li class="flex flex-col gap-2 rounded-lg border border-(--border-subtle) bg-(--bg-surface) px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+        <span class="text-(--text-primary) text-sm">${item.title}</span>
+        <div class="flex items-center gap-2">
+          <select class="rounded border border-(--border-subtle) bg-(--bg-canvas) px-2 py-1 text-xs" data-milestone-id="${item.id}">
+            <option value="pending" ${item.status === "pending" ? "selected" : ""}>Pending</option>
+            <option value="in_progress" ${item.status === "in_progress" ? "selected" : ""}>In progress</option>
+            <option value="completed" ${item.status === "completed" ? "selected" : ""}>Completed</option>
+          </select>
+          <button class="text-rose-600 text-xs dark:text-rose-400" data-remove-milestone="${item.id}" type="button">Remove</button>
+        </div>
+      </li>`
+      )
+      .join("");
+
+    for (const select of milestoneList.querySelectorAll("select")) {
+      select.addEventListener("change", async (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLSelectElement)) {
+          return;
+        }
+        await orpc.admin.milestones.updateStatus({
+          id: target.dataset.milestoneId ?? "",
+          status: target.value as "pending" | "in_progress" | "completed",
+        });
+      });
+    }
+
+    for (const button of milestoneList.querySelectorAll(
+      "[data-remove-milestone]"
+    )) {
+      button.addEventListener("click", async () => {
+        if (!(button instanceof HTMLButtonElement)) {
+          return;
+        }
+        const id = button.dataset.removeMilestone ?? "";
+        await orpc.admin.milestones.remove({ id });
+        await loadMilestones();
+      });
+    }
+  }
+
+  async function loadRequirements() {
+    const requirements = await orpc.admin.requirements.list({ projectId });
+    if (requirements.length === 0) {
+      requirementList.innerHTML =
+        '<p class="text-(--text-muted) text-sm">No requirements yet.</p>';
+      return;
+    }
+
+    requirementList.innerHTML = requirements
+      .map(
+        (item) => `
+      <article class="rounded-xl border border-(--border-subtle) bg-(--bg-surface) p-5">
+        <div class="flex items-start justify-between gap-3">
+          <h3 class="font-medium text-(--text-primary)">${item.title}</h3>
+          <button class="text-rose-600 text-xs dark:text-rose-400" data-remove-requirement="${item.id}" type="button">Remove</button>
+        </div>
+        <p class="mt-2 whitespace-pre-wrap text-(--text-secondary) text-sm">${item.body}</p>
+      </article>`
+      )
+      .join("");
+
+    for (const button of requirementList.querySelectorAll(
+      "[data-remove-requirement]"
+    )) {
+      button.addEventListener("click", async () => {
+        if (!(button instanceof HTMLButtonElement)) {
+          return;
+        }
+        const id = button.dataset.removeRequirement ?? "";
+        await orpc.admin.requirements.remove({ id });
+        await loadRequirements();
+      });
+    }
+  }
+
+  milestoneForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const title = getInput("milestone-title").value;
+    const status = getSelect("milestone-status").value as
+      | "pending"
+      | "in_progress"
+      | "completed";
+    await orpc.admin.milestones.create({ projectId, status, title });
+    milestoneForm.reset();
+    await loadMilestones();
+  });
+
+  requirementForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const title = getInput("requirement-title").value;
+    const body = getTextArea("requirement-body").value;
+    await orpc.admin.requirements.create({ body, projectId, title });
+    requirementForm.reset();
+    await loadRequirements();
+  });
+
+  Promise.all([loadProject(), loadMilestones(), loadRequirements()]).catch(
+    () => {
+      statusEl.textContent = "Failed to load project details.";
+    }
+  );
+</script>

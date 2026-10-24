@@ -8,6 +8,13 @@
   </a>
 
   <div class="hidden items-center gap-3" id="user-menu">
+    <a
+      class="rounded border border-(--border-subtle) bg-(--bg-surface) px-3 py-1.5 text-xs font-medium text-(--text-secondary) transition-colors hover:border-(--border-hover) hover:text-(--text-primary) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--primary)"
+      href="/dashboard"
+      id="portal-link"
+    >
+      Portal
+    </a>
     <span
       class="hidden text-xs font-mono text-(--text-muted) sm:inline"
       id="user-display"
@@ -24,10 +31,14 @@
 
 <script>
   import { authClient } from "../lib/auth-client";
+  import { postAuthPath } from "../lib/portal-session";
 
   const loginLink = document.getElementById("login-link");
   const userMenu = document.getElementById("user-menu");
   const userDisplay = document.getElementById("user-display");
+  const portalLink = document.getElementById(
+    "portal-link"
+  ) as HTMLAnchorElement | null;
   const signOutButton = document.getElementById("signout-button");
 
   async function checkSession() {
@@ -40,6 +51,15 @@
         if (userDisplay) {
           userDisplay.textContent =
             session.user.name || session.user.email?.split("@")[0] || "User";
+        }
+        if (portalLink) {
+          const userRecord = session.user as unknown as {
+            role?: string;
+          };
+          const role =
+            typeof userRecord.role === "string" ? userRecord.role : "user";
+          portalLink.href = postAuthPath(role);
+          portalLink.textContent = role === "admin" ? "Admin" : "Portal";
         }
       }
     } catch {

@@ -1,0 +1,235 @@
+---
+import AdminGate from "../../components/AdminGate.astro";
+import PortalLayout from "../../layouts/PortalLayout.astro";
+
+const fieldClass =
+  "min-h-11 w-full rounded border border-(--border-subtle) bg-(--bg-canvas) px-4 py-2.5 text-(--text-primary) placeholder:text-(--text-muted) transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--primary)";
+const labelClass = "mb-1.5 block font-medium text-(--text-primary) text-sm";
+---
+
+<AdminGate />
+<PortalLayout active="access" title="Access linking - Admin" variant="admin">
+  <div class="space-y-8">
+    <div>
+      <h1 class="font-display font-bold text-3xl text-(--text-primary)">
+        Account linking
+      </h1>
+      <p class="mt-1 text-(--text-secondary) text-sm">
+        Link a registered user to a client profile and project.
+      </p>
+    </div>
+
+    <form
+      class="space-y-4 rounded-xl border border-(--border-subtle) bg-(--bg-surface) p-5"
+      id="link-form"
+    >
+      <div>
+        <label class={labelClass} for="link-user">User</label>
+        <select class={fieldClass} id="link-user" required>
+          <option value="">Select a user</option>
+        </select>
+      </div>
+      <div>
+        <label class={labelClass} for="link-client">Client profile</label>
+        <select class={fieldClass} id="link-client" required>
+          <option value="">Select a client</option>
+        </select>
+      </div>
+      <div>
+        <label class={labelClass} for="link-project">Project</label>
+        <select class={fieldClass} id="link-project" required>
+          <option value="">Select a project</option>
+        </select>
+      </div>
+      <p
+        class="hidden text-rose-600 text-sm dark:text-rose-400"
+        id="link-error"
+      ></p>
+      <p
+        class="hidden text-emerald-700 text-sm dark:text-emerald-400"
+        id="link-ok"
+      ></p>
+      <button
+        class="inline-flex min-h-11 items-center justify-center rounded bg-(--primary) px-4 py-2 font-semibold text-sm text-white hover:bg-(--primary-hover) disabled:opacity-50"
+        type="submit"
+      >
+        Link access
+      </button>
+    </form>
+
+    <section class="space-y-3">
+      <h2 class="font-display font-semibold text-(--text-primary) text-xl">
+        Current links
+      </h2>
+      <div class="space-y-2" id="links-list">
+        <p class="text-(--text-muted) text-sm">Loading…</p>
+      </div>
+    </section>
+
+    <section class="space-y-3">
+      <h2 class="font-display font-semibold text-(--text-primary) text-xl">
+        Users without project access
+      </h2>
+      <div class="space-y-2" id="unlinked-list">
+        <p class="text-(--text-muted) text-sm">Loading…</p>
+      </div>
+    </section>
+  </div>
+</PortalLayout>
+
+<script>
+  import { getById, getForm, getSelect } from "../../lib/dom";
+  import { orpc } from "../../lib/orpc";
+
+  const userSelect = getSelect("link-user");
+  const clientSelect = getSelect("link-client");
+  const projectSelect = getSelect("link-project");
+  const form = getForm("link-form");
+  const errorEl = getById("link-error");
+  const okEl = getById("link-ok");
+  const linksList = getById("links-list");
+  const unlinkedList = getById("unlinked-list");
+
+  let allProjects: Array<{
+    clientProfileId: string;
+    id: string;
+    name: string;
+  }> = [];
+
+  function fillSelect(
+    select: HTMLSelectElement,
+    items: Array<{ id: string; label: string }>,
+    placeholder: string
+  ) {
+    select.innerHTML = `<option value="">${placeholder}</option>`;
+    for (const item of items) {
+      const option = document.createElement("option");
+      option.value = item.id;
+      option.textContent = item.label;
+      select.appendChild(option);
+    }
+  }
+
+  function refreshProjectsForClient() {
+    const clientId = clientSelect.value;
+    const filtered = allProjects
+      .filter((project) => project.clientProfileId === clientId)
+      .map((project) => ({ id: project.id, label: project.name }));
+    fillSelect(projectSelect, filtered, "Select a project");
+  }
+
+  async function loadFormData() {
+    const [users, clients, projects] = await Promise.all([
+      orpc.admin.access.listUsers(),
+      orpc.admin.clients.list(),
+      orpc.admin.projects.list(),
+    ]);
+
+    allProjects = projects.map((project) => ({
+      clientProfileId: project.clientProfileId,
+      id: project.id,
+      name: project.name,
+    }));
+
+    fillSelect(
+      userSelect,
+      users
+        .filter((user) => user.role !== "admin")
+        .map((user) => ({
+          id: user.id,
+          label: `${user.name} (${user.email})`,
+        })),
+      "Select a user"
+    );
+    fillSelect(
+      clientSelect,
+      clients.map((client) => ({ id: client.id, label: client.name })),
+      "Select a client"
+    );
+    refreshProjectsForClient();
+  }
+
+  async function loadLinks() {
+    const links = await orpc.admin.access.listLinks();
+    if (links.length === 0) {
+      linksList.innerHTML =
+        '<p class="text-(--text-muted) text-sm">No links yet.</p>';
+      return;
+    }
+
+    linksList.innerHTML = links
+      .map(
+        (link) => `
+      <div class="flex flex-col gap-2 rounded-xl border border-(--border-subtle) bg-(--bg-surface) p-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p class="text-(--text-primary) text-sm font-medium">${link.userName} · ${link.userEmail}</p>
+          <p class="mt-1 text-(--text-muted) text-xs">${link.clientName} → ${link.projectName}</p>
+        </div>
+        <button class="text-rose-600 text-xs dark:text-rose-400" data-unlink="${link.id}" type="button">Unlink</button>
+      </div>`
+      )
+      .join("");
+
+    for (const button of linksList.querySelectorAll("[data-unlink]")) {
+      button.addEventListener("click", async () => {
+        const id = (button as HTMLButtonElement).dataset.unlink!;
+        await orpc.admin.access.unlink({ id });
+        await Promise.all([loadLinks(), loadUnlinked()]);
+      });
+    }
+  }
+
+  async function loadUnlinked() {
+    const users = await orpc.admin.access.listUnlinkedUsers();
+    if (users.length === 0) {
+      unlinkedList.innerHTML =
+        '<p class="text-(--text-muted) text-sm">Every non-admin user has at least one project link.</p>';
+      return;
+    }
+
+    unlinkedList.innerHTML = users
+      .map(
+        (user) => `
+      <div class="rounded-lg border border-(--border-subtle) bg-(--bg-surface) px-4 py-3">
+        <p class="text-(--text-primary) text-sm">${user.name}</p>
+        <p class="font-mono text-(--text-muted) text-xs">${user.email}</p>
+      </div>`
+      )
+      .join("");
+  }
+
+  clientSelect.addEventListener("change", refreshProjectsForClient);
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    errorEl.classList.add("hidden");
+    okEl.classList.add("hidden");
+    const submit = form.querySelector("button[type='submit']");
+    if (!(submit instanceof HTMLButtonElement)) {
+      return;
+    }
+    submit.disabled = true;
+
+    try {
+      await orpc.admin.access.link({
+        clientProfileId: clientSelect.value,
+        projectId: projectSelect.value,
+        userId: userSelect.value,
+      });
+      okEl.textContent = "Access linked.";
+      okEl.classList.remove("hidden");
+      await Promise.all([loadLinks(), loadUnlinked()]);
+    } catch (error) {
+      errorEl.textContent =
+        error instanceof Error ? error.message : "Could not link access.";
+      errorEl.classList.remove("hidden");
+    } finally {
+      submit.disabled = false;
+    }
+  });
+
+  Promise.all([loadFormData(), loadLinks(), loadUnlinked()]).catch(() => {
+    linksList.innerHTML =
+      '<p class="text-rose-600 text-sm dark:text-rose-400">Failed to load access data.</p>';
+  });
+</script>

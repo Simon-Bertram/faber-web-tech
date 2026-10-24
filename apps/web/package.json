@@ -12,7 +12,7 @@
     "@faber-web/api": "workspace:*",
     "@faber-web/env": "workspace:*",
     "@orpc/client": "catalog:",
-    "astro": "^7.3.8",
+    "astro": "^7.4.2",
     "better-auth": "catalog:",
     "dotenv": "catalog:",
     "evlog": "catalog:",
@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@alchemy.run/frontend-frameworks": "2.0.0-beta.83",
-    "@astrojs/check": "^0.9.10",
+    "@astrojs/check": "^0.9.12",
     "@cloudflare/workers-types": "catalog:",
     "@faber-web/config": "workspace:*",
     "@tailwindcss/vite": "^4.3.3",

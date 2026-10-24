@@ -1,7 +1,9 @@
-import { defineMiddleware } from "astro:middleware";
+import { defineMiddleware, sequence } from "astro:middleware";
 import { env, waitUntil } from "cloudflare:workers";
 import { createRequestLogger, initLogger } from "evlog";
 import { createAxiomDrain } from "evlog/axiom";
+
+import { fetchPortalSession } from "./lib/portal-session";
 
 const CRAWLER_USER_AGENT =
   /Googlebot|Bingbot|DuckDuckBot|Baiduspider|YandexBot|Slurp|facebookexternalhit|Applebot|Amazonbot|GPTBot|ChatGPT-User|ClaudeBot|anthropic-ai|Bytespider|CCBot|PerplexityBot|Diffbot/i;
@@ -61,25 +63,49 @@ function shouldEmitPageLog(
   return !isCrawlerRequest(request);
 }
 
-export const onRequest = defineMiddleware(async ({ request, locals }, next) => {
-  const url = new URL(request.url);
-  const log = createRequestLogger({
-    method: request.method,
-    path: url.pathname,
-    waitUntil,
-  });
+const loggingMiddleware = defineMiddleware(
+  async ({ request, locals }, next) => {
+    const url = new URL(request.url);
+    const log = createRequestLogger({
+      method: request.method,
+      path: url.pathname,
+      waitUntil,
+    });
 
-  locals.log = log;
+    locals.log = log;
 
-  try {
-    const response = await next();
-    if (shouldEmitPageLog(request, response, log)) {
+    try {
+      const response = await next();
+      if (shouldEmitPageLog(request, response, log)) {
+        log.emit();
+      }
+      return response;
+    } catch (error) {
+      log.error(error instanceof Error ? error : new Error(String(error)));
       log.emit();
+      throw error;
     }
-    return response;
-  } catch (error) {
-    log.error(error instanceof Error ? error : new Error(String(error)));
-    log.emit();
-    throw error;
   }
-});
+);
+
+const portalAuthMiddleware = defineMiddleware(
+  async ({ request, redirect, locals }, next) => {
+    const { pathname } = new URL(request.url);
+    const isPortal =
+      pathname.startsWith("/dashboard") || pathname.startsWith("/admin");
+
+    if (!isPortal) {
+      return next();
+    }
+
+    const session = await fetchPortalSession(request);
+    if (!session?.user) {
+      return redirect("/login");
+    }
+
+    locals.portalUser = session.user;
+    return next();
+  }
+);
+
+export const onRequest = sequence(loggingMiddleware, portalAuthMiddleware);

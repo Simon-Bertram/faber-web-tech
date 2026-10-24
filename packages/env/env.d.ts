@@ -2,6 +2,7 @@
 
 /** Server Worker bindings. Keep in sync with `packages/infra/alchemy.run.ts`. */
 export interface CloudflareEnv {
+  ADMIN_EMAILS: string;
   AXIOM_API_KEY: string;
   AXIOM_DATASET: string;
   BETTER_AUTH_SECRET: string;

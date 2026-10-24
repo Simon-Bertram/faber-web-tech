@@ -9,6 +9,7 @@
     "dev": "alchemy dev"
   },
   "dependencies": {
+    "@faber-web/env": "workspace:*",
     "dotenv": "catalog:",
     "zod": "catalog:"
   },
@@ -18,6 +19,7 @@
     "@faber-web/config": "workspace:*",
     "alchemy": "2.0.0-beta.83",
     "effect": "4.0.4",
+    "hono": "catalog:",
     "typescript": "catalog:"
   }
 }
