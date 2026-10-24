@@ -20,7 +20,7 @@ catalog:
   "@orpc/server": ^1.15.6
   "@orpc/openapi": ^1.15.6
   "@orpc/zod": ^1.15.6
-  better-auth: 1.7.5
+  better-auth: 1.7.12
   evlog: ^2.33.1
   "@orpc/client": ^1.16.1
 minimumReleaseAgeExclude:
