@@ -2,6 +2,7 @@
 // ServicesOverview.astro - Detailed 4-Tier Value Proposition Breakdown
 import CheckIcon from "../assets/icons/check.svg";
 import ChevronRightIcon from "../assets/icons/chevron-right.svg";
+import Speedometer from "./Speedometer.astro";
 
 interface Feature {
   description: string;
@@ -37,7 +38,7 @@ interface ServiceVisual {
   metrics?: MetricBenchmark[];
   pipeline?: PipelineStage[];
   topology?: StackTopologyItem[];
-  type: "metrics" | "topology" | "pipeline" | "citations";
+  type: "metrics" | "topology" | "pipeline" | "citations" | "speedometer";
 }
 
 interface ServiceTier {
@@ -112,16 +113,12 @@ const services: ServiceTier[] = [
     tierNumber: "01",
     title: "Modern Websites: High-Performance, SEO-Optimized Marketing Engines",
     visual: {
-      footnote: "Measured via Google Lighthouse Mobile emulation.",
-      headerBadge: "TARGET: 100/100",
-      headerBadgeColor: "text-emerald-500",
-      headerTitle: "METRIC BENCHMARKS",
-      metrics: [
-        { label: "First Contentful Paint (FCP)", value: "< 0.4s" },
-        { label: "Largest Contentful Paint (LCP)", value: "< 0.8s" },
-        { label: "Speed Index", value: "< 0.9s" },
-      ],
-      type: "metrics",
+      footnote:
+        "Each extra second of load delay costs conversions — Google research links delay to bounce.",
+      headerBadge: "BOUNCE RISK",
+      headerBadgeColor: "text-(--primary)",
+      headerTitle: "COST OF DELAY",
+      type: "speedometer",
     },
   },
   {
@@ -396,6 +393,8 @@ const services: ServiceTier[] = [
                         ))}
                       </div>
                     )}
+
+                  {service.visual.type === "speedometer" && <Speedometer />}
 
                   {service.visual.type === "topology" &&
                     service.visual.topology && (

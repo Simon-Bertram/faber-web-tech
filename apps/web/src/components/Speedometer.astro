@@ -1,0 +1,247 @@
+<!-- Speedometer.astro — delay vs visitor-loss gauge (GSAP + ScrollTrigger) -->
+<div
+  aria-label="Demo: as page load delay rises from 1 to 3 seconds, visitor loss rises from 9% to 32%"
+  class="performance-widget"
+  data-speedometer
+  role="img"
+>
+  <div class="gauge-container">
+    <svg aria-hidden="true" class="speedometer" viewBox="0 0 200 110">
+      <!-- Background track -->
+      <path
+        d="M 10 100 A 90 90 0 0 1 190 100"
+        fill="none"
+        stroke="var(--border-subtle)"
+        stroke-linecap="round"
+        stroke-width="12"
+      />
+      <!-- Progress arc (fills as delay worsens) -->
+      <path
+        class="progress-arc"
+        d="M 10 100 A 90 90 0 0 1 190 100"
+        fill="none"
+        pathLength="100"
+        stroke="var(--primary)"
+        stroke-dasharray="100"
+        stroke-dashoffset="100"
+        stroke-linecap="round"
+        stroke-width="12"
+      />
+      <!-- Needle pivots from bottom center (100, 100) -->
+      <line
+        class="needle"
+        stroke="var(--text-primary)"
+        stroke-linecap="round"
+        stroke-width="4"
+        x1="100"
+        x2="20"
+        y1="100"
+        y2="100"
+      />
+      <circle cx="100" cy="100" fill="var(--text-primary)" r="8" />
+    </svg>
+
+    <div class="metrics">
+      <span class="delay-text">0.0s</span>
+      <span class="metrics-label">Delay</span>
+    </div>
+  </div>
+
+  <div class="loss-container">
+    <div class="loss-label">
+      Visitors Lost: <span class="loss-text">0</span>%
+    </div>
+    <div class="bar-track">
+      <div class="bar-fill"></div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .performance-widget {
+    width: 100%;
+    max-width: 280px;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .gauge-container {
+    position: relative;
+    margin-bottom: 0.75rem;
+  }
+
+  .speedometer {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .needle,
+  .progress-arc,
+  .bar-fill {
+    will-change: transform;
+  }
+
+  .progress-arc {
+    will-change: stroke-dashoffset;
+  }
+
+  .metrics {
+    margin-top: -0.35rem;
+    font-family: var(--font-mono);
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .metrics-label {
+    margin-left: 0.35rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .loss-container {
+    padding: 0.75rem 0 0;
+  }
+
+  .loss-label {
+    margin-bottom: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    letter-spacing: 0.04em;
+  }
+
+  .loss-text {
+    font-weight: 700;
+    color: #ef4444;
+  }
+
+  .bar-track {
+    width: 100%;
+    height: 10px;
+    overflow: hidden;
+    background: var(--bg-surface-elevated);
+    border-radius: 9999px;
+  }
+
+  .bar-fill {
+    width: 100%;
+    height: 100%;
+    background: #ef4444;
+    border-radius: 9999px;
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+</style>
+
+<script>
+  import gsap from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const degreesPerSecond = 36; // 180° semi-circle / 5s max
+  const finalDelay = 3;
+  const finalLoss = 32;
+  const steps: Array<{ seconds: number; loss: number }> = [
+    { loss: 9, seconds: 1 },
+    { loss: 15, seconds: 2 },
+    { loss: 32, seconds: 3 },
+  ];
+
+  const root = document.querySelector<HTMLElement>("[data-speedometer]");
+  if (root) {
+    const delayText = root.querySelector(".delay-text");
+    const lossText = root.querySelector(".loss-text");
+    const needle = root.querySelector(".needle");
+    const progressArc = root.querySelector(".progress-arc");
+    const barFill = root.querySelector(".bar-fill");
+
+    const setFinalState = () => {
+      if (delayText) {
+        delayText.textContent = `${finalDelay.toFixed(1)}s`;
+      }
+      if (lossText) {
+        lossText.textContent = String(finalLoss);
+      }
+      gsap.set(needle, {
+        rotation: finalDelay * degreesPerSecond,
+        svgOrigin: "100 100",
+      });
+      gsap.set(progressArc, {
+        strokeDashoffset: 100 - (finalDelay / 5) * 100,
+      });
+      gsap.set(barFill, {
+        scaleX: finalLoss / 100,
+        transformOrigin: "left center",
+      });
+    };
+
+    const mm = gsap.matchMedia();
+
+    mm.add("(prefers-reduced-motion: reduce)", () => {
+      setFinalState();
+    });
+
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const ctx = gsap.context(() => {
+        gsap.set(needle, { rotation: 0, svgOrigin: "100 100" });
+        gsap.set(progressArc, { strokeDashoffset: 100 });
+        gsap.set(barFill, { scaleX: 0, transformOrigin: "left center" });
+
+        const delayProxy = { value: 0 };
+        const lossProxy = { value: 0 };
+
+        const tl = gsap.timeline({
+          defaults: { duration: 1, ease: "power2.out" },
+          scrollTrigger: {
+            once: true,
+            start: "top 80%",
+            trigger: root,
+          },
+        });
+
+        for (const step of steps) {
+          tl.to(needle, { rotation: step.seconds * degreesPerSecond }, "+=0.5")
+            .to(
+              progressArc,
+              { strokeDashoffset: 100 - (step.seconds / 5) * 100 },
+              "<"
+            )
+            .to(barFill, { scaleX: step.loss / 100 }, "<")
+            .to(
+              delayProxy,
+              {
+                onUpdate: () => {
+                  if (delayText) {
+                    delayText.textContent = `${delayProxy.value.toFixed(1)}s`;
+                  }
+                },
+                value: step.seconds,
+              },
+              "<"
+            )
+            .to(
+              lossProxy,
+              {
+                onUpdate: () => {
+                  if (lossText) {
+                    lossText.textContent = String(Math.round(lossProxy.value));
+                  }
+                },
+                value: step.loss,
+              },
+              "<"
+            );
+        }
+      }, root);
+
+      return () => ctx.revert();
+    });
+  }
+</script>
