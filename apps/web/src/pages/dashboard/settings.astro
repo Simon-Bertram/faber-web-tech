@@ -1,0 +1,116 @@
+---
+import PortalLayout from "../../layouts/PortalLayout.astro";
+import {
+  authButtonClass,
+  authFieldClass,
+  authLabelClass,
+  MIN_PASSWORD_LENGTH,
+} from "../../lib/auth-ui";
+---
+
+<PortalLayout active="settings" title="Account settings" variant="client">
+  <div class="mx-auto max-w-md">
+    <h1 class="mb-2 font-display font-bold text-2xl text-(--text-primary)">
+      Account settings
+    </h1>
+    <p class="mb-6 text-(--text-secondary) text-sm">
+      Optionally set a password for sign-in when email is slow. You can always
+      use email one-time codes instead.
+    </p>
+
+    <form class="space-y-4" id="password-form">
+      <div>
+        <label class={authLabelClass} for="new-password">New password</label>
+        <input
+          autocomplete="new-password"
+          class={authFieldClass}
+          id="new-password"
+          minlength={MIN_PASSWORD_LENGTH}
+          name="new-password"
+          required
+          type="password"
+        >
+        <p class="mt-1.5 text-(--text-muted) text-xs">
+          At least {MIN_PASSWORD_LENGTH} characters. No special character rules.
+        </p>
+      </div>
+      <div>
+        <label class={authLabelClass} for="confirm-password"
+          >Confirm password</label
+        >
+        <input
+          autocomplete="new-password"
+          class={authFieldClass}
+          id="confirm-password"
+          minlength={MIN_PASSWORD_LENGTH}
+          name="confirm-password"
+          required
+          type="password"
+        >
+      </div>
+      <p
+        class="hidden text-rose-600 text-sm dark:text-rose-400"
+        id="form-error"
+      ></p>
+      <p class="hidden text-(--text-secondary) text-sm" id="form-status"></p>
+      <button class={authButtonClass} type="submit">Save password</button>
+    </form>
+  </div>
+</PortalLayout>
+
+<script>
+  import { MIN_PASSWORD_LENGTH } from "../../lib/auth-ui";
+  import { orpc } from "../../lib/orpc";
+
+  const form = document.getElementById("password-form") as HTMLFormElement;
+  const newPassword = document.getElementById(
+    "new-password"
+  ) as HTMLInputElement;
+  const confirmPassword = document.getElementById(
+    "confirm-password"
+  ) as HTMLInputElement;
+  const formError = document.getElementById(
+    "form-error"
+  ) as HTMLParagraphElement;
+  const formStatus = document.getElementById(
+    "form-status"
+  ) as HTMLParagraphElement;
+  const submitButton = form.querySelector(
+    'button[type="submit"]'
+  ) as HTMLButtonElement;
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    formError.classList.add("hidden");
+    formStatus.classList.add("hidden");
+
+    if (newPassword.value !== confirmPassword.value) {
+      formError.textContent = "Passwords do not match.";
+      formError.classList.remove("hidden");
+      return;
+    }
+    if (newPassword.value.length < MIN_PASSWORD_LENGTH) {
+      formError.textContent = `Password must be at least ${MIN_PASSWORD_LENGTH} characters.`;
+      formError.classList.remove("hidden");
+      return;
+    }
+
+    submitButton.disabled = true;
+    submitButton.textContent = "Saving...";
+
+    try {
+      await orpc.me.setPassword({ newPassword: newPassword.value });
+      formStatus.textContent =
+        "Password saved. You can use it on the sign-in page.";
+      formStatus.classList.remove("hidden");
+      form.reset();
+    } catch (error) {
+      formError.textContent =
+        error instanceof Error ? error.message : "Could not save password.";
+      formError.classList.remove("hidden");
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = "Save password";
+    }
+  });
+</script>

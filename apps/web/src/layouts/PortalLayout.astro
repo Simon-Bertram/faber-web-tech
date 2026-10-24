@@ -5,7 +5,13 @@ import BrandLogo from "../components/BrandLogo.astro";
 import ThemeToggle from "../components/ThemeToggle.astro";
 
 interface Props {
-  active?: "admin" | "clients" | "projects" | "access" | "dashboard";
+  active?:
+    | "admin"
+    | "clients"
+    | "projects"
+    | "access"
+    | "dashboard"
+    | "settings";
   title?: string;
   variant?: "admin" | "client";
 }
@@ -25,6 +31,7 @@ const adminLinks = [
 
 const clientLinks = [
   { href: "/dashboard", id: "dashboard", label: "My Projects" },
+  { href: "/dashboard/settings", id: "settings", label: "Settings" },
 ] as const;
 
 const links = variant === "admin" ? adminLinks : clientLinks;

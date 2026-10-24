@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+/** Local/dev fallback only — set ADMIN_EMAILS explicitly in production. */
 export const DEFAULT_ADMIN_EMAILS = "simonbertram@hotmail.com";
 
 export const adminEmailsSchema = z
@@ -18,7 +19,7 @@ export function parseAdminEmails(
 ): string[] {
   const parsed = adminEmailsSchema.safeParse(value ?? DEFAULT_ADMIN_EMAILS);
   if (!parsed.success) {
-    return [DEFAULT_ADMIN_EMAILS.toLowerCase()];
+    return [];
   }
   return parsed.data;
 }
@@ -30,5 +31,9 @@ export function isAdminEmail(
   if (!email) {
     return false;
   }
-  return parseAdminEmails(adminEmails).includes(email.trim().toLowerCase());
+  const allowlist = parseAdminEmails(adminEmails);
+  if (allowlist.length === 0) {
+    return false;
+  }
+  return allowlist.includes(email.trim().toLowerCase());
 }

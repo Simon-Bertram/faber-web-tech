@@ -37,19 +37,6 @@ function axiomEnv() {
   };
 }
 
-function serverEnv(corsOrigin: string) {
-  return {
-    ...axiomEnv(),
-    ADMIN_EMAILS: Config.String("ADMIN_EMAILS").pipe(
-      Config.withDefault(DEFAULT_ADMIN_EMAILS)
-    ),
-    BETTER_AUTH_SECRET: Config.Redacted("BETTER_AUTH_SECRET"),
-    BETTER_AUTH_URL: Cloudflare.Worker.URL,
-    CORS_ORIGIN: corsOrigin,
-    DB: db,
-  };
-}
-
 const workersLogs = {
   enabled: true,
   logs: {
@@ -76,6 +63,20 @@ const CONTACT_INBOX = "contact@faberwebtech.com";
 export const contactEmail = Cloudflare.Email.SendEmail("EMAIL", {
   allowedSenderAddresses: [CONTACT_INBOX],
 });
+
+function serverEnv(corsOrigin: string) {
+  return {
+    ...axiomEnv(),
+    ADMIN_EMAILS: Config.String("ADMIN_EMAILS").pipe(
+      Config.withDefault(DEFAULT_ADMIN_EMAILS)
+    ),
+    BETTER_AUTH_SECRET: Config.Redacted("BETTER_AUTH_SECRET"),
+    BETTER_AUTH_URL: Cloudflare.Worker.URL,
+    CORS_ORIGIN: corsOrigin,
+    DB: db,
+    EMAIL: contactEmail,
+  };
+}
 
 export default Alchemy.Stack(
   "faber-web",

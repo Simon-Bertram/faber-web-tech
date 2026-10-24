@@ -1,0 +1,107 @@
+---
+import Layout from "../layouts/Layout.astro";
+import {
+  authButtonClass,
+  authFieldClass,
+  authLabelClass,
+} from "../lib/auth-ui";
+---
+
+<Layout title="Two-factor authentication - Faber Web Tech">
+  <div class="flex min-h-[calc(100vh-4rem)] items-center justify-center">
+    <div class="mx-auto w-full max-w-md p-6">
+      <h1
+        class="mb-2 text-center font-display font-bold text-3xl text-(--text-primary)"
+      >
+        Authenticator code
+      </h1>
+      <p class="mb-6 text-center text-(--text-secondary) text-sm">
+        Enter the 6-digit code from Microsoft Authenticator (or a backup code).
+      </p>
+
+      <form class="space-y-4" id="totp-form">
+        <div>
+          <label class={authLabelClass} for="code">Code</label>
+          <input
+            autocomplete="one-time-code"
+            class={authFieldClass}
+            id="code"
+            inputmode="numeric"
+            name="code"
+            placeholder="123456"
+            required
+            type="text"
+          >
+        </div>
+        <p
+          class="hidden text-rose-600 text-sm dark:text-rose-400"
+          id="form-error"
+        ></p>
+        <button class={authButtonClass} type="submit">Verify</button>
+      </form>
+
+      <p class="mt-4 text-center text-(--text-muted) text-xs">
+        Lost your authenticator? Use a one-time backup code from enrollment.
+      </p>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import { authClient } from "../lib/auth-client";
+  import { orpc } from "../lib/orpc";
+  import { postAuthPath } from "../lib/portal-session";
+
+  const form = document.getElementById("totp-form") as HTMLFormElement;
+  const codeInput = document.getElementById("code") as HTMLInputElement;
+  const formError = document.getElementById(
+    "form-error"
+  ) as HTMLParagraphElement;
+  const submitButton = form.querySelector(
+    'button[type="submit"]'
+  ) as HTMLButtonElement;
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    formError.classList.add("hidden");
+    submitButton.disabled = true;
+    submitButton.textContent = "Verifying...";
+
+    const code = codeInput.value.trim();
+
+    try {
+      const totpResult = await authClient.twoFactor.verifyTotp({
+        code,
+        trustDevice: false,
+      });
+
+      if (totpResult.error) {
+        const backupResult = await authClient.twoFactor.verifyBackupCode({
+          code,
+          trustDevice: false,
+        });
+        if (backupResult.error) {
+          formError.textContent =
+            totpResult.error.message ||
+            backupResult.error.message ||
+            "Invalid code.";
+          formError.classList.remove("hidden");
+          return;
+        }
+      }
+
+      try {
+        const profile = await orpc.me.getProfile();
+        window.location.href = postAuthPath(profile.user.role);
+      } catch {
+        window.location.href = "/admin";
+      }
+    } catch {
+      formError.textContent = "An unexpected error occurred.";
+      formError.classList.remove("hidden");
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = "Verify";
+    }
+  });
+</script>

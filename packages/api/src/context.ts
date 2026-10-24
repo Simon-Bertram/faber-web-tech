@@ -14,6 +14,7 @@ export interface SessionUser {
   image?: string | null;
   name: string;
   role: UserRole;
+  twoFactorEnabled: boolean;
   updatedAt: Date;
 }
 
@@ -43,14 +44,16 @@ export async function createContext({ context }: CreateContextOptions) {
   let session: AppSession | null = null;
 
   if (rawSession?.user) {
+    const sessionUser = rawSession.user as typeof rawSession.user & {
+      role?: string;
+      twoFactorEnabled?: boolean;
+    };
     const role = await resolveUserRole(
       db,
-      rawSession.user.id,
-      rawSession.user.email,
+      sessionUser.id,
+      sessionUser.email,
       bindings.ADMIN_EMAILS,
-      typeof (rawSession.user as { role?: string }).role === "string"
-        ? (rawSession.user as { role: string }).role
-        : "user"
+      typeof sessionUser.role === "string" ? sessionUser.role : "user"
     );
 
     session = {
@@ -58,14 +61,15 @@ export async function createContext({ context }: CreateContextOptions) {
       id: rawSession.session.id,
       token: rawSession.session.token,
       user: {
-        createdAt: rawSession.user.createdAt,
-        email: rawSession.user.email,
-        emailVerified: rawSession.user.emailVerified,
-        id: rawSession.user.id,
-        image: rawSession.user.image,
-        name: rawSession.user.name,
+        createdAt: sessionUser.createdAt,
+        email: sessionUser.email,
+        emailVerified: sessionUser.emailVerified,
+        id: sessionUser.id,
+        image: sessionUser.image,
+        name: sessionUser.name,
         role,
-        updatedAt: rawSession.user.updatedAt,
+        twoFactorEnabled: Boolean(sessionUser.twoFactorEnabled),
+        updatedAt: sessionUser.updatedAt,
       },
       userId: rawSession.session.userId,
     };
@@ -73,7 +77,9 @@ export async function createContext({ context }: CreateContextOptions) {
 
   return {
     adminEmails: bindings.ADMIN_EMAILS,
+    bindings,
     db,
+    headers: context.req.raw.headers,
     session,
   };
 }

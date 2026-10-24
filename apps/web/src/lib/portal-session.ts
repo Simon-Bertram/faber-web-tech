@@ -7,6 +7,7 @@ export interface PortalSessionUser {
   id: string;
   name: string;
   role?: string | null;
+  twoFactorEnabled?: boolean | null;
 }
 
 export interface PortalSession {
@@ -51,4 +52,8 @@ export async function fetchPortalSession(
 
 export function postAuthPath(role: string | null | undefined): string {
   return role === "admin" ? "/admin" : "/dashboard";
+}
+
+export function isAdminWithMfa(user: PortalSessionUser): boolean {
+  return user.role === "admin" && Boolean(user.twoFactorEnabled);
 }

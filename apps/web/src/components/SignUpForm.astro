@@ -1,7 +1,9 @@
 ---
-const fieldClass =
-  "min-h-11 w-full rounded border border-(--border-subtle) bg-(--bg-canvas) px-4 py-2.5 text-(--text-primary) placeholder:text-(--text-muted) transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--primary)";
-const labelClass = "mb-1.5 block font-medium text-(--text-primary) text-sm";
+import {
+  authButtonClass,
+  authFieldClass,
+  authLabelClass,
+} from "../lib/auth-ui";
 ---
 
 <div class="mx-auto mt-10 w-full max-w-md p-6">
@@ -11,15 +13,16 @@ const labelClass = "mb-1.5 block font-medium text-(--text-primary) text-sm";
     Create account
   </h1>
   <p class="mb-6 text-center text-(--text-secondary) text-sm">
-    Open registration for prospective and current clients.
+    Open registration for prospective and current clients. We’ll email you a
+    one-time code.
   </p>
 
   <form class="space-y-4" id="signup-form">
     <div>
-      <label class={labelClass} for="name">Name</label>
+      <label class={authLabelClass} for="name">Name</label>
       <input
         autocomplete="name"
-        class={fieldClass}
+        class={authFieldClass}
         id="name"
         name="name"
         placeholder="Jane Doe"
@@ -29,10 +32,10 @@ const labelClass = "mb-1.5 block font-medium text-(--text-primary) text-sm";
     </div>
 
     <div>
-      <label class={labelClass} for="email">Email</label>
+      <label class={authLabelClass} for="email">Email</label>
       <input
         autocomplete="email"
-        class={fieldClass}
+        class={authFieldClass}
         id="email"
         name="email"
         placeholder="you@example.com"
@@ -41,34 +44,26 @@ const labelClass = "mb-1.5 block font-medium text-(--text-primary) text-sm";
       >
     </div>
 
-    <div>
-      <label class={labelClass} for="password">Password</label>
+    <div class="hidden" id="otp-step">
+      <label class={authLabelClass} for="otp">Email code</label>
       <input
-        autocomplete="new-password"
-        class={fieldClass}
-        id="password"
-        minlength="8"
-        name="password"
-        placeholder="••••••••"
-        required
-        type="password"
+        autocomplete="one-time-code"
+        class={authFieldClass}
+        id="otp"
+        inputmode="numeric"
+        name="otp"
+        placeholder="123456"
+        type="text"
       >
-      <p class="mt-1.5 text-(--text-muted) text-xs">
-        Must be at least 8 characters
-      </p>
     </div>
 
     <p
       class="hidden text-rose-600 text-sm dark:text-rose-400"
       id="form-error"
     ></p>
+    <p class="hidden text-(--text-secondary) text-sm" id="form-status"></p>
 
-    <button
-      class="inline-flex w-full min-h-11 items-center justify-center rounded bg-(--primary) px-4 py-2.5 font-semibold text-sm text-white transition-colors hover:bg-(--primary-hover) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--primary) disabled:cursor-not-allowed disabled:opacity-50"
-      type="submit"
-    >
-      Sign up
-    </button>
+    <button class={authButtonClass} id="submit" type="submit">Send code</button>
   </form>
 
   <div class="mt-4 text-center">
@@ -89,27 +84,52 @@ const labelClass = "mb-1.5 block font-medium text-(--text-primary) text-sm";
   const form = document.getElementById("signup-form") as HTMLFormElement;
   const nameInput = document.getElementById("name") as HTMLInputElement;
   const emailInput = document.getElementById("email") as HTMLInputElement;
-  const passwordInput = document.getElementById("password") as HTMLInputElement;
+  const otpInput = document.getElementById("otp") as HTMLInputElement;
+  const otpStep = document.getElementById("otp-step") as HTMLDivElement;
   const formError = document.getElementById(
     "form-error"
   ) as HTMLParagraphElement;
-  const submitButton = form.querySelector(
-    'button[type="submit"]'
-  ) as HTMLButtonElement;
+  const formStatus = document.getElementById(
+    "form-status"
+  ) as HTMLParagraphElement;
+  const submitButton = document.getElementById("submit") as HTMLButtonElement;
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+  let otpSent = false;
 
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
     formError.classList.add("hidden");
+    formStatus.classList.add("hidden");
     submitButton.disabled = true;
-    submitButton.textContent = "Creating account...";
 
     try {
-      await authClient.signUp.email(
+      if (!otpSent) {
+        submitButton.textContent = "Sending...";
+        const { error } = await authClient.emailOtp.sendVerificationOtp({
+          email: emailInput.value,
+          type: "sign-in",
+        });
+        if (error) {
+          formError.textContent =
+            error.message || "Could not send a code. Try again.";
+          formError.classList.remove("hidden");
+          return;
+        }
+        otpSent = true;
+        otpStep.classList.remove("hidden");
+        otpInput.required = true;
+        submitButton.textContent = "Verify and create account";
+        formStatus.textContent = "If that email can register, we sent a code.";
+        formStatus.classList.remove("hidden");
+        return;
+      }
+
+      submitButton.textContent = "Creating account...";
+      await authClient.signIn.emailOtp(
         {
           email: emailInput.value,
           name: nameInput.value,
-          password: passwordInput.value,
+          otp: otpInput.value,
         },
         {
           onError: (ctx) => {
@@ -117,10 +137,31 @@ const labelClass = "mb-1.5 block font-medium text-(--text-primary) text-sm";
               ctx.error.message || "Sign up failed. Please try again.";
             formError.classList.remove("hidden");
           },
-          onSuccess: async () => {
+          onSuccess: async (ctx) => {
+            if (
+              ctx.data &&
+              typeof ctx.data === "object" &&
+              "twoFactorRedirect" in ctx.data &&
+              ctx.data.twoFactorRedirect
+            ) {
+              window.location.href = "/two-factor";
+              return;
+            }
             try {
               const profile = await orpc.me.getProfile();
-              window.location.href = postAuthPath(profile.user.role);
+              const role =
+                typeof profile.user.role === "string"
+                  ? profile.user.role
+                  : "user";
+              const twoFactorEnabled = Boolean(
+                (profile.user as { twoFactorEnabled?: boolean })
+                  .twoFactorEnabled
+              );
+              if (role === "admin" && !twoFactorEnabled) {
+                window.location.href = "/admin/security/2fa";
+                return;
+              }
+              window.location.href = postAuthPath(role);
             } catch {
               window.location.href = "/dashboard";
             }
@@ -132,7 +173,11 @@ const labelClass = "mb-1.5 block font-medium text-(--text-primary) text-sm";
       formError.classList.remove("hidden");
     } finally {
       submitButton.disabled = false;
-      submitButton.textContent = "Sign up";
+      if (!otpSent) {
+        submitButton.textContent = "Send code";
+      } else if (submitButton.textContent === "Creating account...") {
+        submitButton.textContent = "Verify and create account";
+      }
     }
   });
 </script>

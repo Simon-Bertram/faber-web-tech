@@ -91,8 +91,11 @@ const loggingMiddleware = defineMiddleware(
 const portalAuthMiddleware = defineMiddleware(
   async ({ request, redirect, locals }, next) => {
     const { pathname } = new URL(request.url);
+    const isTwoFactorPage = pathname === "/two-factor";
+    const isAdminMfaSetup = pathname === "/admin/security/2fa";
+    const isAdminArea = pathname.startsWith("/admin");
     const isPortal =
-      pathname.startsWith("/dashboard") || pathname.startsWith("/admin");
+      pathname.startsWith("/dashboard") || isAdminArea || isTwoFactorPage;
 
     if (!isPortal) {
       return next();
@@ -104,6 +107,16 @@ const portalAuthMiddleware = defineMiddleware(
     }
 
     locals.portalUser = session.user;
+
+    if (isAdminArea) {
+      if (session.user.role !== "admin") {
+        return redirect("/dashboard");
+      }
+      if (!(session.user.twoFactorEnabled || isAdminMfaSetup)) {
+        return redirect("/admin/security/2fa");
+      }
+    }
+
     return next();
   }
 );

@@ -1,11 +1,33 @@
+---
+interface Props {
+  /** When false, admins may access before TOTP enrollment (setup page only). */
+  requireTwoFactor?: boolean;
+}
+
+const { requireTwoFactor = true } = Astro.props;
+---
+
+<div
+  data-require-two-factor={requireTwoFactor ? "true" : "false"}
+  hidden
+  id="admin-gate"
+></div>
+
 <script>
   import { orpc } from "../lib/orpc";
 
   async function ensureAdmin() {
+    const gate = document.getElementById("admin-gate");
+    const requireTwoFactor = gate?.dataset.requireTwoFactor !== "false";
+
     try {
       const profile = await orpc.me.getProfile();
       if (profile.user.role !== "admin") {
         window.location.replace("/dashboard");
+        return;
+      }
+      if (requireTwoFactor && !profile.user.twoFactorEnabled) {
+        window.location.replace("/admin/security/2fa");
       }
     } catch {
       window.location.replace("/login");

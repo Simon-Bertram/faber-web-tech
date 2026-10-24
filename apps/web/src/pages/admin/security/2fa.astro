@@ -1,0 +1,171 @@
+---
+import AdminGate from "../../../components/AdminGate.astro";
+import Layout from "../../../layouts/Layout.astro";
+import {
+  authButtonClass,
+  authFieldClass,
+  authLabelClass,
+} from "../../../lib/auth-ui";
+---
+
+<Layout title="Set up authenticator - Admin">
+  <AdminGate requireTwoFactor={false} />
+  <div class="mx-auto max-w-lg px-4 py-12">
+    <h1 class="mb-2 font-display font-bold text-3xl text-(--text-primary)">
+      Set up two-factor authentication
+    </h1>
+    <p class="mb-8 text-(--text-secondary) text-sm">
+      Admin access requires an authenticator app such as Microsoft
+      Authenticator. Scan the QR code, then enter a code to finish setup. Store
+      the backup codes offline — they are shown once.
+    </p>
+
+    <div class="space-y-6" id="setup">
+      <button class={authButtonClass} id="start-setup" type="button">
+        Generate QR code
+      </button>
+
+      <div class="hidden space-y-4" id="enroll-step">
+        <div
+          class="flex justify-center rounded border border-(--border-subtle) bg-white p-4"
+        >
+          <img alt="Authenticator QR code" class="h-48 w-48" id="qr-image">
+        </div>
+        <p class="break-all text-(--text-muted) text-xs" id="manual-uri"></p>
+
+        <div>
+          <h2 class="mb-2 font-semibold text-(--text-primary) text-sm">
+            Backup codes
+          </h2>
+          <ul
+            class="grid grid-cols-2 gap-2 font-mono text-(--text-secondary) text-sm"
+            id="backup-codes"
+          ></ul>
+        </div>
+
+        <form class="space-y-4" id="verify-form">
+          <div>
+            <label class={authLabelClass} for="code">Authenticator code</label>
+            <input
+              autocomplete="one-time-code"
+              class={authFieldClass}
+              id="code"
+              inputmode="numeric"
+              name="code"
+              placeholder="123456"
+              required
+              type="text"
+            >
+          </div>
+          <button class={authButtonClass} type="submit">
+            Confirm and enable
+          </button>
+        </form>
+      </div>
+
+      <p
+        class="hidden text-rose-600 text-sm dark:text-rose-400"
+        id="form-error"
+      ></p>
+      <p class="hidden text-(--text-secondary) text-sm" id="form-status"></p>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import QRCode from "qrcode";
+
+  import { authClient } from "../../../lib/auth-client";
+
+  const startButton = document.getElementById(
+    "start-setup"
+  ) as HTMLButtonElement;
+  const enrollStep = document.getElementById("enroll-step") as HTMLDivElement;
+  const qrImage = document.getElementById("qr-image") as HTMLImageElement;
+  const manualUri = document.getElementById(
+    "manual-uri"
+  ) as HTMLParagraphElement;
+  const backupCodes = document.getElementById(
+    "backup-codes"
+  ) as HTMLUListElement;
+  const verifyForm = document.getElementById("verify-form") as HTMLFormElement;
+  const codeInput = document.getElementById("code") as HTMLInputElement;
+  const formError = document.getElementById(
+    "form-error"
+  ) as HTMLParagraphElement;
+  const formStatus = document.getElementById(
+    "form-status"
+  ) as HTMLParagraphElement;
+
+  startButton.addEventListener("click", async () => {
+    formError.classList.add("hidden");
+    startButton.disabled = true;
+    startButton.textContent = "Generating...";
+
+    try {
+      const { data, error } = await authClient.twoFactor.enable({
+        method: "totp",
+      });
+      if (error || !data || data.method !== "totp") {
+        formError.textContent =
+          error?.message || "Could not start authenticator setup.";
+        formError.classList.remove("hidden");
+        return;
+      }
+
+      const totpURI = data.totpURI;
+      qrImage.src = await QRCode.toDataURL(totpURI, {
+        errorCorrectionLevel: "M",
+        margin: 1,
+        width: 192,
+      });
+      manualUri.textContent = totpURI;
+      backupCodes.replaceChildren();
+      for (const code of data.backupCodes ?? []) {
+        const item = document.createElement("li");
+        item.textContent = code;
+        backupCodes.append(item);
+      }
+      enrollStep.classList.remove("hidden");
+      startButton.classList.add("hidden");
+      formStatus.textContent =
+        "Scan with Microsoft Authenticator (Add account → Other account), save backup codes, then confirm.";
+      formStatus.classList.remove("hidden");
+    } catch {
+      formError.textContent = "An unexpected error occurred.";
+      formError.classList.remove("hidden");
+    } finally {
+      startButton.disabled = false;
+      startButton.textContent = "Generate QR code";
+    }
+  });
+
+  verifyForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    formError.classList.add("hidden");
+    const submitButton = verifyForm.querySelector(
+      'button[type="submit"]'
+    ) as HTMLButtonElement;
+    submitButton.disabled = true;
+    submitButton.textContent = "Confirming...";
+
+    try {
+      const { error } = await authClient.twoFactor.verifyTotp({
+        code: codeInput.value.trim(),
+        trustDevice: false,
+      });
+      if (error) {
+        formError.textContent = error.message || "Invalid code.";
+        formError.classList.remove("hidden");
+        return;
+      }
+      window.location.href = "/admin";
+    } catch {
+      formError.textContent = "An unexpected error occurred.";
+      formError.classList.remove("hidden");
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = "Confirm and enable";
+    }
+  });
+</script>

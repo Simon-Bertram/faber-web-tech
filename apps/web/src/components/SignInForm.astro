@@ -1,7 +1,11 @@
 ---
-const fieldClass =
-  "min-h-11 w-full rounded border border-(--border-subtle) bg-(--bg-canvas) px-4 py-2.5 text-(--text-primary) placeholder:text-(--text-muted) transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--primary)";
-const labelClass = "mb-1.5 block font-medium text-(--text-primary) text-sm";
+import {
+  authButtonClass,
+  authFieldClass,
+  authLabelClass,
+  authSecondaryButtonClass,
+  MIN_PASSWORD_LENGTH,
+} from "../lib/auth-ui";
 ---
 
 <div class="mx-auto mt-10 w-full max-w-md p-6">
@@ -11,15 +15,15 @@ const labelClass = "mb-1.5 block font-medium text-(--text-primary) text-sm";
     Welcome back
   </h1>
   <p class="mb-6 text-center text-(--text-secondary) text-sm">
-    Sign in to your client or admin portal.
+    Sign in with a one-time code sent to your email.
   </p>
 
-  <form class="space-y-4" id="signin-form">
+  <form class="space-y-4" id="otp-form">
     <div>
-      <label class={labelClass} for="email">Email</label>
+      <label class={authLabelClass} for="email">Email</label>
       <input
         autocomplete="email"
-        class={fieldClass}
+        class={authFieldClass}
         id="email"
         name="email"
         placeholder="you@example.com"
@@ -28,31 +32,71 @@ const labelClass = "mb-1.5 block font-medium text-(--text-primary) text-sm";
       >
     </div>
 
-    <div>
-      <label class={labelClass} for="password">Password</label>
+    <div class="hidden" id="otp-step">
+      <label class={authLabelClass} for="otp">Email code</label>
       <input
-        autocomplete="current-password"
-        class={fieldClass}
-        id="password"
-        name="password"
-        placeholder="••••••••"
-        required
-        type="password"
+        autocomplete="one-time-code"
+        class={authFieldClass}
+        id="otp"
+        inputmode="numeric"
+        name="otp"
+        placeholder="123456"
+        type="text"
       >
+      <p class="mt-1.5 text-(--text-muted) text-xs">
+        Check your inbox for a 6-digit code.
+      </p>
     </div>
 
     <p
       class="hidden text-rose-600 text-sm dark:text-rose-400"
-      id="form-error"
+      id="otp-error"
     ></p>
+    <p class="hidden text-(--text-secondary) text-sm" id="otp-status"></p>
 
-    <button
-      class="inline-flex w-full min-h-11 items-center justify-center rounded bg-(--primary) px-4 py-2.5 font-semibold text-sm text-white transition-colors hover:bg-(--primary-hover) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--primary) disabled:cursor-not-allowed disabled:opacity-50"
-      type="submit"
-    >
-      Sign in
+    <button class={authButtonClass} id="otp-submit" type="submit">
+      Send code
     </button>
   </form>
+
+  <div class="mt-6 border-(--border-subtle) border-t pt-6">
+    <button class={authSecondaryButtonClass} id="toggle-password" type="button">
+      Sign in with password instead
+    </button>
+
+    <form class="mt-4 hidden space-y-4" id="password-form">
+      <div>
+        <label class={authLabelClass} for="password-email">Email</label>
+        <input
+          autocomplete="email"
+          class={authFieldClass}
+          id="password-email"
+          name="password-email"
+          placeholder="you@example.com"
+          required
+          type="email"
+        >
+      </div>
+      <div>
+        <label class={authLabelClass} for="password">Password</label>
+        <input
+          autocomplete="current-password"
+          class={authFieldClass}
+          id="password"
+          minlength={MIN_PASSWORD_LENGTH}
+          name="password"
+          placeholder="••••••••"
+          required
+          type="password"
+        >
+      </div>
+      <p
+        class="hidden text-rose-600 text-sm dark:text-rose-400"
+        id="password-error"
+      ></p>
+      <button class={authButtonClass} type="submit">Sign in</button>
+    </form>
+  </div>
 
   <div class="mt-4 text-center">
     <a
@@ -69,48 +113,161 @@ const labelClass = "mb-1.5 block font-medium text-(--text-primary) text-sm";
   import { orpc } from "../lib/orpc";
   import { postAuthPath } from "../lib/portal-session";
 
-  const form = document.getElementById("signin-form") as HTMLFormElement;
+  const otpForm = document.getElementById("otp-form") as HTMLFormElement;
+  const passwordForm = document.getElementById(
+    "password-form"
+  ) as HTMLFormElement;
   const emailInput = document.getElementById("email") as HTMLInputElement;
-  const passwordInput = document.getElementById("password") as HTMLInputElement;
-  const formError = document.getElementById(
-    "form-error"
+  const otpInput = document.getElementById("otp") as HTMLInputElement;
+  const otpStep = document.getElementById("otp-step") as HTMLDivElement;
+  const otpError = document.getElementById("otp-error") as HTMLParagraphElement;
+  const otpStatus = document.getElementById(
+    "otp-status"
   ) as HTMLParagraphElement;
-  const submitButton = form.querySelector(
-    'button[type="submit"]'
+  const otpSubmit = document.getElementById("otp-submit") as HTMLButtonElement;
+  const togglePassword = document.getElementById(
+    "toggle-password"
   ) as HTMLButtonElement;
+  const passwordEmail = document.getElementById(
+    "password-email"
+  ) as HTMLInputElement;
+  const passwordInput = document.getElementById("password") as HTMLInputElement;
+  const passwordError = document.getElementById(
+    "password-error"
+  ) as HTMLParagraphElement;
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+  let otpSent = false;
 
-    formError.classList.add("hidden");
+  async function redirectAfterAuth() {
+    try {
+      const profile = await orpc.me.getProfile();
+      const role =
+        typeof profile.user.role === "string" ? profile.user.role : "user";
+      const twoFactorEnabled = Boolean(
+        (profile.user as { twoFactorEnabled?: boolean }).twoFactorEnabled
+      );
+      if (role === "admin" && !twoFactorEnabled) {
+        window.location.href = "/admin/security/2fa";
+        return;
+      }
+      window.location.href = postAuthPath(role);
+    } catch {
+      window.location.href = "/dashboard";
+    }
+  }
+
+  togglePassword.addEventListener("click", () => {
+    passwordForm.classList.toggle("hidden");
+    if (!passwordEmail.value) {
+      passwordEmail.value = emailInput.value;
+    }
+  });
+
+  otpForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    otpError.classList.add("hidden");
+    otpStatus.classList.add("hidden");
+    otpSubmit.disabled = true;
+
+    try {
+      if (!otpSent) {
+        otpSubmit.textContent = "Sending...";
+        const { error } = await authClient.emailOtp.sendVerificationOtp({
+          email: emailInput.value,
+          type: "sign-in",
+        });
+        if (error) {
+          otpError.textContent =
+            error.message || "Could not send a code. Try again.";
+          otpError.classList.remove("hidden");
+          return;
+        }
+        otpSent = true;
+        otpStep.classList.remove("hidden");
+        otpInput.required = true;
+        otpSubmit.textContent = "Verify and sign in";
+        otpStatus.textContent = "If that email can sign in, we sent a code.";
+        otpStatus.classList.remove("hidden");
+        return;
+      }
+
+      otpSubmit.textContent = "Verifying...";
+      await authClient.signIn.emailOtp(
+        {
+          email: emailInput.value,
+          otp: otpInput.value,
+        },
+        {
+          onError: (ctx) => {
+            otpError.textContent =
+              ctx.error.message || "Invalid code. Try again.";
+            otpError.classList.remove("hidden");
+          },
+          onSuccess: async (ctx) => {
+            if (
+              ctx.data &&
+              typeof ctx.data === "object" &&
+              "twoFactorRedirect" in ctx.data &&
+              ctx.data.twoFactorRedirect
+            ) {
+              window.location.href = "/two-factor";
+              return;
+            }
+            await redirectAfterAuth();
+          },
+        }
+      );
+    } catch {
+      otpError.textContent = "An unexpected error occurred.";
+      otpError.classList.remove("hidden");
+    } finally {
+      otpSubmit.disabled = false;
+      if (!otpSent) {
+        otpSubmit.textContent = "Send code";
+      } else if (otpSubmit.textContent === "Verifying...") {
+        otpSubmit.textContent = "Verify and sign in";
+      }
+    }
+  });
+
+  passwordForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    passwordError.classList.add("hidden");
+    const submitButton = passwordForm.querySelector(
+      'button[type="submit"]'
+    ) as HTMLButtonElement;
     submitButton.disabled = true;
     submitButton.textContent = "Signing in...";
 
     try {
       await authClient.signIn.email(
         {
-          email: emailInput.value,
+          email: passwordEmail.value,
           password: passwordInput.value,
         },
         {
           onError: (ctx) => {
-            formError.textContent =
+            passwordError.textContent =
               ctx.error.message || "Sign in failed. Please try again.";
-            formError.classList.remove("hidden");
+            passwordError.classList.remove("hidden");
           },
-          onSuccess: async () => {
-            try {
-              const profile = await orpc.me.getProfile();
-              window.location.href = postAuthPath(profile.user.role);
-            } catch {
-              window.location.href = "/dashboard";
+          onSuccess: async (ctx) => {
+            if (
+              ctx.data &&
+              typeof ctx.data === "object" &&
+              "twoFactorRedirect" in ctx.data &&
+              ctx.data.twoFactorRedirect
+            ) {
+              window.location.href = "/two-factor";
+              return;
             }
+            await redirectAfterAuth();
           },
         }
       );
     } catch {
-      formError.textContent = "An unexpected error occurred.";
-      formError.classList.remove("hidden");
+      passwordError.textContent = "An unexpected error occurred.";
+      passwordError.classList.remove("hidden");
     } finally {
       submitButton.disabled = false;
       submitButton.textContent = "Sign in";
