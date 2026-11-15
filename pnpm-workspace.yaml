@@ -2,8 +2,11 @@ packages:
   - apps/*
   - packages/*
 # Keep Effect platform packages aligned with effect@4.0.4 (Alchemy beta.83 peers ^4.0.0).
+# Keep @emnapi/* on 1.11.x so @astrojs/check (astro2tsx) does not mix core@1 with runtime@2-beta.
 overrides:
   "@effect/platform-node-shared": "4.0.4"
+  "@emnapi/core": "1.11.3"
+  "@emnapi/runtime": "1.11.3"
   hono: "catalog:"
 allowBuilds:
   esbuild: true

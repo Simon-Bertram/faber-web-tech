@@ -12,7 +12,7 @@
     "@faber-web/api": "workspace:*",
     "@faber-web/env": "workspace:*",
     "@orpc/client": "catalog:",
-    "astro": "^7.4.2",
+    "astro": "^7.4.12",
     "better-auth": "catalog:",
     "dotenv": "catalog:",
     "evlog": "catalog:",
@@ -25,9 +25,9 @@
     "@astrojs/check": "^0.9.12",
     "@cloudflare/workers-types": "catalog:",
     "@faber-web/config": "workspace:*",
-    "@tailwindcss/vite": "^4.3.3",
+    "@tailwindcss/vite": "^4.3.5",
     "@types/qrcode": "^1.5.6",
-    "tailwindcss": "^4.3.3",
+    "tailwindcss": "^4.3.5",
     "typescript": "catalog:"
   }
 }

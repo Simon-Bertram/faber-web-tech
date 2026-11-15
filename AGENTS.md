@@ -13,6 +13,7 @@ A marketing and client management platform for a solo web developer. The public-
 - **Database**: Cloudflare D1
 - **Authentication**: Better-Auth
 - **Observability**: Evlog (see [docs/logging.md](docs/logging.md))
+- **Dependencies**: pnpm catalog / workspace (see [docs/dependencies.md](docs/dependencies.md))
 
 ---
 
@@ -208,6 +209,8 @@ Biome's linter will catch most issues automatically. Focus your attention on:
 ---
 
 # Package Manager Execution Guidelines
+
+For catalog bumps, holds, and the safe update workflow, see [docs/dependencies.md](docs/dependencies.md).
 
 ## Which Should You Use in a pnpm Project?
 

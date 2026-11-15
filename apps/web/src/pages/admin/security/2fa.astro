@@ -85,7 +85,7 @@ import {
   const manualUri = document.getElementById(
     "manual-uri"
   ) as HTMLParagraphElement;
-  const backupCodes = document.getElementById(
+  const backupCodesList = document.getElementById(
     "backup-codes"
   ) as HTMLUListElement;
   const verifyForm = document.getElementById("verify-form") as HTMLFormElement;
@@ -120,11 +120,11 @@ import {
         width: 192,
       });
       manualUri.textContent = totpURI;
-      backupCodes.replaceChildren();
+      backupCodesList.replaceChildren();
       for (const code of data.backupCodes ?? []) {
         const item = document.createElement("li");
         item.textContent = code;
-        backupCodes.append(item);
+        backupCodesList.appendChild(item);
       }
       enrollStep.classList.remove("hidden");
       startButton.classList.add("hidden");
