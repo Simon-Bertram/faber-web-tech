@@ -3,6 +3,7 @@ import {
   authButtonClass,
   authFieldClass,
   authLabelClass,
+  authOtpFieldClass,
   authSecondaryButtonClass,
   MIN_PASSWORD_LENGTH,
 } from "../lib/auth-ui";
@@ -35,16 +36,18 @@ import {
     <div class="hidden" id="otp-step">
       <label class={authLabelClass} for="otp">Email code</label>
       <input
+        aria-describedby="otp-hint"
         autocomplete="one-time-code"
-        class={authFieldClass}
+        class={authOtpFieldClass}
         id="otp"
         inputmode="numeric"
+        maxlength="6"
         name="otp"
         placeholder="123456"
         type="text"
       >
-      <p class="mt-1.5 text-(--text-muted) text-xs">
-        Check your inbox for a 6-digit code.
+      <p class="mt-1.5 text-(--text-muted) text-xs" id="otp-hint">
+        Enter the code from your email. Don’t see it? Check junk or spam.
       </p>
     </div>
 
@@ -113,6 +116,8 @@ import {
   import { orpc } from "../lib/orpc";
   import { postAuthPath } from "../lib/portal-session";
 
+  const OTP_LENGTH = 6;
+
   const otpForm = document.getElementById("otp-form") as HTMLFormElement;
   const passwordForm = document.getElementById(
     "password-form"
@@ -137,6 +142,7 @@ import {
   ) as HTMLParagraphElement;
 
   let otpSent = false;
+  let isSubmitting = false;
 
   async function redirectAfterAuth() {
     try {
@@ -163,8 +169,19 @@ import {
     }
   });
 
+  otpInput.addEventListener("input", () => {
+    otpInput.value = otpInput.value.replace(/\D/g, "").slice(0, OTP_LENGTH);
+    if (otpSent && !isSubmitting && otpInput.value.length === OTP_LENGTH) {
+      otpForm.requestSubmit();
+    }
+  });
+
   otpForm.addEventListener("submit", async (event) => {
     event.preventDefault();
+    if (isSubmitting) {
+      return;
+    }
+    isSubmitting = true;
     otpError.classList.add("hidden");
     otpStatus.classList.add("hidden");
     otpSubmit.disabled = true;
@@ -186,8 +203,10 @@ import {
         otpStep.classList.remove("hidden");
         otpInput.required = true;
         otpSubmit.textContent = "Verify and sign in";
-        otpStatus.textContent = "If that email can sign in, we sent a code.";
+        otpStatus.textContent =
+          "If that email can sign in, we’ve sent a 6-digit code. If it doesn’t arrive shortly, check your junk or spam folder.";
         otpStatus.classList.remove("hidden");
+        otpInput.focus();
         return;
       }
 
@@ -221,6 +240,7 @@ import {
       otpError.textContent = "An unexpected error occurred.";
       otpError.classList.remove("hidden");
     } finally {
+      isSubmitting = false;
       otpSubmit.disabled = false;
       if (!otpSent) {
         otpSubmit.textContent = "Send code";

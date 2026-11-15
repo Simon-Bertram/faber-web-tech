@@ -1,0 +1,154 @@
+---
+import CtaBanner from "../components/CtaBanner.astro";
+import Footer from "../components/Footer.astro";
+import Layout from "../layouts/Layout.astro";
+
+const howIWork = [
+  {
+    body: "When the path is mostly known — intake, classify, extract, draft, hand off — I use fixed steps with structured model calls and validated outputs. Predictable, cheaper to run, easier to trust.",
+    title: "Prefer workflows",
+  },
+  {
+    body: "When the work needs open-ended tool use or multi-step judgment a fixed path cannot cover cleanly, agents earn their place. I reach for them after a simpler workflow has been tried or clearly ruled out.",
+    title: "Use agents when the work demands it",
+  },
+  {
+    body: "More capability means more failure modes, cost, and oversight. The most powerful agents stay reserved for proven need — not the default architecture for every brief.",
+    title: "Powerful agents only when necessary",
+  },
+] as const;
+---
+
+<Layout
+  description="Reliable AI applications for growing businesses — workflows first, agents only when necessary. Built for fewer manual hours, not research demos."
+  title="AI Application Development | Faber Web Tech"
+>
+  <div class="flex w-full flex-col">
+    <section
+      class="relative overflow-hidden border-(--border-subtle) border-b py-16 md:py-24"
+    >
+      <div
+        aria-hidden="true"
+        class="-translate-x-1/2 pointer-events-none absolute top-0 left-1/2 -z-10 h-87.5 w-150 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(255,92,0,0.12),transparent_70%)] blur-3xl"
+      ></div>
+
+      <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+        <span
+          class="mb-4 inline-block rounded-full border border-(--tertiary)/30 bg-(--tertiary-container) px-3.5 py-1 font-mono font-semibold text-(--tertiary) text-xs uppercase tracking-widest"
+        >
+          Faber Web Tech · AI Applications
+        </span>
+        <h1
+          class="mb-4 font-extrabold text-3xl text-(--text-primary) leading-tight tracking-tight sm:text-4xl lg:text-5xl"
+        >
+          AI applications that earn their complexity.
+        </h1>
+        <p
+          class="mb-8 max-w-2xl text-(--text-secondary) text-lg leading-relaxed"
+        >
+          I build reliable AI systems for small and medium businesses — and the
+          occasional corporate client — who need fewer manual hours, not a
+          research lab in production.
+        </p>
+        <a
+          class="inline-flex h-12 items-center justify-center rounded bg-(--primary) px-8 font-semibold text-sm text-white uppercase tracking-wider shadow-lg transition-all hover:bg-(--primary-hover) hover:shadow-[0_4px_20px_var(--primary-glow)] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--primary)"
+          href="/contact"
+        >
+          Discuss your use case
+        </a>
+      </div>
+    </section>
+
+    <section
+      aria-labelledby="audience-heading"
+      class="border-(--border-subtle) border-b py-16 md:py-24"
+    >
+      <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+        <h2
+          class="mb-4 font-extrabold text-2xl text-(--text-primary) tracking-tight sm:text-3xl"
+          id="audience-heading"
+        >
+          What this is for
+        </h2>
+        <p
+          class="mb-10 max-w-2xl text-(--text-secondary) text-lg leading-relaxed"
+        >
+          Quoting, intake, document triage, follow-ups — the work that eats
+          evenings. I ship systems that remove busywork without becoming a
+          second product you have to babysit.
+        </p>
+
+        <div class="grid gap-8 sm:grid-cols-2">
+          <div>
+            <h3
+              class="mb-2 font-mono font-semibold text-(--tertiary) text-xs uppercase tracking-widest"
+            >
+              Small & medium businesses
+            </h3>
+            <p class="text-(--text-secondary) leading-relaxed">
+              Clear steps, validated outputs, handoffs into the tools you
+              already use. You get time back — not another dashboard to monitor.
+            </p>
+          </div>
+          <div>
+            <h3
+              class="mb-2 font-mono font-semibold text-(--tertiary) text-xs uppercase tracking-widest"
+            >
+              Corporate buyers
+            </h3>
+            <p class="text-(--text-secondary) leading-relaxed">
+              Same reliability bar: privacy, clear boundaries, and auditability
+              — without starting at maximum complexity on day one.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section
+      aria-labelledby="how-i-work-heading"
+      class="border-(--border-subtle) border-b bg-(--bg-surface) py-16 md:py-24"
+      id="how-i-work"
+    >
+      <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+        <h2
+          class="mb-4 font-extrabold text-2xl text-(--text-primary) tracking-tight sm:text-3xl"
+          id="how-i-work-heading"
+        >
+          How I work
+        </h2>
+        <blockquote
+          class="mb-10 border-(--tertiary)/40 border-l-2 pl-5 text-(--text-primary) text-lg leading-relaxed"
+        >
+          I start with the simplest possible (useful) structure and only add
+          complexity when proven necessary. I aim for the most reliable system,
+          not the most ambitious one.
+        </blockquote>
+
+        <ol class="space-y-8">
+          {howIWork.map((item, index) => (
+              <li class="flex gap-4">
+                <span
+                  aria-hidden="true"
+                  class="font-mono font-semibold text-(--tertiary) text-sm tabular-nums"
+                >
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <div>
+                  <h3 class="mb-2 font-semibold text-(--text-primary) text-lg">
+                    {item.title}
+                  </h3>
+                  <p class="text-(--text-secondary) leading-relaxed">
+                    {item.body}
+                  </p>
+                </div>
+              </li>
+            ))}
+        </ol>
+      </div>
+    </section>
+
+    <CtaBanner />
+    <Footer />
+  </div>
+</Layout>

@@ -1,6 +1,10 @@
 export const authFieldClass =
   "min-h-11 w-full rounded border border-(--border-subtle) bg-(--bg-canvas) px-4 py-2.5 text-(--text-primary) placeholder:text-(--text-muted) transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--primary)";
 
+/** Larger OTP code field: digit readability + WCAG 2.2 target/focus. */
+export const authOtpFieldClass =
+  "min-h-14 w-full rounded border border-(--border-subtle) bg-(--bg-canvas) px-4 py-3 text-center font-semibold text-2xl text-(--text-primary) tracking-[0.35em] placeholder:tracking-[0.35em] placeholder:text-(--text-muted) transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--primary)";
+
 export const authLabelClass =
   "mb-1.5 block font-medium text-(--text-primary) text-sm";
 

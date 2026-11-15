@@ -52,13 +52,13 @@ export const slides: HeroSlide[] = [
     badgeColor:
       "text-[var(--tertiary)] border-[var(--tertiary)]/30 bg-[var(--tertiary-container)]",
     description:
-      "Automate manual bottlenecks and multiply human output. We develop autonomous agentic pipelines, tailored LLM integrations, and self-healing business automations with strict validation and enterprise data security.",
+      "Automate manual bottlenecks without building a science project. I start with simple, validated workflows and only escalate to powerful agents when the work truly needs them — reliability over ambition.",
     id: "ai-automation",
     previewType: "automation",
     primaryCtaLink: "/contact",
     primaryCtaText: "Automate Your Business",
-    secondaryCtaLink: "/solutions#ai-automation",
-    secondaryCtaText: "Explore AI Solutions",
+    secondaryCtaLink: "/ai-applications",
+    secondaryCtaText: "How I Approach AI",
     tier: "03 // INTELLIGENCE & AUTOMATION",
     title: "Intelligent Workflows & Custom LLM Systems",
   },

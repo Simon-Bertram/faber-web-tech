@@ -25,7 +25,7 @@
     "@cloudflare/workers-types": "catalog:",
     "@faber-web/config": "workspace:*",
     "@types/node": "catalog:",
-    "tsdown": "^0.22.14",
+    "tsdown": "^0.23.7",
     "typescript": "catalog:"
   }
 }

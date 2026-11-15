@@ -39,10 +39,16 @@ function axiomEnv() {
 
 const workersLogs = {
   enabled: true,
+  headSamplingRate: 1,
   logs: {
     enabled: true,
     headSamplingRate: 1,
     invocationLogs: true,
+    persist: true,
+  },
+  traces: {
+    enabled: false,
+    headSamplingRate: 1,
     persist: true,
   },
 };
