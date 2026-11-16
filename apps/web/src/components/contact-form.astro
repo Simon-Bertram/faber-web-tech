@@ -164,7 +164,7 @@ const errorClass = "mt-1.5 text-rose-600 text-sm dark:text-rose-400";
         </legend>
         <div class="grid gap-2 sm:grid-cols-2">
           {projectTypeOptions.map((option) => (
-            <label class="flex min-h-11 cursor-pointer items-center gap-3 rounded border border-(--border-subtle) bg-(--bg-canvas) px-4 py-2.5 text-(--text-primary) text-sm transition-colors hover:border-(--border-hover) has-[:focus-visible]:ring-(--primary) has-[:focus-visible]:ring-2">
+            <label class="flex min-h-11 cursor-pointer items-center gap-3 rounded border border-(--border-subtle) bg-(--bg-canvas) px-4 py-2.5 text-(--text-primary) text-sm transition-colors hover:border-(--border-hover) has-focus-visible:ring-(--primary) has-focus-visible:ring-2">
               <input
                 checked={values.projectType === option.id}
                 class="h-4 w-4 accent-(--primary)"
@@ -290,8 +290,12 @@ const errorClass = "mt-1.5 text-rose-600 text-sm dark:text-rose-400";
         </p>
       )}
 
-      {/* Cloudflare Turnstile — sitekey is the public key for the contact form */}
-      <div class="cf-turnstile" data-sitekey="0x4AAAAAAEGQrjTl9Eh2AoWh" />
+      {/* Cloudflare Turnstile — sitekey is public; action must match siteverify. */}
+      <div
+        class="cf-turnstile"
+        data-action="contact"
+        data-sitekey="0x4AAAAAAEGQrjTl9Eh2AoWh"
+      />
 
       <button
         class="inline-flex h-12 w-full items-center justify-center rounded bg-(--primary) px-8 font-semibold text-sm text-white uppercase tracking-wider shadow-lg transition-all hover:bg-(--primary-hover) hover:shadow-[0_4px_20px_var(--primary-glow)] focus-visible:outline-none focus-visible:ring-(--primary) focus-visible:ring-2 active:scale-[0.98]"

@@ -6,9 +6,10 @@ import * as schema from "@faber-web/db/schema/auth";
 import { isAdminEmail } from "@faber-web/env/admin";
 import { parseAllowedCorsOrigins } from "@faber-web/env/cors";
 import { env } from "@faber-web/env/server";
+import { parseTurnstileHostnames } from "@faber-web/env/turnstile";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { emailOTP } from "better-auth/plugins";
+import { captcha, emailOTP } from "better-auth/plugins";
 import { twoFactor } from "better-auth/plugins/two-factor";
 
 import { createEmailOtpTwoFactorAfterHook } from "./email-otp-two-factor-gate";
@@ -24,6 +25,8 @@ export interface AuthBindings {
   CORS_ORIGIN: string;
   DB: D1Database;
   EMAIL: SendEmail;
+  TURNSTILE_HOSTNAMES: string;
+  TURNSTILE_SECRET_KEY: string;
 }
 
 export function createAuth(bindings: AuthBindings = env as AuthBindings) {
@@ -73,6 +76,13 @@ export function createAuth(bindings: AuthBindings = env as AuthBindings) {
       after: createEmailOtpTwoFactorAfterHook(bindings.ADMIN_EMAILS),
     },
     plugins: [
+      captcha({
+        allowedHostnames: parseTurnstileHostnames(bindings.TURNSTILE_HOSTNAMES),
+        endpoints: ["/email-otp/send-verification-otp", "/sign-in/email"],
+        expectedAction: "auth",
+        provider: "cloudflare-turnstile",
+        secretKey: bindings.TURNSTILE_SECRET_KEY,
+      }),
       emailOTP({
         // Fire-and-forget via waitUntil to avoid OTP timing side channels.
         // biome-ignore lint/suspicious/useAwait: must return Promise for Better Auth; must not await send

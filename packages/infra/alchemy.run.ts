@@ -13,10 +13,12 @@ config({ path: "../../apps/web/.env" });
 config({ path: "../../apps/server/.env" });
 
 const LOCAL_DEV_WEB_ORIGIN = "http://localhost:4321";
+const LOCAL_TURNSTILE_HOSTNAMES = "localhost,127.0.0.1";
 const PRODUCTION_SITE_DOMAINS = ["faberwebtech.com", "www.faberwebtech.com"];
 const PRODUCTION_SITE_ORIGINS = PRODUCTION_SITE_DOMAINS.map(
   (domain) => `https://${domain}`
 ).join(",");
+const PRODUCTION_TURNSTILE_HOSTNAMES = PRODUCTION_SITE_DOMAINS.join(",");
 
 export const db = Cloudflare.D1.Database("database", {
   migrations: "../../packages/db/migrations",
@@ -70,7 +72,13 @@ export const contactEmail = Cloudflare.Email.SendEmail("EMAIL", {
   allowedSenderAddresses: [CONTACT_INBOX],
 });
 
-function serverEnv(corsOrigin: string) {
+function turnstileHostnamesConfig(defaultHostnames: string) {
+  return Config.String("TURNSTILE_HOSTNAMES").pipe(
+    Config.withDefault(defaultHostnames)
+  );
+}
+
+function serverEnv(corsOrigin: string, turnstileHostnames: string) {
   return {
     ...axiomEnv(),
     ADMIN_EMAILS: Config.String("ADMIN_EMAILS").pipe(
@@ -81,6 +89,8 @@ function serverEnv(corsOrigin: string) {
     CORS_ORIGIN: corsOrigin,
     DB: db,
     EMAIL: contactEmail,
+    // Hostnames only — TURNSTILE_SECRET_KEY is a dashboard/wrangler Worker secret.
+    TURNSTILE_HOSTNAMES: turnstileHostnamesConfig(turnstileHostnames),
   };
 }
 
@@ -121,10 +131,17 @@ export default Alchemy.Stack(
         ? undefined
         : corsOriginOverride;
 
+    const defaultTurnstileHostnames = isProduction
+      ? PRODUCTION_TURNSTILE_HOSTNAMES
+      : LOCAL_TURNSTILE_HOSTNAMES;
+
     const serverWorker = yield* Cloudflare.Worker("server", {
       ...serverWorkerOptions,
       ...productionServerName,
-      env: serverEnv(corsOriginOverride ?? LOCAL_DEV_WEB_ORIGIN),
+      env: serverEnv(
+        corsOriginOverride ?? LOCAL_DEV_WEB_ORIGIN,
+        defaultTurnstileHostnames
+      ),
     });
     const webWorker = yield* Cloudflare.Website.Astro("web", {
       ...productionWebName,
@@ -138,6 +155,10 @@ export default Alchemy.Stack(
         IMAGES: Cloudflare.Images.Images(),
         PUBLIC_SERVER_URL: serverWorker.url.as<string>(),
         SESSION: Cloudflare.KV.Namespace("session"),
+        // Hostnames only — TURNSTILE_SECRET is a dashboard/wrangler Worker secret.
+        TURNSTILE_HOSTNAMES: turnstileHostnamesConfig(
+          defaultTurnstileHostnames
+        ),
       },
       observability: workersLogs,
       rootDir: "../../apps/web",
@@ -148,7 +169,7 @@ export default Alchemy.Stack(
         ...serverWorkerOptions,
         ...productionServerName,
         env: {
-          ...serverEnv(LOCAL_DEV_WEB_ORIGIN),
+          ...serverEnv(LOCAL_DEV_WEB_ORIGIN, defaultTurnstileHostnames),
           CORS_ORIGIN: isProduction
             ? PRODUCTION_SITE_ORIGINS
             : webWorker.url.as<string>(),

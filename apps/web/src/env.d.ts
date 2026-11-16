@@ -22,6 +22,8 @@ declare module "cloudflare:workers" {
       AXIOM_API_KEY: string;
       AXIOM_DATASET: string;
       EMAIL: SendEmail;
+      TURNSTILE_HOSTNAMES: string;
+      TURNSTILE_SECRET: string;
     }
   }
 }

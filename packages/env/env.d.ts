@@ -10,6 +10,8 @@ export interface CloudflareEnv {
   CORS_ORIGIN: string;
   DB: D1Database;
   EMAIL: SendEmail;
+  TURNSTILE_HOSTNAMES: string;
+  TURNSTILE_SECRET_KEY: string;
 }
 
 declare global {

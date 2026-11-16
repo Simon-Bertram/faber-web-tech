@@ -8,6 +8,7 @@
     "./cors": "./src/cors.ts",
     "./server": "./src/server.ts",
     "./server-bindings": "./src/server-bindings.ts",
+    "./turnstile": "./src/turnstile.ts",
     "./web": "./src/web.ts"
   },
   "dependencies": {

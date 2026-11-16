@@ -51,6 +51,8 @@ import {
       </p>
     </div>
 
+    <div id="otp-turnstile"></div>
+
     <p
       class="hidden text-rose-600 text-sm dark:text-rose-400"
       id="otp-error"
@@ -93,6 +95,7 @@ import {
           type="password"
         >
       </div>
+      <div id="password-turnstile"></div>
       <p
         class="hidden text-rose-600 text-sm dark:text-rose-400"
         id="password-error"
@@ -115,6 +118,11 @@ import {
   import { authClient } from "../lib/auth-client";
   import { orpc } from "../lib/orpc";
   import { postAuthPath } from "../lib/portal-session";
+  import {
+    getTurnstileResponse,
+    renderTurnstileWidget,
+    resetTurnstileWidget,
+  } from "../lib/turnstile";
 
   const OTP_LENGTH = 6;
 
@@ -125,6 +133,9 @@ import {
   const emailInput = document.getElementById("email") as HTMLInputElement;
   const otpInput = document.getElementById("otp") as HTMLInputElement;
   const otpStep = document.getElementById("otp-step") as HTMLDivElement;
+  const otpTurnstileContainer = document.getElementById(
+    "otp-turnstile"
+  ) as HTMLDivElement;
   const otpError = document.getElementById("otp-error") as HTMLParagraphElement;
   const otpStatus = document.getElementById(
     "otp-status"
@@ -143,6 +154,31 @@ import {
 
   let otpSent = false;
   let isSubmitting = false;
+  let otpTurnstileWidgetId: string | undefined;
+  let passwordTurnstileWidgetId: string | undefined;
+  let passwordTurnstileReady: Promise<string> | undefined;
+
+  const otpTurnstileReady = renderTurnstileWidget(
+    "#otp-turnstile",
+    "auth"
+  ).then((widgetId) => {
+    otpTurnstileWidgetId = widgetId;
+    return widgetId;
+  });
+
+  async function ensurePasswordTurnstile(): Promise<string> {
+    if (passwordTurnstileWidgetId !== undefined) {
+      return passwordTurnstileWidgetId;
+    }
+    passwordTurnstileReady ??= renderTurnstileWidget(
+      "#password-turnstile",
+      "auth"
+    ).then((widgetId) => {
+      passwordTurnstileWidgetId = widgetId;
+      return widgetId;
+    });
+    return await passwordTurnstileReady;
+  }
 
   async function redirectAfterAuth() {
     try {
@@ -167,6 +203,9 @@ import {
     if (!passwordEmail.value) {
       passwordEmail.value = emailInput.value;
     }
+    if (!passwordForm.classList.contains("hidden")) {
+      void ensurePasswordTurnstile();
+    }
   });
 
   otpInput.addEventListener("input", () => {
@@ -189,17 +228,34 @@ import {
     try {
       if (!otpSent) {
         otpSubmit.textContent = "Sending...";
-        const { error } = await authClient.emailOtp.sendVerificationOtp({
-          email: emailInput.value,
-          type: "sign-in",
-        });
+        const widgetId = await otpTurnstileReady;
+        const captchaToken = getTurnstileResponse(widgetId);
+        if (!captchaToken) {
+          otpError.textContent =
+            "Please complete the bot verification challenge.";
+          otpError.classList.remove("hidden");
+          return;
+        }
+        const { error } = await authClient.emailOtp.sendVerificationOtp(
+          {
+            email: emailInput.value,
+            type: "sign-in",
+          },
+          {
+            headers: {
+              "x-captcha-response": captchaToken,
+            },
+          }
+        );
         if (error) {
           otpError.textContent =
             error.message || "Could not send a code. Try again.";
           otpError.classList.remove("hidden");
+          resetTurnstileWidget(otpTurnstileWidgetId);
           return;
         }
         otpSent = true;
+        otpTurnstileContainer.classList.add("hidden");
         otpStep.classList.remove("hidden");
         otpInput.required = true;
         otpSubmit.textContent = "Verify and sign in";
@@ -239,6 +295,9 @@ import {
     } catch {
       otpError.textContent = "An unexpected error occurred.";
       otpError.classList.remove("hidden");
+      if (!otpSent) {
+        resetTurnstileWidget(otpTurnstileWidgetId);
+      }
     } finally {
       isSubmitting = false;
       otpSubmit.disabled = false;
@@ -260,16 +319,28 @@ import {
     submitButton.textContent = "Signing in...";
 
     try {
+      const widgetId = await ensurePasswordTurnstile();
+      const captchaToken = getTurnstileResponse(widgetId);
+      if (!captchaToken) {
+        passwordError.textContent =
+          "Please complete the bot verification challenge.";
+        passwordError.classList.remove("hidden");
+        return;
+      }
       await authClient.signIn.email(
         {
           email: passwordEmail.value,
           password: passwordInput.value,
         },
         {
+          headers: {
+            "x-captcha-response": captchaToken,
+          },
           onError: (ctx) => {
             passwordError.textContent =
               ctx.error.message || "Sign in failed. Please try again.";
             passwordError.classList.remove("hidden");
+            resetTurnstileWidget(widgetId);
           },
           onSuccess: async (ctx) => {
             if (
@@ -288,6 +359,7 @@ import {
     } catch {
       passwordError.textContent = "An unexpected error occurred.";
       passwordError.classList.remove("hidden");
+      resetTurnstileWidget(passwordTurnstileWidgetId);
     } finally {
       submitButton.disabled = false;
       submitButton.textContent = "Sign in";

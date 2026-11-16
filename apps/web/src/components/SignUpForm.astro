@@ -63,6 +63,8 @@ import {
       </p>
     </div>
 
+    <div id="signup-turnstile"></div>
+
     <p
       class="hidden text-rose-600 text-sm dark:text-rose-400"
       id="form-error"
@@ -86,6 +88,11 @@ import {
   import { authClient } from "../lib/auth-client";
   import { orpc } from "../lib/orpc";
   import { postAuthPath } from "../lib/portal-session";
+  import {
+    getTurnstileResponse,
+    renderTurnstileWidget,
+    resetTurnstileWidget,
+  } from "../lib/turnstile";
 
   const OTP_LENGTH = 6;
 
@@ -94,6 +101,9 @@ import {
   const emailInput = document.getElementById("email") as HTMLInputElement;
   const otpInput = document.getElementById("otp") as HTMLInputElement;
   const otpStep = document.getElementById("otp-step") as HTMLDivElement;
+  const turnstileContainer = document.getElementById(
+    "signup-turnstile"
+  ) as HTMLDivElement;
   const formError = document.getElementById(
     "form-error"
   ) as HTMLParagraphElement;
@@ -104,6 +114,14 @@ import {
 
   let otpSent = false;
   let isSubmitting = false;
+  let turnstileWidgetId: string | undefined;
+  const turnstileReady = renderTurnstileWidget(
+    "#signup-turnstile",
+    "auth"
+  ).then((widgetId) => {
+    turnstileWidgetId = widgetId;
+    return widgetId;
+  });
 
   otpInput.addEventListener("input", () => {
     otpInput.value = otpInput.value.replace(/\D/g, "").slice(0, OTP_LENGTH);
@@ -125,17 +143,34 @@ import {
     try {
       if (!otpSent) {
         submitButton.textContent = "Sending...";
-        const { error } = await authClient.emailOtp.sendVerificationOtp({
-          email: emailInput.value,
-          type: "sign-in",
-        });
+        const widgetId = await turnstileReady;
+        const captchaToken = getTurnstileResponse(widgetId);
+        if (!captchaToken) {
+          formError.textContent =
+            "Please complete the bot verification challenge.";
+          formError.classList.remove("hidden");
+          return;
+        }
+        const { error } = await authClient.emailOtp.sendVerificationOtp(
+          {
+            email: emailInput.value,
+            type: "sign-in",
+          },
+          {
+            headers: {
+              "x-captcha-response": captchaToken,
+            },
+          }
+        );
         if (error) {
           formError.textContent =
             error.message || "Could not send a code. Try again.";
           formError.classList.remove("hidden");
+          resetTurnstileWidget(turnstileWidgetId);
           return;
         }
         otpSent = true;
+        turnstileContainer.classList.add("hidden");
         otpStep.classList.remove("hidden");
         otpInput.required = true;
         submitButton.textContent = "Verify and create account";
@@ -193,6 +228,9 @@ import {
     } catch {
       formError.textContent = "An unexpected error occurred.";
       formError.classList.remove("hidden");
+      if (!otpSent) {
+        resetTurnstileWidget(turnstileWidgetId);
+      }
     } finally {
       isSubmitting = false;
       submitButton.disabled = false;

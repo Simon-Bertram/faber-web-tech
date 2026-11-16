@@ -11,8 +11,11 @@ import {
   PROJECT_TYPE_VALUES,
   TIMELINE_VALUES,
 } from "../lib/contact-options";
+import { verifyTurnstileToken } from "../lib/verify-turnstile";
 
 const SEND_FAILED_MESSAGE = "Unable to send your message. Please try again.";
+const TURNSTILE_DENIED_MESSAGE = "Bot verification failed. Please try again.";
+const CONTACT_TURNSTILE_ACTION = "contact";
 
 function getEmailBinding(): SendEmail | undefined {
   return env.EMAIL;
@@ -47,6 +50,26 @@ export const server = {
           outcome: "honeypot",
         });
         return { submitted: true as const };
+      }
+
+      const turnstile = await verifyTurnstileToken({
+        allowedHostnames: env.TURNSTILE_HOSTNAMES ?? "",
+        expectedAction: CONTACT_TURNSTILE_ACTION,
+        remoteip: context.request.headers.get("cf-connecting-ip"),
+        secret: env.TURNSTILE_SECRET ?? "",
+        token: input["cf-turnstile-response"],
+      });
+
+      if (!turnstile.ok) {
+        log.set({
+          action: "contact.submit",
+          outcome: "turnstile_denied",
+          reason: turnstile.reason,
+        });
+        throw new ActionError({
+          code: "FORBIDDEN",
+          message: TURNSTILE_DENIED_MESSAGE,
+        });
       }
 
       const email = getEmailBinding();
@@ -111,6 +134,7 @@ export const server = {
     },
     input: z.object({
       budget: formText(z.enum(BUDGET_VALUES)),
+      "cf-turnstile-response": formText(z.string().min(1).max(2048)),
       company: formText(z.string().trim().max(120)),
       company_website: formText(z.string().max(200)),
       email: formText(

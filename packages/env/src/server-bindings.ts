@@ -10,6 +10,8 @@ export const serverStringBindingsSchema = z.object({
   BETTER_AUTH_SECRET: z.string().min(32),
   BETTER_AUTH_URL: z.url(),
   CORS_ORIGIN: z.string().min(1),
+  TURNSTILE_HOSTNAMES: z.string().min(1),
+  TURNSTILE_SECRET_KEY: z.string().min(1),
 });
 
 export type ServerStringBindings = z.infer<typeof serverStringBindingsSchema>;
@@ -24,5 +26,7 @@ export function parseServerStringBindings(
     BETTER_AUTH_SECRET: bindings.BETTER_AUTH_SECRET,
     BETTER_AUTH_URL: bindings.BETTER_AUTH_URL,
     CORS_ORIGIN: bindings.CORS_ORIGIN,
+    TURNSTILE_HOSTNAMES: bindings.TURNSTILE_HOSTNAMES,
+    TURNSTILE_SECRET_KEY: bindings.TURNSTILE_SECRET_KEY,
   });
 }
