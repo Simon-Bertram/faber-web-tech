@@ -1,17 +1,8 @@
 ---
 import AuthMenu from "./AuthMenu.astro";
 import BrandLogo from "./BrandLogo.astro";
+import NavLinks from "./nav/nav-links.astro";
 import ThemeToggle from "./ThemeToggle.astro";
-
-const navLinks = [
-  { label: "Overview", to: "/" },
-  { label: "Solutions", to: "/solutions" },
-  { label: "Modern Websites", to: "/solutions#modern-websites" },
-  { label: "Web Apps", to: "/solutions#web-apps" },
-  { label: "AI Automation", to: "/ai-applications" },
-  { label: "SEO & GEO", to: "/solutions#seo-geo" },
-  { label: "Contact", to: "/contact" },
-];
 ---
 
 <header
@@ -20,38 +11,26 @@ const navLinks = [
   <div
     class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8"
   >
-    <!-- Brand Logo -->
     <BrandLogo class="py-1 px-1.5" size="md" />
 
-    <!-- Desktop Navigation Links -->
-    <nav aria-label="Main Navigation" class="hidden lg:flex items-center gap-5">
-      {navLinks.map((link) => (
-          <a
-            href={link.to}
-            class="rounded px-1.5 py-1 font-medium text-(--text-secondary) text-sm transition-colors hover:text-(--primary) focus-visible:outline-none focus-visible:ring-(--primary) focus-visible:ring-2"
-          >
-            {link.label}
-          </a>
-        ))}
+    <nav aria-label="Main" class="hidden items-center lg:flex">
+      <NavLinks variant="desktop" />
     </nav>
 
-    <!-- Header Actions (Theme Toggle & Auth) -->
     <div class="flex items-center gap-3">
       <ThemeToggle />
       <AuthMenu />
 
-      <!-- Mobile Hamburger Button -->
       <button
         aria-controls="mobile-nav"
         aria-expanded="false"
         aria-label="Toggle navigation menu"
-        class="inline-flex lg:hidden h-10 w-10 items-center justify-center rounded-md border border-(--border-subtle) bg-(--bg-surface) text-(--text-secondary) hover:text-(--text-primary) hover:bg-(--bg-surface-elevated) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--primary)"
+        class="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md border border-(--border-subtle) bg-(--bg-surface) text-(--text-secondary) transition-colors hover:bg-(--bg-surface-elevated) hover:text-(--text-primary) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--primary) lg:hidden"
         id="mobile-menu-button"
         type="button"
       >
-        <!-- Open Hamburger SVG -->
         <svg
-          aria-label="menu open icon"
+          aria-hidden="true"
           class="h-5 w-5"
           fill="none"
           id="hamburger-icon"
@@ -65,9 +44,8 @@ const navLinks = [
             stroke-width="2"
           ></path>
         </svg>
-        <!-- Close X SVG -->
         <svg
-          aria-label="menu close icon"
+          aria-hidden="true"
           class="hidden h-5 w-5"
           fill="none"
           id="close-icon"
@@ -85,62 +63,61 @@ const navLinks = [
     </div>
   </div>
 
-  <!-- Mobile Drawer Menu -->
   <nav
-    aria-label="Mobile Navigation"
-    class="hidden lg:hidden border-t border-(--border-subtle) bg-(--bg-surface) px-4 pt-3 pb-5 transition-all shadow-lg"
+    aria-label="Mobile"
+    class="hidden border-t border-(--border-subtle) bg-(--bg-surface) px-4 pt-3 pb-5 shadow-lg transition-all lg:hidden"
     id="mobile-nav"
   >
-    <div class="flex flex-col gap-2">
-      {navLinks.map((link) => (
-          <a
-            href={link.to}
-            class="rounded-md px-3 py-2 font-medium text-(--text-secondary) text-sm transition-colors hover:bg-(--bg-surface-elevated) hover:text-(--primary)"
-          >
-            {link.label}
-          </a>
-        ))}
-    </div>
+    <NavLinks variant="mobile" />
   </nav>
 </header>
 
 <script>
-  // Mobile Menu Toggle Handling
   const menuBtn = document.getElementById("mobile-menu-button");
   const mobileNav = document.getElementById("mobile-nav");
   const hamburgerIcon = document.getElementById("hamburger-icon");
   const closeIcon = document.getElementById("close-icon");
 
+  const isOpen = () => menuBtn?.getAttribute("aria-expanded") === "true";
+
+  const setOpen = (open: boolean) => {
+    menuBtn?.setAttribute("aria-expanded", String(open));
+    mobileNav?.classList.toggle("hidden", !open);
+    hamburgerIcon?.classList.toggle("hidden", open);
+    closeIcon?.classList.toggle("hidden", !open);
+
+    if (open) {
+      const firstFocusable = mobileNav?.querySelector<HTMLElement>("a, button");
+      firstFocusable?.focus();
+    } else {
+      menuBtn?.focus();
+    }
+  };
+
   menuBtn?.addEventListener("click", () => {
-    const isExpanded = menuBtn.getAttribute("aria-expanded") === "true";
-    menuBtn.setAttribute("aria-expanded", String(!isExpanded));
-    mobileNav?.classList.toggle("hidden");
-    hamburgerIcon?.classList.toggle("hidden");
-    closeIcon?.classList.toggle("hidden");
+    setOpen(!isOpen());
   });
 
-  // Close mobile menu on escape key
-  document.addEventListener("keydown", (e) => {
-    if (
-      e.key === "Escape" &&
-      menuBtn?.getAttribute("aria-expanded") === "true"
-    ) {
-      menuBtn.setAttribute("aria-expanded", "false");
-      mobileNav?.classList.add("hidden");
-      hamburgerIcon?.classList.remove("hidden");
-      closeIcon?.classList.add("hidden");
-      menuBtn.focus();
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && isOpen()) {
+      setOpen(false);
     }
   });
 
-  // Close mobile menu when clicking nav link
-  const navLinks = mobileNav?.querySelectorAll("a") ?? [];
-  for (const link of navLinks) {
+  document.addEventListener("click", (event) => {
+    if (!(event.target instanceof Node && isOpen())) {
+      return;
+    }
+    const header = menuBtn?.closest("header");
+    if (header && !header.contains(event.target)) {
+      setOpen(false);
+    }
+  });
+
+  const mobileLinks = mobileNav?.querySelectorAll("a") ?? [];
+  for (const link of mobileLinks) {
     link.addEventListener("click", () => {
-      menuBtn?.setAttribute("aria-expanded", "false");
-      mobileNav?.classList.add("hidden");
-      hamburgerIcon?.classList.remove("hidden");
-      closeIcon?.classList.add("hidden");
+      setOpen(false);
     });
   }
 </script>

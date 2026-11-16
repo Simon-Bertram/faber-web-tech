@@ -1,0 +1,387 @@
+---
+import {
+  isNavGroup,
+  isNavItemActive,
+  isNavLinkActive,
+  mainNav,
+} from "./nav-links.ts";
+
+interface Props {
+  variant: "desktop" | "mobile";
+}
+
+const { variant } = Astro.props;
+const { pathname, hash } = Astro.url;
+
+const linkBase =
+  "relative inline-flex min-h-11 items-center rounded-md px-3 font-medium text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--primary)";
+const linkInactive = "text-(--text-secondary) hover:text-(--primary)";
+const linkActive = "nav-route-active font-semibold text-(--text-primary)";
+const childLinkBase =
+  "relative flex min-h-11 w-full items-center rounded-md px-3 font-medium text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--primary)";
+const childInactive =
+  "text-(--text-secondary) hover:bg-(--bg-surface-elevated) hover:text-(--primary)";
+---
+
+{variant === "desktop" ? (
+    <ul class="flex items-center gap-1">
+      {mainNav.map((item) => {
+        const itemActive = isNavItemActive(pathname, hash, item);
+
+        if (isNavGroup(item)) {
+          return (
+            <li class="relative" data-services-menu>
+              <button
+                aria-controls="services-menu-desktop"
+                aria-current={itemActive ? "true" : undefined}
+                aria-expanded="false"
+                aria-haspopup="true"
+                data-services-trigger
+                id="services-menu-trigger"
+                class:list={[
+                  linkBase,
+                  "gap-1",
+                  itemActive ? linkActive : linkInactive,
+                ]}
+                type="button"
+              >
+                {item.label}
+                <svg
+                  aria-hidden="true"
+                  class="h-3.5 w-3.5 shrink-0 opacity-70"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M6 9l6 6 6-6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                  />
+                </svg>
+              </button>
+              <ul
+                class="absolute top-full left-0 z-50 mt-1 hidden min-w-56 rounded-md border border-(--border-subtle) bg-(--bg-surface) py-1 shadow-lg"
+                data-services-panel
+                id="services-menu-desktop"
+              >
+                {item.children.map((child) => {
+                  const childActive = isNavLinkActive(
+                    pathname,
+                    hash,
+                    child.href
+                  );
+                  return (
+                    <li>
+                      <a
+                        aria-current={childActive ? "page" : undefined}
+                        href={child.href}
+                        class:list={[
+                          childLinkBase,
+                          childActive ? linkActive : childInactive,
+                        ]}
+                      >
+                        {child.label}
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </li>
+          );
+        }
+
+        return (
+          <li>
+            <a
+              aria-current={itemActive ? "page" : undefined}
+              href={item.href}
+              class:list={[linkBase, itemActive ? linkActive : linkInactive]}
+            >
+              {item.label}
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  ) : (
+    <ul class="flex flex-col gap-1">
+      {mainNav.map((item) => {
+        const itemActive = isNavItemActive(pathname, hash, item);
+
+        if (isNavGroup(item)) {
+          return (
+            <li data-services-menu-mobile>
+              <button
+                aria-controls="services-menu-mobile"
+                aria-current={itemActive ? "true" : undefined}
+                aria-expanded={itemActive ? "true" : "false"}
+                aria-haspopup="true"
+                data-services-trigger-mobile
+                id="services-menu-trigger-mobile"
+                class:list={[
+                  linkBase,
+                  "w-full justify-between gap-2",
+                  itemActive ? linkActive : linkInactive,
+                ]}
+                type="button"
+              >
+                {item.label}
+                <svg
+                  aria-hidden="true"
+                  class="h-3.5 w-3.5 shrink-0 opacity-70"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M6 9l6 6 6-6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                  />
+                </svg>
+              </button>
+              <ul
+                data-services-panel-mobile
+                id="services-menu-mobile"
+                class:list={[
+                  "mt-1 ml-2 flex flex-col gap-1 border-l border-(--border-subtle) pl-2",
+                  itemActive ? "" : "hidden",
+                ]}
+              >
+                {item.children.map((child) => {
+                  const childActive = isNavLinkActive(
+                    pathname,
+                    hash,
+                    child.href
+                  );
+                  return (
+                    <li>
+                      <a
+                        aria-current={childActive ? "page" : undefined}
+                        href={child.href}
+                        class:list={[
+                          childLinkBase,
+                          childActive ? linkActive : childInactive,
+                        ]}
+                      >
+                        {child.label}
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </li>
+          );
+        }
+
+        return (
+          <li>
+            <a
+              aria-current={itemActive ? "page" : undefined}
+              href={item.href}
+              class:list={[
+                linkBase,
+                "w-full",
+                itemActive ? linkActive : linkInactive,
+              ]}
+            >
+              {item.label}
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  )}
+
+<style>
+  .nav-route-active::after {
+    position: absolute;
+    bottom: 0.35rem;
+    left: 50%;
+    width: 0.75rem;
+    height: 0.125rem;
+    content: "";
+    background-color: var(--primary);
+    border-radius: 9999px;
+    transform: translateX(-50%);
+  }
+</style>
+
+<script>
+  const TRAILING_SLASH = /\/$/;
+
+  function normalizePath(pathname: string): string {
+    return pathname.replace(TRAILING_SLASH, "") || "/";
+  }
+
+  function parseHref(href: string): { path: string; hash: string } {
+    const hashIndex = href.indexOf("#");
+    if (hashIndex === -1) {
+      return { hash: "", path: normalizePath(href) };
+    }
+    return {
+      hash: href.slice(hashIndex),
+      path: normalizePath(href.slice(0, hashIndex) || "/"),
+    };
+  }
+
+  function isHrefActive(pathname: string, hash: string, href: string): boolean {
+    const target = parseHref(href);
+    if (target.path !== pathname) {
+      return false;
+    }
+    if (target.hash) {
+      return hash === target.hash;
+    }
+    return !hash || hash === "#";
+  }
+
+  function setLinkActive(el: HTMLElement, active: boolean) {
+    if (active) {
+      el.setAttribute("aria-current", el.tagName === "A" ? "page" : "true");
+      el.classList.add(
+        "nav-route-active",
+        "font-semibold",
+        "text-(--text-primary)"
+      );
+      el.classList.remove("text-(--text-secondary)");
+      return;
+    }
+    el.removeAttribute("aria-current");
+    el.classList.remove(
+      "nav-route-active",
+      "font-semibold",
+      "text-(--text-primary)"
+    );
+    el.classList.add("text-(--text-secondary)");
+  }
+
+  function initDesktopServicesMenu() {
+    const root = document.querySelector("[data-services-menu]");
+    const trigger = root?.querySelector<HTMLButtonElement>(
+      "[data-services-trigger]"
+    );
+    const panel = root?.querySelector<HTMLElement>("[data-services-panel]");
+
+    if (!(root && trigger && panel)) {
+      return;
+    }
+
+    const getLinks = () => [...panel.querySelectorAll<HTMLAnchorElement>("a")];
+
+    const open = () => {
+      trigger.setAttribute("aria-expanded", "true");
+      panel.classList.remove("hidden");
+      getLinks()[0]?.focus();
+    };
+
+    const close = (restoreFocus = false) => {
+      trigger.setAttribute("aria-expanded", "false");
+      panel.classList.add("hidden");
+      if (restoreFocus) {
+        trigger.focus();
+      }
+    };
+
+    const isOpen = () => trigger.getAttribute("aria-expanded") === "true";
+
+    trigger.addEventListener("click", () => {
+      if (isOpen()) {
+        close();
+      } else {
+        open();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && isOpen()) {
+        event.stopPropagation();
+        close(true);
+      }
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!(event.target instanceof Node)) {
+        return;
+      }
+      if (isOpen() && !root.contains(event.target)) {
+        close();
+      }
+    });
+
+    panel.addEventListener("keydown", (event) => {
+      const links = getLinks();
+      if (links.length === 0) {
+        return;
+      }
+
+      const currentIndex = links.indexOf(
+        document.activeElement as HTMLAnchorElement
+      );
+
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        links[(currentIndex + 1) % links.length]?.focus();
+      } else if (event.key === "ArrowUp") {
+        event.preventDefault();
+        links[(currentIndex - 1 + links.length) % links.length]?.focus();
+      } else if (event.key === "Home") {
+        event.preventDefault();
+        links[0]?.focus();
+      } else if (event.key === "End") {
+        event.preventDefault();
+        links.at(-1)?.focus();
+      }
+    });
+  }
+
+  function initMobileServicesMenu() {
+    const trigger = document.querySelector<HTMLButtonElement>(
+      "[data-services-trigger-mobile]"
+    );
+    const panel = document.querySelector<HTMLElement>(
+      "[data-services-panel-mobile]"
+    );
+
+    if (!(trigger && panel)) {
+      return;
+    }
+
+    trigger.addEventListener("click", () => {
+      const expanded = trigger.getAttribute("aria-expanded") === "true";
+      trigger.setAttribute("aria-expanded", String(!expanded));
+      panel.classList.toggle("hidden");
+    });
+  }
+
+  /** Hash is not available during SSR — sync aria-current + pip after load. */
+  function syncHashActiveStates() {
+    const { pathname: rawPath, hash } = window.location;
+    const pathname = normalizePath(rawPath);
+    const servicesActive =
+      pathname === "/solutions" || pathname === "/ai-applications";
+
+    for (const trigger of document.querySelectorAll<HTMLElement>(
+      "[data-services-trigger], [data-services-trigger-mobile]"
+    )) {
+      setLinkActive(trigger, servicesActive);
+    }
+
+    for (const link of document.querySelectorAll<HTMLAnchorElement>(
+      "#services-menu-desktop a, #services-menu-mobile a"
+    )) {
+      setLinkActive(
+        link,
+        isHrefActive(pathname, hash, link.getAttribute("href") ?? "")
+      );
+    }
+  }
+
+  initDesktopServicesMenu();
+  initMobileServicesMenu();
+  syncHashActiveStates();
+  window.addEventListener("hashchange", syncHashActiveStates);
+</script>
