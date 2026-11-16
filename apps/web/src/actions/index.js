@@ -6,29 +6,41 @@ import {
   CONTACT_FROM_NAME,
   CONTACT_INBOX,
 } from "../lib/contact-lead-email";
+import {
+  BUDGET_VALUES,
+  PROJECT_TYPE_VALUES,
+  TIMELINE_VALUES,
+} from "../lib/contact-options";
 
 const SEND_FAILED_MESSAGE = "Unable to send your message. Please try again.";
+
 function getEmailBinding() {
   return env.EMAIL;
 }
+
 function formText(schema) {
   return z.preprocess(
     (value) => (typeof value === "string" ? value : ""),
     schema
   );
 }
+
 function getEmailErrorCode(error) {
   if (typeof error !== "object" || error === null || !("code" in error)) {
     return;
   }
+
   const { code } = error;
   return typeof code === "string" ? code : undefined;
 }
+
 export const server = {
   contact: defineAction({
     accept: "form",
     handler: async (input, context) => {
       const { log } = context.locals;
+
+      // Bots fill hidden honeypot fields; pretend success so they get no signal.
       if (input.company_website.trim() !== "") {
         log.set({
           action: "contact.submit",
@@ -36,7 +48,9 @@ export const server = {
         });
         return { submitted: true };
       }
+
       const email = getEmailBinding();
+
       if (!email) {
         log.set({
           action: "contact.submit",
@@ -48,6 +62,7 @@ export const server = {
           message: SEND_FAILED_MESSAGE,
         });
       }
+
       const lead = {
         budget: input.budget,
         company: input.company,
@@ -58,6 +73,7 @@ export const server = {
         timeline: input.timeline,
       };
       const { html, subject, text } = buildContactLeadEmail(lead);
+
       try {
         const { messageId } = await email.send({
           from: { email: CONTACT_INBOX, name: CONTACT_FROM_NAME },
@@ -67,12 +83,14 @@ export const server = {
           text,
           to: CONTACT_INBOX,
         });
+
         log.set({
           action: "contact.submit",
           messageId,
           outcome: "success",
           projectType: lead.projectType,
         });
+
         return { submitted: true };
       } catch (error) {
         log.set({
@@ -92,9 +110,7 @@ export const server = {
       }
     },
     input: z.object({
-      budget: formText(
-        z.enum(["", "under-5k", "5k-15k", "15k-40k", "40k-plus", "not-sure"])
-      ),
+      budget: formText(z.enum(BUDGET_VALUES)),
       company: formText(z.string().trim().max(120)),
       company_website: formText(z.string().max(200)),
       email: formText(
@@ -111,13 +127,11 @@ export const server = {
         z.string().trim().min(1, "Please enter your name.").max(120)
       ),
       projectType: formText(
-        z.enum(["website", "web-app", "ai-automation", "seo-geo", "not-sure"], {
+        z.enum(PROJECT_TYPE_VALUES, {
           error: "Please choose a project type.",
         })
       ),
-      timeline: formText(
-        z.enum(["", "asap", "1-3-months", "3-6-months", "exploring"])
-      ),
+      timeline: formText(z.enum(TIMELINE_VALUES)),
     }),
   }),
 };

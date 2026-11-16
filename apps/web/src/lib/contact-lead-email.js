@@ -1,26 +1,12 @@
+import {
+  budgetLabels,
+  projectTypeLabels,
+  timelineLabels,
+} from "./contact-options";
+
 const CONTACT_INBOX = "contact@faberwebtech.com";
 const CONTACT_FROM_NAME = "Faber Web Tech";
-export const projectTypeLabels = {
-  "ai-automation": "AI Automation",
-  "not-sure": "Not sure yet",
-  "web-app": "Web App",
-  website: "Modern Website",
-};
-export const budgetLabels = {
-  "": "Not specified",
-  "5k-15k": "$5k–$15k",
-  "15k-40k": "$15k–$40k",
-  "40k-plus": "$40k+",
-  "not-sure": "Not sure",
-  "under-5k": "Under $5k",
-};
-export const timelineLabels = {
-  "": "Not specified",
-  "1-3-months": "1–3 months",
-  "3-6-months": "3–6 months",
-  asap: "ASAP",
-  exploring: "Exploring",
-};
+
 export { CONTACT_FROM_NAME, CONTACT_INBOX };
 
 function escapeHtml(value) {
@@ -31,15 +17,18 @@ function escapeHtml(value) {
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#39;");
 }
+
 function displayOrDash(value) {
   return value.trim() === "" ? "—" : value;
 }
+
 export function buildContactLeadEmail(lead) {
   const projectType = projectTypeLabels[lead.projectType];
   const budget = budgetLabels[lead.budget];
   const timeline = timelineLabels[lead.timeline];
   const company = displayOrDash(lead.company);
   const subject = `New lead: ${projectType} — ${lead.name}`;
+
   const text = [
     "New project enquiry from the contact form.",
     "",
@@ -53,6 +42,7 @@ export function buildContactLeadEmail(lead) {
     "Goals / desires:",
     lead.goals,
   ].join("\n");
+
   const html = `
     <h1>New project enquiry</h1>
     <p>A lead submitted the contact form.</p>
@@ -67,5 +57,6 @@ export function buildContactLeadEmail(lead) {
     <h2>Goals / desires</h2>
     <p>${escapeHtml(lead.goals).replaceAll("\n", "<br>")}</p>
   `;
+
   return { html, subject, text };
 }

@@ -186,6 +186,29 @@ Write code that is **accessible, performant, type-safe, and maintainable**. Focu
 
 - Use ref as a prop instead of `React.forwardRef`
 
+### Comments
+
+Prefer self-documenting names and structure. Add a small number of short **why**-comments at non-obvious spots only—not what the syntax already says.
+
+Comment when:
+
+- Intent or tradeoff is non-obvious (security short-circuit, dual error paths, single source of truth across layers)
+- A reader would reasonably ask “why is this done this way?”
+
+Do not comment:
+
+- Field labels, class strings, obvious `required`, or line-by-line narration
+- Restating types, names, or control flow that the code already shows
+
+Prefer one comment per non-obvious block over many line comments.
+
+Examples in this codebase:
+
+- Contact form frontmatter: why `getActionResult` / `isInputError` split field vs form errors; why values re-bind after a failed submit
+- Honeypot: why `company_website` is off-screen / `tabindex="-1"` and treated as success when filled
+- Options module: why one module feeds UI + Zod + email labels
+- Action handler: clarify honeypot short-circuit returning success only where that outcome is non-obvious
+
 ---
 
 ## Testing
@@ -204,7 +227,7 @@ Biome's linter will catch most issues automatically. Focus your attention on:
 3. **Architecture decisions** - Component structure, data flow, and API design
 4. **Edge cases** - Handle boundary conditions and error states
 5. **User experience** - Accessibility, performance, and usability considerations
-6. **Documentation** - Add comments for complex logic, but prefer self-documenting code
+6. **Comments** - Follow the Comments subsection above; prefer self-documenting code over narration
 
 ---
 

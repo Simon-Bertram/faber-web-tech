@@ -52,6 +52,13 @@ const {
         }
       })();
     </script>
+
+    <!-- Cloudflare Turnstile - loads the Turnstile API globally so it's available on all pages with forms -->
+    <script
+      async
+      defer
+      src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+    ></script>
   </head>
   <body
     class="min-h-screen antialiased flex flex-col selection:bg-[#ff5c00] selection:text-white"

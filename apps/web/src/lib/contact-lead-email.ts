@@ -1,34 +1,14 @@
+import {
+  type Budget,
+  budgetLabels,
+  type ProjectType,
+  projectTypeLabels,
+  type Timeline,
+  timelineLabels,
+} from "./contact-options";
+
 const CONTACT_INBOX = "contact@faberwebtech.com";
 const CONTACT_FROM_NAME = "Faber Web Tech";
-
-export const projectTypeLabels = {
-  "ai-automation": "AI Automation",
-  "not-sure": "Not sure yet",
-  "seo-geo": "SEO & GEO",
-  "web-app": "Web App",
-  website: "Modern Website",
-} as const;
-
-export const budgetLabels = {
-  "": "Not specified",
-  "5k-15k": "£5k–£15k",
-  "15k-40k": "£15k–£40k",
-  "40k-plus": "£40k+",
-  "not-sure": "Not sure",
-  "under-5k": "Under £5k",
-} as const;
-
-export const timelineLabels = {
-  "": "Not specified",
-  "1-3-months": "1–3 months",
-  "3-6-months": "3–6 months",
-  asap: "ASAP",
-  exploring: "Exploring",
-} as const;
-
-export type ProjectType = keyof typeof projectTypeLabels;
-export type Budget = keyof typeof budgetLabels;
-export type Timeline = keyof typeof timelineLabels;
 
 export interface ContactLead {
   budget: Budget;
