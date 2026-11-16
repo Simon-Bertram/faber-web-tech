@@ -46,6 +46,8 @@ Always activate and follow the corresponding skill before beginning specialized 
   - `email-and-password-best-practices`: Password policies, verification flows, and credential authentication.
 - **Observability & Logging**:
   - `review-logging-patterns` & `build-audit-logs`: Implementing wide events, Evlog structured logging, audit trails, and drain adapters.
+- **Backend (Hono)**:
+  - `hono`: Hono routing, middleware, context, and request testing patterns. Use when editing `apps/server` or other Hono handlers.
 - **Monorepo & Code Standards**:
   - `turborepo`: Managing task pipelines, caching, and monorepo boundaries in `turbo.json`.
   - `ultracite`: Linting and formatting rules via Biome (`pnpm dlx ultracite fix`).
@@ -73,10 +75,11 @@ When refining UI, responsiveness, or conversion flows:
 
 ### 3. Backend & API-Only Edits (Hono & oRPC)
 When changing server endpoints or business logic:
-1. Touch `packages/db` if data models need updating (and regenerate migrations).
-2. Update procedures, validators, or routers in `packages/api/src/routers/`.
-3. Verify Hono handlers in `apps/server/src/index.ts`.
-4. Run `pnpm run check-types`.
+1. Review the `hono` skill before changing Hono handlers in `apps/server`.
+2. Touch `packages/db` if data models need updating (and regenerate migrations).
+3. Update procedures, validators, or routers in `packages/api/src/routers/`.
+4. Verify Hono handlers in `apps/server/src/index.ts`.
+5. Run `pnpm run check-types`.
 
 ### 4. Authentication Edits (Better-Auth)
 When configuring auth providers, policies, or session handling:
