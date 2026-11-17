@@ -1,4 +1,7 @@
-import { parseTurnstileHostnames } from "@faber-web/env/turnstile";
+import {
+  isTurnstileAlwaysPassSecret,
+  parseTurnstileHostnames,
+} from "@faber-web/env/turnstile";
 
 const SITEVERIFY_URL =
   "https://challenges.cloudflare.com/turnstile/v0/siteverify";
@@ -74,7 +77,11 @@ export async function verifyTurnstileToken(options: {
     return { ok: false, reason: "siteverify-rejected" };
   }
 
-  if (result.action !== expectedAction) {
+  // Test secret siteverify omits action/cdata — skip action only for that secret.
+  if (
+    !isTurnstileAlwaysPassSecret(secret) &&
+    result.action !== expectedAction
+  ) {
     return { ok: false, reason: "action-mismatch" };
   }
 

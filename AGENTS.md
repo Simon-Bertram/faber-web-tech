@@ -12,6 +12,7 @@ A marketing and client management platform for a solo web developer. The public-
 - **Database ORM**: Drizzle ORM
 - **Database**: Cloudflare D1
 - **Authentication**: Better-Auth
+- **Bot verification**: Cloudflare Turnstile (see [docs/turnstile.md](docs/turnstile.md) — production vs local test keys; never allow localhost on the production widget)
 - **Observability**: Evlog (see [docs/logging.md](docs/logging.md))
 - **Dependencies**: pnpm catalog / workspace (see [docs/dependencies.md](docs/dependencies.md))
 

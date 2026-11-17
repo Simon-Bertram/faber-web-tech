@@ -1,5 +1,7 @@
+import { PUBLIC_TURNSTILE_SITEKEY } from "astro:env/client";
+
 /** Public Turnstile sitekey (safe to embed in the browser). */
-export const TURNSTILE_SITEKEY = "0x4AAAAAAEGQrjTl9Eh2AoWh";
+export const TURNSTILE_SITEKEY = PUBLIC_TURNSTILE_SITEKEY;
 
 interface TurnstileApi {
   getResponse: (widgetId: string) => string;

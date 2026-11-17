@@ -10,6 +10,13 @@ export default defineConfig({
         context: "client",
         default: "http://localhost:3000",
       }),
+      // Default is Cloudflare's always-pass test sitekey for local Alchemy.
+      // Production overrides via PUBLIC_TURNSTILE_SITEKEY in alchemy.run.ts.
+      PUBLIC_TURNSTILE_SITEKEY: envField.string({
+        access: "public",
+        context: "client",
+        default: "1x00000000000000000000AA",
+      }),
     },
   },
   fonts: [

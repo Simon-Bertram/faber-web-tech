@@ -1,5 +1,6 @@
 ---
 import { actions, isInputError } from "astro:actions";
+import { PUBLIC_TURNSTILE_SITEKEY } from "astro:env/client";
 import {
   budgetOptions,
   projectTypeOptions,
@@ -294,7 +295,7 @@ const errorClass = "mt-1.5 text-rose-600 text-sm dark:text-rose-400";
       <div
         class="cf-turnstile"
         data-action="contact"
-        data-sitekey="0x4AAAAAAEGQrjTl9Eh2AoWh"
+        data-sitekey={PUBLIC_TURNSTILE_SITEKEY}
       />
 
       <button

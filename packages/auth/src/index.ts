@@ -6,7 +6,10 @@ import * as schema from "@faber-web/db/schema/auth";
 import { isAdminEmail } from "@faber-web/env/admin";
 import { parseAllowedCorsOrigins } from "@faber-web/env/cors";
 import { env } from "@faber-web/env/server";
-import { parseTurnstileHostnames } from "@faber-web/env/turnstile";
+import {
+  isTurnstileAlwaysPassSecret,
+  parseTurnstileHostnames,
+} from "@faber-web/env/turnstile";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { captcha, emailOTP } from "better-auth/plugins";
@@ -79,7 +82,10 @@ export function createAuth(bindings: AuthBindings = env as AuthBindings) {
       captcha({
         allowedHostnames: parseTurnstileHostnames(bindings.TURNSTILE_HOSTNAMES),
         endpoints: ["/email-otp/send-verification-otp", "/sign-in/email"],
-        expectedAction: "auth",
+        // Test secret siteverify omits action — only enforce for real secrets.
+        ...(isTurnstileAlwaysPassSecret(bindings.TURNSTILE_SECRET_KEY)
+          ? {}
+          : { expectedAction: "auth" as const }),
         provider: "cloudflare-turnstile",
         secretKey: bindings.TURNSTILE_SECRET_KEY,
       }),
