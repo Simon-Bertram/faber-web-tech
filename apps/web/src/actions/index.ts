@@ -11,6 +11,12 @@ import {
   PROJECT_TYPE_VALUES,
   TIMELINE_VALUES,
 } from "../lib/contact-options";
+import {
+  CTA_COOKIE_NAME,
+  CTA_EXPERIMENT_ID,
+  getCtaOfferPackage,
+  parseCtaVariant,
+} from "../lib/cta-experiment";
 import { verifyTurnstileToken } from "../lib/verify-turnstile";
 
 const SEND_FAILED_MESSAGE = "Unable to send your message. Please try again.";
@@ -42,12 +48,23 @@ export const server = {
     accept: "form",
     handler: async (input, context) => {
       const { log } = context.locals;
+      // Cookie is source of truth for experiment attribution — ignore client fields / ?src=.
+      const ctaVariant = parseCtaVariant(
+        context.cookies.get(CTA_COOKIE_NAME)?.value
+      );
+      const experimentFields = ctaVariant
+        ? {
+            experiment: CTA_EXPERIMENT_ID,
+            variant: ctaVariant,
+          }
+        : {};
 
       // Bots fill hidden honeypot fields; pretend success so they get no signal.
       if (input.company_website.trim() !== "") {
         log.set({
           action: "contact.submit",
           outcome: "honeypot",
+          ...experimentFields,
         });
         return { submitted: true as const };
       }
@@ -65,6 +82,7 @@ export const server = {
           action: "contact.submit",
           outcome: "turnstile_denied",
           reason: turnstile.reason,
+          ...experimentFields,
         });
         throw new ActionError({
           code: "FORBIDDEN",
@@ -79,6 +97,7 @@ export const server = {
           action: "contact.submit",
           outcome: "error",
           reason: "missing-binding",
+          ...experimentFields,
         });
         throw new ActionError({
           code: "INTERNAL_SERVER_ERROR",
@@ -86,10 +105,13 @@ export const server = {
         });
       }
 
+      const offer = ctaVariant ? getCtaOfferPackage(ctaVariant) : undefined;
       const lead = {
         budget: input.budget,
         company: input.company,
         email: input.email,
+        experimentOffer: offer?.offerName,
+        experimentVariant: ctaVariant,
         goals: input.goals,
         name: input.name,
         projectType: input.projectType,
@@ -112,6 +134,7 @@ export const server = {
           messageId,
           outcome: "success",
           projectType: lead.projectType,
+          ...experimentFields,
         });
 
         return { submitted: true as const };
@@ -121,6 +144,7 @@ export const server = {
           emailErrorCode: getEmailErrorCode(error),
           outcome: "error",
           projectType: lead.projectType,
+          ...experimentFields,
         });
         const cause = error instanceof Error ? error : new Error(String(error));
         log.error(cause);

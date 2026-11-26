@@ -1,5 +1,9 @@
 ---
 import CheckIcon from "../assets/icons/check.svg";
+import { getCtaOfferPackage } from "../lib/cta-experiment";
+
+const ctaVariant = Astro.locals.ctaVariant ?? "control";
+const cta = getCtaOfferPackage(ctaVariant);
 ---
 
 <!-- CtaBanner.astro - Primary Conversion Trigger Section -->
@@ -28,16 +32,16 @@ import CheckIcon from "../assets/icons/check.svg";
 
     <p class="text-lg text-(--text-secondary) max-w-2xl mx-auto mb-8">
       Stop losing customers to slow-loading pages and wasting weekends on manual
-      operations. Request a Digital Growth Audit and get a clear path to
-      high-performance apps and automations that work 24/7.
+      operations. {cta.bannerSupport}
     </p>
 
     <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
       <a
         class="inline-flex h-12 w-full sm:w-auto items-center justify-center rounded px-8 text-sm font-semibold uppercase tracking-wider text-white bg-(--primary) shadow-lg transition-all hover:bg-(--primary-hover) hover:shadow-[0_4px_20px_var(--primary-glow)] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--primary)"
-        href="/contact"
+        data-exp-cta={ctaVariant}
+        href={cta.href}
       >
-        <span>Request a Digital Growth Audit</span>
+        <span>{cta.buttonLabel}</span>
         <svg
           aria-hidden="true"
           class="ml-2 h-4 w-4"

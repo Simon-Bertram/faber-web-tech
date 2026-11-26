@@ -7,6 +7,12 @@ import {
   timelineOptions,
 } from "../lib/contact-options";
 
+interface Props {
+  submitLabel?: string;
+}
+
+const { submitLabel = "Send project brief" } = Astro.props;
+
 // getActionResult holds this POST's outcome; isInputError narrows field messages vs a form-level failure.
 const result = Astro.getActionResult(actions.contact);
 const inputErrors = isInputError(result?.error) ? result.error.fields : {};
@@ -302,7 +308,7 @@ const errorClass = "mt-1.5 text-rose-600 text-sm dark:text-rose-400";
         class="inline-flex h-12 w-full items-center justify-center rounded bg-(--primary) px-8 font-semibold text-sm text-white uppercase tracking-wider shadow-lg transition-all hover:bg-(--primary-hover) hover:shadow-[0_4px_20px_var(--primary-glow)] focus-visible:outline-none focus-visible:ring-(--primary) focus-visible:ring-2 active:scale-[0.98]"
         type="submit"
       >
-        Send project brief
+        {submitLabel}
       </button>
     </form>
   )}

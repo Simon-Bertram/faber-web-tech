@@ -2,12 +2,13 @@
 import ContactForm from "../components/contact-form.astro";
 import Footer from "../components/Footer.astro";
 import Layout from "../layouts/Layout.astro";
+import { getCtaOfferPackage } from "../lib/cta-experiment";
+
+const ctaVariant = Astro.locals.ctaVariant ?? "control";
+const cta = getCtaOfferPackage(ctaVariant);
 ---
 
-<Layout
-  description="Tell us what you want your website, web app, AI automation, or SEO & GEO work to achieve. Faber Web Tech will reply with a clear next step."
-  title="Contact | Faber Web Tech"
->
+<Layout description={cta.lede} title="Contact | Faber Web Tech">
   <section
     class="relative overflow-hidden border-(--border-subtle) border-b py-16 md:py-24"
   >
@@ -23,20 +24,17 @@ import Layout from "../layouts/Layout.astro";
         <span
           class="mb-4 inline-block rounded-full border border-(--primary)/30 bg-(--primary-container) px-3.5 py-1 font-mono font-semibold text-(--primary) text-xs uppercase tracking-widest"
         >
-          Start a project
+          {cta.eyebrow}
         </span>
         <h1
           class="mb-4 font-extrabold text-3xl text-(--text-primary) leading-tight tracking-tight sm:text-4xl lg:text-5xl"
         >
-          Tell us what you want this project to achieve.
+          {cta.heading}
         </h1>
         <p
           class="mb-8 max-w-xl text-(--text-secondary) text-lg leading-relaxed"
         >
-          Share the outcome you need — a faster marketing site, a product you
-          can ship, an automation that removes busywork, or visibility in Google
-          and AI answers. We’ll come back with a senior-developer view on scope,
-          milestones, and pricing.
+          {cta.lede}
         </p>
         <ul class="space-y-3 font-mono text-(--text-muted) text-sm">
           <li>Direct access to the engineer doing the work</li>
@@ -47,7 +45,7 @@ import Layout from "../layouts/Layout.astro";
         </ul>
       </div>
 
-      <ContactForm />
+      <ContactForm submitLabel={cta.submitLabel} />
     </div>
   </section>
 

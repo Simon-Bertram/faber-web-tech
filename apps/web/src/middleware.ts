@@ -3,6 +3,16 @@ import { env, waitUntil } from "cloudflare:workers";
 import { createRequestLogger, initLogger } from "evlog";
 import { createAxiomDrain } from "evlog/axiom";
 
+import {
+  CTA_COOKIE_NAME,
+  CTA_EXCLUDE_COOKIE,
+  CTA_EXPERIMENT_ID,
+  type CtaVariant,
+  getCtaCookieOptions,
+  isCtaExcluded,
+  parseCtaVariant,
+  pickCtaVariant,
+} from "./lib/cta-experiment";
 import { fetchPortalSession } from "./lib/portal-session";
 
 const CRAWLER_USER_AGENT =
@@ -52,7 +62,8 @@ function shouldEmitPageLog(
   response: Response,
   log: ReturnType<typeof createRequestLogger>
 ): boolean {
-  if (log.getContext().action === "contact.submit") {
+  const { action } = log.getContext();
+  if (action === "contact.submit" || action === "experiment.expose") {
     return true;
   }
 
@@ -61,6 +72,52 @@ function shouldEmitPageLog(
   }
 
   return !isCrawlerRequest(request);
+}
+
+function isPrefetchRequest(request: Request): boolean {
+  const purpose = request.headers.get("purpose") ?? "";
+  const secPurpose = request.headers.get("sec-purpose") ?? "";
+  return (
+    purpose.toLowerCase() === "prefetch" ||
+    secPurpose.toLowerCase().includes("prefetch")
+  );
+}
+
+function shouldSkipCtaAssignment(pathname: string, request: Request): boolean {
+  if (pathname.startsWith("/api") || pathname.startsWith("/_actions")) {
+    return true;
+  }
+
+  if (pathname.includes(".")) {
+    return true;
+  }
+
+  if (
+    pathname.startsWith("/dashboard") ||
+    pathname.startsWith("/admin") ||
+    pathname === "/login" ||
+    pathname === "/signup" ||
+    pathname === "/two-factor" ||
+    pathname === "/experiments/opt-out"
+  ) {
+    return true;
+  }
+
+  if (isPrefetchRequest(request) || isCrawlerRequest(request)) {
+    return true;
+  }
+
+  return false;
+}
+
+function withPrivateCache(response: Response): Response {
+  const headers = new Headers(response.headers);
+  headers.set("Cache-Control", "private");
+  return new Response(response.body, {
+    headers,
+    status: response.status,
+    statusText: response.statusText,
+  });
 }
 
 const loggingMiddleware = defineMiddleware(
@@ -85,6 +142,49 @@ const loggingMiddleware = defineMiddleware(
       log.emit();
       throw error;
     }
+  }
+);
+
+const ctaExperimentMiddleware = defineMiddleware(
+  async ({ cookies, locals, request, url }, next) => {
+    const secure = import.meta.env.PROD;
+    const cookieOptions = getCtaCookieOptions(secure);
+    const excluded = isCtaExcluded(cookies.get(CTA_EXCLUDE_COOKIE)?.value);
+
+    if (excluded || shouldSkipCtaAssignment(url.pathname, request)) {
+      locals.ctaVariant = "control";
+      return next();
+    }
+
+    const existing = parseCtaVariant(cookies.get(CTA_COOKIE_NAME)?.value);
+    let variant: CtaVariant;
+    let newlyAssigned = false;
+
+    if (existing) {
+      variant = existing;
+    } else {
+      variant = pickCtaVariant();
+      cookies.set(CTA_COOKIE_NAME, variant, cookieOptions);
+      newlyAssigned = true;
+    }
+
+    locals.ctaExperiment = CTA_EXPERIMENT_ID;
+    locals.ctaVariant = variant;
+    locals.log.set({
+      experiment: CTA_EXPERIMENT_ID,
+      variant,
+    });
+
+    if (newlyAssigned) {
+      locals.log.set({
+        action: "experiment.expose",
+        experiment: CTA_EXPERIMENT_ID,
+        variant,
+      });
+    }
+
+    const response = await next();
+    return withPrivateCache(response);
   }
 );
 
@@ -121,4 +221,8 @@ const portalAuthMiddleware = defineMiddleware(
   }
 );
 
-export const onRequest = sequence(loggingMiddleware, portalAuthMiddleware);
+export const onRequest = sequence(
+  loggingMiddleware,
+  ctaExperimentMiddleware,
+  portalAuthMiddleware
+);

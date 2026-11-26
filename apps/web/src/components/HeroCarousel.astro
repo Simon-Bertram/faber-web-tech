@@ -1,10 +1,14 @@
 ---
+import { getCtaOfferPackage } from "../lib/cta-experiment";
 import ArchitecturePreview from "./carousel/ArchitecturePreview.astro";
 import AutomationPreview from "./carousel/AutomationPreview.astro";
 import CarouselControls from "./carousel/CarouselControls.astro";
 import PerformancePreview from "./carousel/PerformancePreview.astro";
 import SeoGeoPreview from "./carousel/SeoGeoPreview.astro";
 import { slides } from "./carousel/slides";
+
+const ctaVariant = Astro.locals.ctaVariant ?? "control";
+const cta = getCtaOfferPackage(ctaVariant);
 ---
 
 <section
@@ -79,10 +83,11 @@ import { slides } from "./carousel/slides";
                 {/* Call to Actions */}
                 <div class="flex flex-wrap items-center gap-4 w-full sm:w-auto">
                   <a
-                    href={slide.primaryCtaLink}
-                    class="inline-flex h-12 w-full sm:w-auto items-center justify-center rounded px-6 text-sm font-semibold uppercase tracking-wider text-white bg-(--primary) shadow-md transition-all hover:bg-(--primary-hover) hover:shadow-[0_4px_20px_var(--primary-glow)] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--primary)"
+                    class="inline-flex h-12 w-full items-center justify-center rounded bg-(--primary) px-6 font-semibold text-sm text-white uppercase tracking-wider shadow-md transition-all hover:bg-(--primary-hover) hover:shadow-[0_4px_20px_var(--primary-glow)] focus-visible:outline-none focus-visible:ring-(--primary) focus-visible:ring-2 active:scale-[0.98] sm:w-auto"
+                    data-exp-cta={ctaVariant}
+                    href={cta.href}
                   >
-                    {slide.primaryCtaText}
+                    {cta.buttonLabel}
                     <svg
                       class="ml-2 h-4 w-4"
                       fill="none"

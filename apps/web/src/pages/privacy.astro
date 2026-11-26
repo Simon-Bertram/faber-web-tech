@@ -1,0 +1,223 @@
+---
+import Footer from "../components/Footer.astro";
+import Layout from "../layouts/Layout.astro";
+import {
+  CTA_COOKIE_NAME,
+  CTA_EXCLUDE_COOKIE,
+  CTA_EXPERIMENT_ID,
+} from "../lib/cta-experiment";
+
+const optedOut = Astro.url.searchParams.get("opted_out") === "1";
+---
+
+<Layout
+  description="How Faber Web Tech uses cookies and processes personal data for the website and contact form."
+  title="Privacy & Cookies | Faber Web Tech"
+>
+  <section
+    class="relative overflow-hidden border-(--border-subtle) border-b py-16 md:py-24"
+  >
+    <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+      <span
+        class="mb-4 inline-block rounded-full border border-(--primary)/30 bg-(--primary-container) px-3.5 py-1 font-mono font-semibold text-(--primary) text-xs uppercase tracking-widest"
+      >
+        Legal
+      </span>
+      <h1
+        class="mb-6 font-extrabold text-3xl text-(--text-primary) leading-tight tracking-tight sm:text-4xl"
+      >
+        Privacy &amp; cookies
+      </h1>
+      <p class="mb-10 text-(--text-secondary) text-lg leading-relaxed">
+        This notice explains how Faber Web Tech uses cookies and processes
+        personal data on faberwebtech.com. It is not legal advice.
+      </p>
+
+      {optedOut && (
+          <p
+            class="mb-8 rounded border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-emerald-800 text-sm dark:text-emerald-300"
+            role="status"
+          >
+            You have opted out of site experiments. The experiment cookie has
+            been cleared. You can browse as usual.
+          </p>
+        )}
+
+      <div class="space-y-10 text-(--text-secondary) text-base leading-relaxed">
+        <section>
+          <h2
+            class="mb-3 font-bold text-(--text-primary) text-xl tracking-tight"
+            id="who"
+          >
+            Who we are
+          </h2>
+          <p>
+            Faber Web Tech operates this site. Contact:
+            <a
+              class="text-(--primary) underline-offset-2 hover:underline"
+              href="mailto:contact@faberwebtech.com"
+            >
+              contact@faberwebtech.com
+            </a
+            >.
+          </p>
+        </section>
+
+        <section>
+          <h2
+            class="mb-3 font-bold text-(--text-primary) text-xl tracking-tight"
+            id="contact-form"
+          >
+            Contact form
+          </h2>
+          <p>
+            When you submit the contact form, we process your name, email,
+            company (optional), project details, and message so we can reply.
+            Messages are delivered by email to our inbox. We rely on
+            <strong class="font-semibold text-(--text-primary)"
+              >legitimate interests</strong
+            >
+            (responding to enquiries) and, where applicable, steps prior to a
+            contract.
+          </p>
+        </section>
+
+        <section>
+          <h2
+            class="mb-3 font-bold text-(--text-primary) text-xl tracking-tight"
+            id="cookies"
+          >
+            Cookies
+          </h2>
+          <p class="mb-4">
+            We use a small number of cookies. Authentication cookies are
+            required if you sign in to the client portal.
+          </p>
+          <h3
+            class="mb-2 font-semibold text-(--text-primary) text-base"
+            id="experiment-cookie"
+          >
+            Site experiment cookie ({CTA_COOKIE_NAME})
+          </h3>
+          <p class="mb-3">
+            We occasionally run A/B tests to improve the site (for example which
+            primary call-to-action converts better). Cookie
+            <code
+              class="rounded bg-(--bg-surface) px-1.5 py-0.5 font-mono text-sm"
+              >{CTA_COOKIE_NAME}</code
+            >
+            stores a random assignment (<code
+              class="rounded bg-(--bg-surface) px-1.5 py-0.5 font-mono text-sm"
+              >control</code
+            >
+            or
+            <code
+              class="rounded bg-(--bg-surface) px-1.5 py-0.5 font-mono text-sm"
+              >variant</code
+            >) for about 30 days so you see a consistent offer.
+          </p>
+          <ul class="mb-3 list-disc space-y-1 pl-5">
+            <li>
+              <strong class="font-semibold text-(--text-primary)"
+                >Purpose:</strong
+              >
+              aggregate statistics to improve the site (experiment id
+              <code
+                class="rounded bg-(--bg-surface) px-1.5 py-0.5 font-mono text-sm"
+                >{CTA_EXPERIMENT_ID}</code
+              >).
+            </li>
+            <li>
+              <strong class="font-semibold text-(--text-primary)"
+                >Not used for:</strong
+              >
+              advertising, profiling, or cross-site tracking.
+            </li>
+            <li>
+              <strong class="font-semibold text-(--text-primary)"
+                >Logging:</strong
+              >
+              assignment and successful contact submissions are recorded via our
+              structured logs (Evlog) and may be stored in Axiom for analysis.
+            </li>
+          </ul>
+          <p class="mb-3">
+            Under UK PECR we treat this as a
+            <strong class="font-semibold text-(--text-primary)"
+              >statistical purposes</strong
+            >
+            cookie where the conditions are met. We do not show a consent banner
+            for this cookie alone. Under UK GDPR we rely on
+            <strong class="font-semibold text-(--text-primary)"
+              >legitimate interests</strong
+            >
+            for the related analytics.
+          </p>
+          <h3
+            class="mb-2 font-semibold text-(--text-primary) text-base"
+            id="opt-out"
+          >
+            Opt out of site experiments
+          </h3>
+          <p class="mb-4">
+            You can object at any time. Opting out sets
+            <code
+              class="rounded bg-(--bg-surface) px-1.5 py-0.5 font-mono text-sm"
+              >{CTA_EXCLUDE_COOKIE}=1</code
+            >, clears
+            <code
+              class="rounded bg-(--bg-surface) px-1.5 py-0.5 font-mono text-sm"
+              >{CTA_COOKIE_NAME}</code
+            >, and stops experiment assignment and exposure logging. You will
+            see the default (non-experiment) call-to-action.
+          </p>
+          <p>
+            <a
+              class="inline-flex h-11 items-center justify-center rounded bg-(--primary) px-6 font-semibold text-sm text-white uppercase tracking-wider transition-all hover:bg-(--primary-hover) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--primary)"
+              href="/experiments/opt-out"
+            >
+              Opt out of site experiments
+            </a>
+          </p>
+        </section>
+
+        <section>
+          <h2
+            class="mb-3 font-bold text-(--text-primary) text-xl tracking-tight"
+            id="bot-checks"
+          >
+            Bot checks
+          </h2>
+          <p>
+            The contact form uses Cloudflare Turnstile to reduce spam. Turnstile
+            may set cookies or collect technical data as described in
+            Cloudflare’s documentation.
+          </p>
+        </section>
+
+        <section>
+          <h2
+            class="mb-3 font-bold text-(--text-primary) text-xl tracking-tight"
+            id="rights"
+          >
+            Your rights
+          </h2>
+          <p>
+            Depending on applicable law, you may have rights to access, correct,
+            delete, or restrict processing of your personal data, and to object
+            to processing based on legitimate interests. Contact
+            <a
+              class="text-(--primary) underline-offset-2 hover:underline"
+              href="mailto:contact@faberwebtech.com"
+            >
+              contact@faberwebtech.com
+            </a>
+            to exercise these rights.
+          </p>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+</Layout>

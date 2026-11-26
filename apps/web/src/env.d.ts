@@ -3,12 +3,15 @@
 
 import type { RequestLogger } from "evlog";
 
+import type { CtaVariant } from "./lib/cta-experiment";
 import type { PortalSessionUser } from "./lib/portal-session";
 
 declare global {
   // biome-ignore lint/style/noNamespace: Astro App.Locals uses declaration merging
   namespace App {
     interface Locals {
+      ctaExperiment?: string;
+      ctaVariant?: CtaVariant;
       log: RequestLogger;
       portalUser?: PortalSessionUser;
     }

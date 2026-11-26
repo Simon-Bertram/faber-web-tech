@@ -89,6 +89,10 @@ On the API Worker, info-level events are sampled at 0% unless `keep` force-keeps
 - Do not wrap the Axiom drain in `createDrainPipeline` with a multi-second interval on Workers.
 - Do not treat this as an audit archive. Audit trails (`log.audit`) are a separate evlog feature and are not wired.
 
+## CTA experiment
+
+Offer-friction A/B test (`cta_offer_friction_v1`) logs `experiment.expose` (once per assignment) and attaches `experiment` / `variant` on `contact.submit`. See [cta-experiment.md](cta-experiment.md) for schema, APL, PECR/opt-out, and conclude rules. Always emit when `action` is `experiment.expose` or `contact.submit`.
+
 ## Skills
 
 When changing logging, follow `review-logging-patterns` (and `build-audit-logs` if adding audits).

@@ -1,0 +1,16 @@
+---
+import {
+  CTA_COOKIE_NAME,
+  CTA_EXCLUDE_COOKIE,
+  getCtaCookieOptions,
+} from "../../lib/cta-experiment";
+
+const secure = import.meta.env.PROD;
+const cookieOptions = getCtaCookieOptions(secure);
+
+Astro.cookies.set(CTA_EXCLUDE_COOKIE, "1", cookieOptions);
+Astro.cookies.delete(CTA_COOKIE_NAME, { path: "/" });
+
+return Astro.redirect("/privacy?opted_out=1");
+---
+

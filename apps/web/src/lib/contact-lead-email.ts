@@ -14,6 +14,9 @@ export interface ContactLead {
   budget: Budget;
   company: string;
   email: string;
+  /** Experiment attribution for blinded inbox scoring — footer only, not subject. */
+  experimentOffer?: string;
+  experimentVariant?: string;
   goals: string;
   name: string;
   projectType: ProjectType;
@@ -46,6 +49,15 @@ export function buildContactLeadEmail(lead: ContactLead): {
   const company = displayOrDash(lead.company);
   const subject = `New lead: ${projectType} — ${lead.name}`;
 
+  const experimentFooter =
+    lead.experimentVariant && lead.experimentOffer
+      ? [
+          "",
+          "—",
+          `Experiment: ${lead.experimentVariant} (${lead.experimentOffer})`,
+        ]
+      : [];
+
   const text = [
     "New project enquiry from the contact form.",
     "",
@@ -58,7 +70,13 @@ export function buildContactLeadEmail(lead: ContactLead): {
     "",
     "Goals / desires:",
     lead.goals,
+    ...experimentFooter,
   ].join("\n");
+
+  const experimentHtml =
+    lead.experimentVariant && lead.experimentOffer
+      ? `<p style="margin-top:2rem;color:#666;font-size:12px">Experiment: ${escapeHtml(lead.experimentVariant)} (${escapeHtml(lead.experimentOffer)})</p>`
+      : "";
 
   const html = `
     <h1>New project enquiry</h1>
@@ -73,6 +91,7 @@ export function buildContactLeadEmail(lead: ContactLead): {
     </table>
     <h2>Goals / desires</h2>
     <p>${escapeHtml(lead.goals).replaceAll("\n", "<br>")}</p>
+    ${experimentHtml}
   `;
 
   return { html, subject, text };
