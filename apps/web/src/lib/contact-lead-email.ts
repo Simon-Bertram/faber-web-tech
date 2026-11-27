@@ -1,26 +1,14 @@
-import {
-  type Budget,
-  budgetLabels,
-  type ProjectType,
-  projectTypeLabels,
-  type Timeline,
-  timelineLabels,
-} from "./contact-options";
-
 const CONTACT_INBOX = "contact@faberwebtech.com";
 const CONTACT_FROM_NAME = "Faber Web Tech";
 
 export interface ContactLead {
-  budget: Budget;
-  company: string;
   email: string;
   /** Experiment attribution for blinded inbox scoring — footer only, not subject. */
   experimentOffer?: string;
   experimentVariant?: string;
-  goals: string;
+  message: string;
   name: string;
-  projectType: ProjectType;
-  timeline: Timeline;
+  website: string;
 }
 
 export { CONTACT_FROM_NAME, CONTACT_INBOX };
@@ -43,11 +31,8 @@ export function buildContactLeadEmail(lead: ContactLead): {
   subject: string;
   text: string;
 } {
-  const projectType = projectTypeLabels[lead.projectType];
-  const budget = budgetLabels[lead.budget];
-  const timeline = timelineLabels[lead.timeline];
-  const company = displayOrDash(lead.company);
-  const subject = `New lead: ${projectType} — ${lead.name}`;
+  const website = displayOrDash(lead.website);
+  const subject = `New lead: ${lead.name}`;
 
   const experimentFooter =
     lead.experimentVariant && lead.experimentOffer
@@ -59,17 +44,14 @@ export function buildContactLeadEmail(lead: ContactLead): {
       : [];
 
   const text = [
-    "New project enquiry from the contact form.",
+    "New enquiry from the contact form.",
     "",
     `Name: ${lead.name}`,
     `Email: ${lead.email}`,
-    `Company: ${company}`,
-    `Project type: ${projectType}`,
-    `Budget: ${budget}`,
-    `Timeline: ${timeline}`,
+    `Website: ${website}`,
     "",
-    "Goals / desires:",
-    lead.goals,
+    "What they need help with:",
+    lead.message,
     ...experimentFooter,
   ].join("\n");
 
@@ -79,18 +61,15 @@ export function buildContactLeadEmail(lead: ContactLead): {
       : "";
 
   const html = `
-    <h1>New project enquiry</h1>
+    <h1>New enquiry</h1>
     <p>A lead submitted the contact form.</p>
     <table>
       <tr><th align="left">Name</th><td>${escapeHtml(lead.name)}</td></tr>
       <tr><th align="left">Email</th><td>${escapeHtml(lead.email)}</td></tr>
-      <tr><th align="left">Company</th><td>${escapeHtml(company)}</td></tr>
-      <tr><th align="left">Project type</th><td>${escapeHtml(projectType)}</td></tr>
-      <tr><th align="left">Budget</th><td>${escapeHtml(budget)}</td></tr>
-      <tr><th align="left">Timeline</th><td>${escapeHtml(timeline)}</td></tr>
+      <tr><th align="left">Website</th><td>${escapeHtml(website)}</td></tr>
     </table>
-    <h2>Goals / desires</h2>
-    <p>${escapeHtml(lead.goals).replaceAll("\n", "<br>")}</p>
+    <h2>What they need help with</h2>
+    <p>${escapeHtml(lead.message).replaceAll("\n", "<br>")}</p>
     ${experimentHtml}
   `;
 

@@ -1,11 +1,6 @@
 ---
 import { actions, isInputError } from "astro:actions";
 import { PUBLIC_TURNSTILE_SITEKEY } from "astro:env/client";
-import {
-  budgetOptions,
-  projectTypeOptions,
-  timelineOptions,
-} from "../lib/contact-options";
 
 interface Props {
   submitLabel?: string;
@@ -25,29 +20,12 @@ const formError =
 // Re-bind posted values after a failed submit (Astro clears inputs on re-render otherwise).
 // The action runtime clones the request body, so formData() is still readable here.
 const values: Partial<
-  Record<
-    | "budget"
-    | "company"
-    | "email"
-    | "goals"
-    | "name"
-    | "projectType"
-    | "timeline",
-    string
-  >
+  Record<"email" | "message" | "name" | "website", string>
 > = {};
 if (result?.error && Astro.request.method === "POST") {
   try {
     const formData = await Astro.request.formData();
-    for (const name of [
-      "budget",
-      "company",
-      "email",
-      "goals",
-      "name",
-      "projectType",
-      "timeline",
-    ] as const) {
+    for (const name of ["email", "message", "name", "website"] as const) {
       const value = formData.get(name);
       if (typeof value === "string") {
         values[name] = value;
@@ -73,12 +51,11 @@ const errorClass = "mt-1.5 text-rose-600 text-sm dark:text-rose-400";
         Message sent
       </p>
       <h2 class="mb-3 font-extrabold text-(--text-primary) text-2xl tracking-tight">
-        Thanks — we have your project brief.
+        Thanks — I’ve got your message.
       </h2>
       <p class="text-(--text-secondary) leading-relaxed">
-        We’ll review what you want to achieve and reply from
-        contact@faberwebtech.com. Most introductions come back within one
-        business day.
+        I’ll reply personally from contact@faberwebtech.com within 1 working
+        day.
       </p>
     </div>
   ) : (
@@ -138,142 +115,53 @@ const errorClass = "mt-1.5 text-rose-600 text-sm dark:text-rose-400";
       </div>
 
       <div>
-        <label class={labelClass} for="contact-company">
-          Company
+        <label class={labelClass} for="contact-website">
+          Website URL{" "}
+          <span class="font-normal text-(--text-muted)">(optional)</span>
         </label>
         <input
           aria-describedby={
-            inputErrors.company ? "contact-company-error" : undefined
+            inputErrors.website ? "contact-website-error" : undefined
           }
-          aria-invalid={Boolean(inputErrors.company)}
-          autocomplete="organization"
+          aria-invalid={Boolean(inputErrors.website)}
+          autocomplete="url"
           class={fieldClass}
-          id="contact-company"
-          name="company"
+          id="contact-website"
+          inputmode="url"
+          name="website"
+          placeholder="https://yoursite.com"
           type="text"
-          value={values.company ?? ""}
+          value={values.website ?? ""}
         />
-        {inputErrors.company && (
-          <p class={errorClass} id="contact-company-error">
-            {inputErrors.company.join(" ")}
+        {inputErrors.website && (
+          <p class={errorClass} id="contact-website-error">
+            {inputErrors.website.join(" ")}
           </p>
         )}
       </div>
 
-      <fieldset
-        aria-describedby={
-          inputErrors.projectType ? "contact-project-type-error" : undefined
-        }
-        aria-invalid={Boolean(inputErrors.projectType)}
-      >
-        <legend class={`${labelClass} mb-3`}>
-          Project type <span class="text-(--primary)">*</span>
-        </legend>
-        <div class="grid gap-2 sm:grid-cols-2">
-          {projectTypeOptions.map((option) => (
-            <label class="flex min-h-11 cursor-pointer items-center gap-3 rounded border border-(--border-subtle) bg-(--bg-canvas) px-4 py-2.5 text-(--text-primary) text-sm transition-colors hover:border-(--border-hover) has-focus-visible:ring-(--primary) has-focus-visible:ring-2">
-              <input
-                checked={values.projectType === option.id}
-                class="h-4 w-4 accent-(--primary)"
-                name="projectType"
-                required
-                type="radio"
-                value={option.id}
-              />
-              {option.label}
-            </label>
-          ))}
-        </div>
-        {inputErrors.projectType && (
-          <p class={errorClass} id="contact-project-type-error">
-            {inputErrors.projectType.join(" ")}
-          </p>
-        )}
-      </fieldset>
-
       <div>
-        <label class={labelClass} for="contact-goals">
-          What do you want this project to achieve?{" "}
-          <span class="text-(--primary)">*</span>
+        <label class={labelClass} for="contact-message">
+          What you need help with <span class="text-(--primary)">*</span>
         </label>
         <textarea
           aria-describedby={
-            inputErrors.goals ? "contact-goals-error" : undefined
+            inputErrors.message ? "contact-message-error" : undefined
           }
-          aria-invalid={Boolean(inputErrors.goals)}
+          aria-invalid={Boolean(inputErrors.message)}
           class={`${fieldClass} min-h-32 resize-y`}
-          id="contact-goals"
+          id="contact-message"
           maxlength="5000"
           minlength="10"
-          name="goals"
-          placeholder="Tell us the outcome you need — launch a faster marketing site, ship a SaaS product, or automate a workflow."
+          name="message"
+          placeholder="A short note is fine — your site URL above, a launch goal, or whatever’s stuck."
           required
-        >{values.goals ?? ""}</textarea>
-        {inputErrors.goals && (
-          <p class={errorClass} id="contact-goals-error">
-            {inputErrors.goals.join(" ")}
+        >{values.message ?? ""}</textarea>
+        {inputErrors.message && (
+          <p class={errorClass} id="contact-message-error">
+            {inputErrors.message.join(" ")}
           </p>
         )}
-      </div>
-
-      <div class="grid gap-6 sm:grid-cols-2">
-        <div>
-          <label class={labelClass} for="contact-budget">
-            Budget
-          </label>
-          <select
-            aria-describedby={
-              inputErrors.budget ? "contact-budget-error" : undefined
-            }
-            aria-invalid={Boolean(inputErrors.budget)}
-            class={fieldClass}
-            id="contact-budget"
-            name="budget"
-          >
-            {budgetOptions.map((option) => (
-              <option
-                selected={values.budget === option.value}
-                value={option.value}
-              >
-                {option.label}
-              </option>
-            ))}
-          </select>
-          {inputErrors.budget && (
-            <p class={errorClass} id="contact-budget-error">
-              {inputErrors.budget.join(" ")}
-            </p>
-          )}
-        </div>
-
-        <div>
-          <label class={labelClass} for="contact-timeline">
-            Timeline
-          </label>
-          <select
-            aria-describedby={
-              inputErrors.timeline ? "contact-timeline-error" : undefined
-            }
-            aria-invalid={Boolean(inputErrors.timeline)}
-            class={fieldClass}
-            id="contact-timeline"
-            name="timeline"
-          >
-            {timelineOptions.map((option) => (
-              <option
-                selected={values.timeline === option.value}
-                value={option.value}
-              >
-                {option.label}
-              </option>
-            ))}
-          </select>
-          {inputErrors.timeline && (
-            <p class={errorClass} id="contact-timeline-error">
-              {inputErrors.timeline.join(" ")}
-            </p>
-          )}
-        </div>
       </div>
 
       {/* Hidden honeypot: real users never see/tab here; bots that fill it are dropped server-side. */}
@@ -304,11 +192,16 @@ const errorClass = "mt-1.5 text-rose-600 text-sm dark:text-rose-400";
         data-sitekey={PUBLIC_TURNSTILE_SITEKEY}
       />
 
-      <button
-        class="inline-flex h-12 w-full items-center justify-center rounded bg-(--primary) px-8 font-semibold text-sm text-white uppercase tracking-wider shadow-lg transition-all hover:bg-(--primary-hover) hover:shadow-[0_4px_20px_var(--primary-glow)] focus-visible:outline-none focus-visible:ring-(--primary) focus-visible:ring-2 active:scale-[0.98]"
-        type="submit"
-      >
-        {submitLabel}
-      </button>
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+        <button
+          class="inline-flex h-12 w-full shrink-0 items-center justify-center rounded bg-(--primary) px-8 font-semibold text-sm text-white uppercase tracking-wider shadow-lg transition-all hover:bg-(--primary-hover) hover:shadow-[0_4px_20px_var(--primary-glow)] focus-visible:outline-none focus-visible:ring-(--primary) focus-visible:ring-2 active:scale-[0.98] sm:w-auto"
+          type="submit"
+        >
+          {submitLabel}
+        </button>
+        <p class="text-(--text-muted) text-sm leading-snug sm:max-w-56">
+          I reply personally within 1 working day
+        </p>
+      </div>
     </form>
   )}

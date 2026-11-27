@@ -7,11 +7,6 @@ import {
   CONTACT_INBOX,
 } from "../lib/contact-lead-email";
 import {
-  BUDGET_VALUES,
-  PROJECT_TYPE_VALUES,
-  TIMELINE_VALUES,
-} from "../lib/contact-options";
-import {
   CTA_COOKIE_NAME,
   CTA_EXPERIMENT_ID,
   getCtaOfferPackage,
@@ -22,6 +17,8 @@ import { verifyTurnstileToken } from "../lib/verify-turnstile";
 const SEND_FAILED_MESSAGE = "Unable to send your message. Please try again.";
 const TURNSTILE_DENIED_MESSAGE = "Bot verification failed. Please try again.";
 const CONTACT_TURNSTILE_ACTION = "contact";
+const WEBSITE_URL_ERROR = "Please enter a valid website URL.";
+const HAS_URL_PROTOCOL = /^https?:\/\//i;
 
 function getEmailBinding(): SendEmail | undefined {
   return env.EMAIL;
@@ -32,6 +29,17 @@ function formText<Schema extends z.ZodType>(schema: Schema) {
     (value) => (typeof value === "string" ? value : ""),
     schema
   );
+}
+
+function normalizeWebsite(value: string): string {
+  const trimmed = value.trim();
+  if (trimmed === "") {
+    return "";
+  }
+  if (HAS_URL_PROTOCOL.test(trimmed)) {
+    return trimmed;
+  }
+  return `https://${trimmed}`;
 }
 
 function getEmailErrorCode(error: unknown): string | undefined {
@@ -107,15 +115,12 @@ export const server = {
 
       const offer = ctaVariant ? getCtaOfferPackage(ctaVariant) : undefined;
       const lead = {
-        budget: input.budget,
-        company: input.company,
         email: input.email,
         experimentOffer: offer?.offerName,
         experimentVariant: ctaVariant,
-        goals: input.goals,
+        message: input.message,
         name: input.name,
-        projectType: input.projectType,
-        timeline: input.timeline,
+        website: input.website,
       };
       const { html, subject, text } = buildContactLeadEmail(lead);
 
@@ -133,7 +138,6 @@ export const server = {
           action: "contact.submit",
           messageId,
           outcome: "success",
-          projectType: lead.projectType,
           ...experimentFields,
         });
 
@@ -143,7 +147,6 @@ export const server = {
           action: "contact.submit",
           emailErrorCode: getEmailErrorCode(error),
           outcome: "error",
-          projectType: lead.projectType,
           ...experimentFields,
         });
         const cause = error instanceof Error ? error : new Error(String(error));
@@ -157,29 +160,31 @@ export const server = {
       }
     },
     input: z.object({
-      budget: formText(z.enum(BUDGET_VALUES)),
       "cf-turnstile-response": formText(z.string().min(1).max(2048)),
-      company: formText(z.string().trim().max(120)),
       company_website: formText(z.string().max(200)),
       email: formText(
         z.email({ error: "Please enter a valid email address." })
       ),
-      goals: formText(
+      message: formText(
         z
           .string()
           .trim()
-          .min(10, "Please share a bit more about what you want to achieve.")
+          .min(10, "Please share a bit more about what you need help with.")
           .max(5000)
       ),
       name: formText(
         z.string().trim().min(1, "Please enter your name.").max(120)
       ),
-      projectType: formText(
-        z.enum(PROJECT_TYPE_VALUES, {
-          error: "Please choose a project type.",
-        })
+      website: formText(
+        z
+          .string()
+          .trim()
+          .max(2048)
+          .transform(normalizeWebsite)
+          .pipe(
+            z.union([z.literal(""), z.httpUrl({ error: WEBSITE_URL_ERROR })])
+          )
       ),
-      timeline: formText(z.enum(TIMELINE_VALUES)),
     }),
   }),
 };
