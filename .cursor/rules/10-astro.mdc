@@ -1,0 +1,14 @@
+---
+description: Astro SSR/hybrid pages, layouts, middleware, and Cloudflare Workers patterns
+globs: apps/web/src/**/*.astro,apps/web/src/middleware.ts,apps/web/astro.config.mjs
+alwaysApply: false
+---
+
+# Astro Architecture
+
+- **Zero-JS default:** Keep `.astro` static/server-rendered. Add `client:*` only when interactivity is required; prefer `client:visible` / `client:idle` over `client:load`.
+- **Server data:** Fetch in frontmatter (`---`) or middleware. Do not invent client `useEffect` waterfalls for initial page data.
+- **Locals:** Pass request state via `Astro.locals` (typed in `apps/web/src/env.d.ts`: `log`, `portalUser`, CTA fields). Extend `App.Locals` when adding new middleware-owned state.
+- **Cloudflare bindings:** Read Worker bindings with `import { env, waitUntil } from "cloudflare:workers"` (see middleware/actions). Do not invent `Astro.locals.runtime.env`.
+- **Assets:** Prefer `astro:assets` (`Image` / `Picture`) with explicit `width`, `height`, and descriptive `alt` when optimizing images.
+- **Middleware:** Auth/session resolution, logging, and security-related request setup belong in `apps/web/src/middleware.ts`; keep page components free of that plumbing.

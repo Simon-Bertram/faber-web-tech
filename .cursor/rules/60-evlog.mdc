@@ -1,0 +1,13 @@
+---
+description: Evlog wide events and Axiom drain on Workers
+globs: apps/web/src/middleware.ts,apps/web/src/actions/**/*.ts,apps/server/src/**/*.ts
+alwaysApply: false
+---
+
+# Evlog & Axiom
+
+- **Model:** One **wide event** per request. Astro: `createRequestLogger` + `emit()` in `apps/web/src/middleware.ts` (service `faber-web-web`). Server: Hono `evlog` middleware (service `faber-web-server`). See `docs/logging.md`.
+- **Drain:** Optional Axiom via `createAxiomDrain` when `AXIOM_API_KEY` and `AXIOM_DATASET` are set. Do not add a timed `createDrainPipeline` batcher on Workers. Do not drain every request as product analytics.
+- **Shape:** Production JSON (`pretty: false` on the API worker; Astro uses `pretty: import.meta.env.DEV`). Prefer fields like `action`, `path`, `userId`, `service`.
+- **Sampling:** Keep force-keeping errors; skip noisy successful wide events (`/api/auth/get-session`, `/rpc/healthCheck`) per existing `keep` / sampling. Do not drop all `/rpc`.
+- **Safety:** No `console.log` for request logging. Never put secrets, tokens, passwords, or raw PII in events (`maskEmail` on auth identity). `log.audit` is not wired—do not assume an audit archive.

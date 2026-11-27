@@ -1,0 +1,14 @@
+---
+description: Hono worker routing and oRPC procedure contracts
+globs: apps/server/**/*.ts,packages/api/**/*.ts
+alwaysApply: false
+---
+
+# Hono & oRPC
+
+- **Stack:** `@orpc/server` / `@orpc/client` with **Zod** schemas (`@orpc/zod`). Do not introduce tRPC or Valibot.
+- **Procedures:** Define in `packages/api` using `publicProcedure` / `protectedProcedure` / `adminProcedure` from `packages/api/src/index.ts`. Add `.input()` (and clear outputs) on mutations/queries that take data.
+- **Context & auth:** Session and DB come from `createContext` in `packages/api/src/context.ts` (Better Auth). Enforce auth via existing procedure middleware before touching data.
+- **Errors:** Throw `ORPCError` (`UNAUTHORIZED`, `FORBIDDEN`, `NOT_FOUND`, `BAD_REQUEST`) with safe user-facing messages. Do not leak SQL, stack traces, or internal details to clients. Server `onError` logs via evlog.
+- **Hono mount:** RPC is prefixed `/rpc`; OpenAPI reference `/api-reference`; Better Auth at `/api/auth/*` in `apps/server/src/index.ts`. Keep raw Hono routes for auth, health/root, webhooks, or uploads—not for typed business APIs.
+- **Validation:** Validate external payloads, headers, and file MIME/size at the boundary before processing.

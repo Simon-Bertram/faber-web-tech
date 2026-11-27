@@ -1,0 +1,13 @@
+---
+description: Drizzle ORM schemas and Cloudflare D1 SQLite conventions
+globs: packages/db/**/*.ts,packages/db/**/*.sql
+alwaysApply: false
+---
+
+# Drizzle ORM & D1
+
+- **Dialect:** Table defs with `drizzle-orm/sqlite-core`; runtime via `drizzle-orm/d1` (`createDb` in `packages/db/src/index.ts`).
+- **Schema layout:** Edit tables under `packages/db/src/schema/` (`auth.ts`, `portal.ts`, etc.). Do not invent a single root `src/db/schema.ts`.
+- **Conventions:** Prefer `text("id").primaryKey()` IDs; timestamps as `integer("…", { mode: "timestamp_ms" })` consistent with existing tables; explicit FKs with `onDelete: "cascade"` or `"restrict"` as appropriate.
+- **Performance:** Index FKs and common `where` / `orderBy` columns. Prefer `db.batch([...])` for multi-statement writes on D1. Select required columns on wide tables instead of `select *`.
+- **Migrations:** Change schema TypeScript, then run `pnpm run db:generate`. Never hand-edit already-applied SQL migration files.

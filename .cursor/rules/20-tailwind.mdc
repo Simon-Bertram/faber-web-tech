@@ -1,0 +1,13 @@
+---
+description: Tailwind CSS v4 utility styling for Astro UI
+globs: apps/web/src/**/*.{astro,css}
+alwaysApply: false
+---
+
+# Tailwind CSS v4
+
+- **Utilities first:** Style with Tailwind utility classes in markup. Keep shared tokens and base styles in the existing CSS entry (Vite `@tailwindcss/vite`), not one-off CSS modules unless necessary.
+- **Theme tokens:** Prefer semantic/theme colors and spacing already defined in the design system over hardcoded hex/rgb when a token exists.
+- **DaisyUI:** Do not add DaisyUI (or other component CSS kits) unless explicitly requested.
+- **Responsive:** Mobile-first breakpoints; avoid layout that only works at one viewport.
+- **Focus styles:** Never strip focus outlines without a visible `focus-visible:` replacement (see WCAG rule).

@@ -1,0 +1,12 @@
+---
+description: Core TypeScript, pnpm, and deliverable standards
+alwaysApply: true
+---
+
+# Core Project Standards
+
+- **Package manager:** Use `pnpm` (and `pnpm dlx` for one-off CLIs). Do not use npm or yarn.
+- **TypeScript:** Prefer `unknown` with type guards or Zod over `any`. Do not add `@ts-ignore` / `@ts-expect-error` unless unavoidable and documented. Avoid new non-null assertions (`!`); narrow instead.
+- **Imports:** Use explicit type imports (`import type { Foo } from './bar'`). Prefer named exports; default exports only where Astro pages/layouts require them.
+- **Boundaries:** Keep business logic out of HTTP handlers, UI markup, and DB driver wiring when a shared package already owns it (`packages/api`, `packages/db`, `packages/auth`).
+- **Completeness:** Ship runnable code—no `// TODO` stubs or truncated implementations in edited files.

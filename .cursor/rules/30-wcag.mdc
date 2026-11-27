@@ -1,0 +1,16 @@
+---
+description: WCAG 2.2 Level AA requirements for web UI markup
+globs: apps/web/src/**/*.{astro,tsx,html}
+alwaysApply: false
+---
+
+# WCAG 2.2 Level AA
+
+- **Semantics:** Use native `<button>`, `<a>`, `<nav>`, `<main>`, `<header>`, `<footer>`, `<dialog>`. Never put click handlers on `<div>` / `<span>`.
+- **Headings:** One `<h1>` per page; keep heading levels sequential.
+- **Contrast:** Normal text ≥ **4.5:1**; large text (18pt+ / 14pt+ bold) and UI boundaries/icons ≥ **3:1**.
+- **Focus visible:** Do not use `outline-none` without a high-contrast `focus-visible:ring-*` (or equivalent) replacement.
+- **Focus not obscured (2.4.11):** Sticky headers/banners must not fully cover focused targets; use `scroll-margin-top` (or similar) as needed.
+- **Target size (2.5.8):** Interactive targets ≥ **24×24 CSS px** or adequate spacing from adjacent targets.
+- **Labels:** Every input/select/textarea needs a linked `<label for>` or `aria-label`. Icon-only buttons need an accessible name. Use `aria-live="polite"` for status/errors.
+- **Tab order:** Do not use `tabindex` greater than `0`.

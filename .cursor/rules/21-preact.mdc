@@ -1,0 +1,15 @@
+---
+description: Preact interactive islands (only when .tsx islands exist)
+globs: apps/web/src/**/*.tsx
+alwaysApply: false
+---
+
+# Preact Islands
+
+This app is primarily `.astro`. Apply this rule only when adding or editing `.tsx` islands.
+
+- **Imports:** Use `preact/hooks` and `@preact/signals`. Do not import from `react` or `react-dom`.
+- **Islands:** Keep interactive surfaces small and leaf-level. Prefer `client:visible` / `client:idle` over `client:load`.
+- **State:** Prefer `@preact/signals` for island-local reactive state to limit re-renders.
+- **Do not rewrite:** Do not convert existing `.astro` components to Preact unless the task requires client interactivity that markup/script cannot handle.
+- **Forms:** Prefer native `FormData` / Astro actions when possible; otherwise controlled signals with disabled submit and clear loading/error UI.
