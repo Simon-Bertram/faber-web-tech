@@ -1,0 +1,3 @@
+# Drizzle snapshots and SQL history (packages/db, not repo-root drizzle/)
+packages/db/drizzle/meta/
+packages/db/drizzle/*.sql

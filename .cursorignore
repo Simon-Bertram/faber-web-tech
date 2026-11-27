@@ -1,0 +1,65 @@
+# ==========================================
+# 1. Secrets & Local Environment (Security)
+# ==========================================
+.env
+.env.*
+.dev.vars
+.dev.vars.*
+*.pem
+*.key
+*.cert
+.wrangler/
+
+# ==========================================
+# 2. Build Outputs & Framework Caches
+# ==========================================
+dist/
+.astro/
+.output/
+.turbo/
+.alchemy/
+.cache/
+coverage/
+*.tsbuildinfo
+
+# ==========================================
+# 3. Dependencies & Lockfiles (Token Bloat)
+# ==========================================
+node_modules/
+pnpm-lock.yaml
+package-lock.json
+bun.lock
+bun.lockb
+
+# ==========================================
+# 4. Local Databases & Logs
+# ==========================================
+*.sqlite
+*.sqlite3
+*.db
+*.db-shm
+*.db-wal
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# ==========================================
+# 5. Binary & Static Media Assets
+# ==========================================
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.avif
+*.gif
+*.ico
+*.mp4
+*.webm
+*.woff
+*.woff2
+*.ttf
+*.eot
+*.pdf
+*.zip
+
+# Note: Keep .svg files unignored so Cursor can inspect/edit inline icons
